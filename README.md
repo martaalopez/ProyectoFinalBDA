@@ -2,7 +2,7 @@
 
 Nuestros datos finalmente quedarian de este forma 
  ````
- {
+{
   "name": "Eilat Harbor",
   "city": "Eilat",
   "state": "South District",
@@ -27,7 +27,15 @@ Nuestros datos finalmente quedarian de este forma
       "aqius": 18,
       "aqicn": 20
     }
+  },
+  "health": {
+    "ts": "2017-02-01T01:15:00.000Z",
+    "asthma_cases": 2,
+    "bronchitis_cases": 1,
+    "copd_cases": 0,
+    "total_respiratory_cases": 3
   }
 }
+
 
 ````

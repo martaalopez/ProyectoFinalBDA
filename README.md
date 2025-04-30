@@ -83,11 +83,11 @@ A continuación se describen los campos que componen la estructura de datos:
   Ejemplo: `"p1"` (donde "p1" normalmente representa partículas PM2.5).
 
 - **`health.asthma_cases`**:  
-  Número de casos de asma detectados durante el tiempo de medición.  
+  Número de casos de asma detectados.  
   Ejemplo: `2`.
 
 - **`health.bronchitis_cases`**:  
-  Número de casos de bronquitis detectados en ese intervalo.  
+  Número de casos de bronquitis detectados.  
   Ejemplo: `1`.
 
 - **`health.copd_cases`**:  

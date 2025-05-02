@@ -130,7 +130,15 @@ Kafka
 
 ## 4.Actualización de la nueva versión de kafka
 
-La versión que tenemos actualmente es la 3.9.0 tenemos que actulizarla a la 4.0.0 para ello 
+La versión que tenemos actualmente es la 3.9.0 tenemos que actulizarla a la 4.0.0 
+![image](https://github.com/user-attachments/assets/452c991f-933a-424f-834b-cc165a3d906f)
+![image](https://github.com/user-attachments/assets/edd70d7f-7d7f-4f51-a9da-361b080c9e23)
+![image](https://github.com/user-attachments/assets/ab9e9c8f-4181-4f47-a0b4-9b6b899b439b)
+![image](https://github.com/user-attachments/assets/af891f4c-b579-411c-ac09-16af7a717ca2)
+
+
+
+
 
 
 

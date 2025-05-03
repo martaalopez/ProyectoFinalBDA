@@ -136,6 +136,98 @@ La versión que tenemos actualmente es la 3.9.0 tenemos que actulizarla a la 4.0
 ![image](https://github.com/user-attachments/assets/ab9e9c8f-4181-4f47-a0b4-9b6b899b439b)
 ![image](https://github.com/user-attachments/assets/af891f4c-b579-411c-ac09-16af7a717ca2)
 
+Apache Kafka puede ser iniciado usando KRaft
+
+Kafka con KRaft
+Kafka se puede ejecutar usando el modo KRaft mediante scripts locales y archivos descargados o mediante la imagen de docker
+
+Usando los archivos descargados
+
+Genera un cluster UUID
+
+KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"
+Formatea el directorio de log
+
+bin/kafka-storage.sh format --standalone -t $KAFKA_CLUSTER_ID -c config/server.properties 
+Ejecuta el servidor Kafka
+
+bin/kafka-server-start.sh config/server.properties
+
+
+## 5.Configuración del Clúster de Kafka 
+1.Vamos a establecer todos los archivos de configuración en una carpeta de ejemplo llamada proyectoBDA_MLU, que en mi caso estará alojada en /opt/kafka/proyecto_MLU
+![image](https://github.com/user-attachments/assets/e12ef486-f0bd-4ca7-b4fa-3a83788f20b7)
+
+Dado que todas las instancias se ejecutarán en el mismo nodo, es crucial asignar puertos únicos y directorios de log para cada broker y el controller.
+
+Configuración:
+Para el controller, debemos usar como base la configuración de propiedades de controller de kafka (KRaft mode) que se encuentran config/kraft/controller.properties
+Para cada broker, necesitaremos crear un archivo de configuración por separado. Para ello debemos usar como base la configuración de propiedades de brokers de kafka que se encuentran config/kraft/broker.properties
+
+Creamos los directorios necesarios para nuestro proyecto_MLU
+
+````
+mkdir -p /opt/kafka/proyecto_MLU/config
+mkdir -p /opt/kafka/proyecto_MLU/logs
+````
+Hacemos 2 y 1 copia de los ficheros correspondientes de configuración para cada uno
+
+````
+
+cp /opt/kafka_2.13-4.0.0/config/controller.properties /opt/kafka/proyecto_MLU/config/controller1.properties
+cp /opt/kafka_2.13-4.0.0/config/broker.properties /opt/kafka/proyecto_MLU/config/broker1.properties
+cp /opt/kafka_2.13-4.0.0/config/broker.properties /opt/kafka/proyecto_MLU/config/broker2.properties
+
+````
+![image](https://github.com/user-attachments/assets/a09f55ca-0843-4a9b-bb60-9bb8f572f8e8)
+
+Asignamos la configuración al controller
+
+````
+# Server Basics
+process.roles=controller
+node.id=1
+controller.quorum.bootstrap.servers=192.168.11.10:9093
+# Socket Server Settings
+listeners=CONTROLLER://localhost:9093
+controller.listener.names=CONTROLLER
+# Log Basics
+log.dirs=/opt/kafka/proyecto_MLU/logs/controller1
+````
+Asignamos la siguiente configuración para cada broker
+
+````
+# Server Basics
+process.roles=broker
+node.id=2
+controller.quorum.bootstrap.servers=192.168.11.10:9093
+# Socket Server Settings
+listeners=PLAINTEXT://192.168.11.10:9094
+inter.broker.listener.name=PLAINTEXT
+advertised.listeners=PLAINTEXT://192.168.11.10:9094
+listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL
+# Log Basics
+log.dirs=/opt/kafka/proyecto_MLU/logs/broker1
+````
+````
+# Server Basics
+process.roles=broker
+node.id=3
+controller.quorum.bootstrap.servers=192.168.11.10:9093
+# Socket Server Settings
+listeners=PLAINTEXT://192.168.11.10:9095
+inter.broker.listener.name=PLAINTEXT
+advertised.listeners=PLAINTEXT://192.168.11.10:9095
+listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL
+# Log Basics
+log.dirs=/opt/kafka/proyecto_MLU/logs/broker2
+````
+
+
+
+
+
+
 
 
 

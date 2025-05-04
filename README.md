@@ -289,12 +289,17 @@ Iniciamos los server(1 controller y 2 brokers) cada uno en una terminal
  Creación del Topic
 Creamos el topic con factor de replica 2 y 3 particiones. El topic debe conectarse a un broker.
 ````
-/opt/kafka_2.13-4.0.0/bin/kafka-topics.sh --create --topic air-quality --bootstrap-server 192.168.11.10:9094 --replication-factor 2 --partitions 3
+/opt/kafka_2.13-4.0.0/bin/kafka-topics.sh --create --topic air-quality --bootstrap-server 192.168.11.10:9094 --replication-factor 2 --partitions 4
 ````
+![image](https://github.com/user-attachments/assets/1ae0aafe-e850-437c-a781-9aa21d2dc3ba)
 
 Creamos el producer.py
 
 ![image](https://github.com/user-attachments/assets/32c45acc-f051-4c7e-88e7-e2d7afb407b1)
+
+````
+spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.4 --master spark://192.168.11.10:7077 /opt/kafka/proyecto_MLU/consumer.py
+````
 
 
 

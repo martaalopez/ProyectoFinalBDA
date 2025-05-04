@@ -262,7 +262,35 @@ plugin.path=/opt/kafka/proyecto_MLU/libs
 listeners=http://localhost:8084
 
 ````
+Iniciamos Kafka
+````
+KAFKA_CLUSTER_ID="$(/opt/kafka_2.13-4.0.0/bin/kafka-storage.sh random-uuid)"
+echo $KAFKA_CLUSTER_ID
+````
+![image](https://github.com/user-attachments/assets/eb9b2605-8862-43f8-bb7d-7f7c47474a31)
 
+#Formateamos los directorios de log
+````
+/opt/kafka_2.13-4.0.0/bin/kafka-storage.sh format -t $KAFKA_CLUSTER_ID --standalone -c /opt/kafka/proyecto_MLU/config/controller1.properties
+/opt/kafka_2.13-4.0.0/bin/kafka-storage.sh format -t $KAFKA_CLUSTER_ID -c /opt/kafka/proyecto_MLU/config/broker1.properties
+/opt/kafka_2.13-4.0.0/bin/kafka-storage.sh format -t $KAFKA_CLUSTER_ID -c /opt/kafka/proyecto_MLU/config/broker2.properties
+````
+![image](https://github.com/user-attachments/assets/1ab03493-51c0-4fff-aeae-ff9e5e469d62)
+
+Iniciamos los server(1 controller y 2 brokers) cada uno en una terminal
+
+````
+#Ejecuta el servidor Kafka
+/opt/kafka_2.13-4.0.0/bin/kafka-server-start.sh /opt/kafka/proyecto_MLU/config/controller1.properties
+/opt/kafka_2.13-4.0.0/bin/kafka-server-start.sh /opt/kafka/proyecto_MLU/config/broker1.properties
+/opt/kafka_2.13-4.0.0/bin/kafka-server-start.sh /opt/kafka/proyecto_MLU/config/broker2.properties
+````
+
+ Creación del Topic
+Creamos el topic con factor de replica 2 y 3 particiones. El topic debe conectarse a un broker.
+````
+/opt/kafka_2.13-4.0.0/bin/kafka-topics.sh --create --topic air-quality --bootstrap-server 192.168.11.10:9094 --replication-factor 2 --partitions 3
+````
 
 
 

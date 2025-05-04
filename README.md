@@ -292,6 +292,11 @@ Creamos el topic con factor de replica 2 y 3 particiones. El topic debe conectar
 /opt/kafka_2.13-4.0.0/bin/kafka-topics.sh --create --topic air-quality --bootstrap-server 192.168.11.10:9094 --replication-factor 2 --partitions 3
 ````
 
+Creamos el producer.py
+
+![image](https://github.com/user-attachments/assets/32c45acc-f051-4c7e-88e7-e2d7afb407b1)
+
+
 
 
 

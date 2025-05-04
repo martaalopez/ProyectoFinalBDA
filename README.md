@@ -222,6 +222,47 @@ listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,
 # Log Basics
 log.dirs=/opt/kafka/proyecto_MLU/logs/broker2
 ````
+Creamos los workers
+````
+   nano /opt/kafka/proyecto_MLU/config/worker1.properties
+````
+````
+bootstrap.servers=localhost:9094,localhost:9095
+group.id=connect-cluster
+key.converter=org.apache.kafka.connect.json.JsonConverter
+value.converter=org.apache.kafka.connect.json.JsonConverter
+key.converter.schemas.enable=true
+value.converter.schemas.enable=true
+offset.storage.topic=connect-offsets
+offset.storage.replication.factor=2
+config.storage.topic=connect-configs
+config.storage.replication.factor=2
+status.storage.topic=connect-status
+status.storage.replication.factor=2
+plugin.path=/opt/kafka/proyecto_MLU/libs
+listeners=http://localhost:8083
+````
+````
+ nano /opt/kafka/proyecto_MLU/config/worker2.properties
+`````
+````
+bootstrap.servers=localhost:9094,localhost:9095
+group.id=connect-cluster
+key.converter=org.apache.kafka.connect.json.JsonConverter
+value.converter=org.apache.kafka.connect.json.JsonConverter
+key.converter.schemas.enable=true
+value.converter.schemas.enable=true
+offset.storage.topic=connect-offsets
+offset.storage.replication.factor=2
+config.storage.topic=connect-configs
+config.storage.replication.factor=2
+status.storage.topic=connect-status
+status.storage.replication.factor=2
+plugin.path=/opt/kafka/proyecto_MLU/libs
+listeners=http://localhost:8084
+
+````
+
 
 
 

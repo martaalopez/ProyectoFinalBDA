@@ -65,23 +65,26 @@ def process_batch(batch_df, epoch_id):
     pd_df = batch_df.toPandas()
 
     if not pd_df.empty:
-        # Agregar columna de alerta
+        # Agregar columna de alerta: "HIGH POLLUTION" si el AQI actualizado es mayor a 100, de lo contrario 'OK'
         pd_df['alert'] = pd_df['updated_aqi'].apply(lambda x: 'HIGH POLLUTION' if x > 100 else 'OK')
 
-        # Mostrar resumen del lote
+        # Mostrar resumen del lote procesado
         print(f"\n=== Lote {epoch_id} ===")
         print(pd_df[['city', 'ts', 'updated_aqi', 'alert']].head(10))
 
+        # Filtrar las alertas de alta contaminación
         high_alerts = pd_df[pd_df['alert'] == 'HIGH POLLUTION']
         if not high_alerts.empty:
             print("🚨 ALERTAS DE ALTA CONTAMINACIÓN:")
             print(high_alerts[['city', 'ts', 'updated_aqi']].to_string(index=False))
 
-# Ejecutar el stream con foreachBatch
+# Ejecutar el stream con foreachBatch para procesar los datos en microbatches
 query = parsed_df \
     .writeStream \
     .foreachBatch(process_batch) \
     .outputMode("append") \
     .start()
 
+# Esperar a que termine la consulta
 query.awaitTermination()
+

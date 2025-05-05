@@ -1,7 +1,7 @@
 # Proyecto Final BDA 2024-25
 
-![ChatGPT Image 26 abr 2025, 12_03_57](https://github.com/user-attachments/assets/6102e595-1fdc-4c95-bc74-89ab9ad7bd9c)
-
+ <!-- ![ChatGPT Image 26 abr 2025, 12_03_57](https://github.com/user-attachments/assets/6102e595-1fdc-4c95-bc74-89ab9ad7bd9c)
+-->
 ## 1.Introducción
 
 Hoy en dia la calidad del aire y la contaminacion son factores ambientales muy preocupantes en nuestra sociedad .El trafico  diario de vehiculos ,tanto de personas que van al trabajo como de padres q van a llevar a sus hijos al colegio son factores que hacen que aumente  el deterioro de la calidad de aire.
@@ -13,107 +13,15 @@ Esto puede hacer que existan consecuencias directas en la salud publica, un arti
 ## 2.Fuente de Informacion
 
 Para poder abarcar con todo esto vamos a apoyarnos en los datos proporcionados  por la AirVisual API la cual  ofrece información sobre el tiempo, la calidad del aire y los incendios activos,etc...
-Sin embargo, esta API presenta un problema:los datos se actualizan cada hora , mientras que nuestro objetivo es realizar un monitoreo en tiempo real, actualizando los datos cada minuto.
+Sin embargo, esta API presenta un problema:los datos se actualizan cada hora ,mientras que nuestro objetivo es realizar un monitoreo en tiempo real, actualizando los datos cada segundo.
 
-Por ello vamos a generar  unos datos sinteticos,  incluyendo no solo las variables básicas ofrecidas por la API, sino también otros datos adicionales que considero relevantes para un análisis más completo:
-En terminos generales tendriamos estos datos
--Casos de enfermedades respiratorias detectadas por minuto.
--Número de vehículos circulando en la vía pública.
--Información sobre incendios activos.
--Nivel de actividad industrial.
--Calidad del aire (AQI) y contaminante principal (mainus).
--Lugar
+Por ello vamos a generar  unos datos sinteticos,  incluyendo no solo las variables básicas ofrecidas por la API, sino también otros datos adicionales que considero relevantes para un análisis más completo,como el tráfico, la actividad industrial y la probabilidad de incendios.
+Los datos ficticios se recogerán desde sensores virtuales distribuidos en cuatro zonas distintas de Madrid:
+Centro: Zona con alto volumen de tráfico, ideal para observar el impacto del tránsito urbano.
+Residencial: Área con menor densidad de vehículos, donde se espera una menor contaminación.
+Industrial: Región con alta actividad industrial, donde predominan los contaminantes derivados del humo y procesos fabriles.
+Suburbana: Zonas periféricas con mezcla de factores naturales y urbanos, y mayor probabilidad de incendios forestales.
 
-### 2.1 Estructura de datos 
-En este apartado vamos a especificar la estructura de nuestro datos
-
-### Ejemplo de datos:
-````
-
-{
-  "city": "Eilat",
-  "country": "Israel",
-  "ts": "2017-02-01T01:15:00.000Z",
-  "pollution": {
-    "aqius": 18,
-    "mainus": "p1" 
-  },
-  "health": {
-    "asthma_cases": 2,
-    "bronchitis_cases": 1,
-    "copd_cases": 0,
-    "total_respiratory_cases": 3
-  },
-  "traffic": {
-    "vehicles_count": 1000,
-    "industrial_activity": "moderate",
-    "environmental_factors": {
-      "fire_active": true,
-      "fire_intensity": "high"
-    }
-  }
-}
-
-
-````
-
-## 2.2 Explicación de los Campos
-
-A continuación se describen los campos que componen la estructura de datos:
-
-- **`city`**:  
-  Nombre de la ciudad donde se realiza la medición.  
-  Ejemplo: `"Eilat"`.
-
-- **`country`**:  
-  País al que pertenece la ciudad donde se recogen los datos.  
-  Ejemplo: `"Israel"`.
-
-- **`ts`**:  
-  Timestamp o fecha y hora exacta en que se tomó la medición, en formato ISO 8601.  
-  Ejemplo: `"2017-02-01T01:15:00.000Z"`.
-
-- **`pollution.aqius`**:  
-  Índice de calidad del aire basado en el estándar de Estados Unidos (US AQI).  
-  Un valor bajo indica buena calidad del aire, mientras que uno alto indica mala calidad.  
-  Ejemplo: `18`.
-
-- **`pollution.mainus`**:  
-  Principal contaminante detectado en el aire según el estándar de EE.UU.  
-  Ejemplo: `"p1"` (donde "p1" normalmente representa partículas PM2.5).
-
-- **`health.asthma_cases`**:  
-  Número de casos de asma detectados.  
-  Ejemplo: `2`.
-
-- **`health.bronchitis_cases`**:  
-  Número de casos de bronquitis detectados.  
-  Ejemplo: `1`.
-
-- **`health.copd_cases`**:  
-  Número de casos de EPOC (Enfermedad Pulmonar Obstructiva Crónica) registrados.  
-  Ejemplo: `0`.
-
-- **`health.total_respiratory_cases`**:  
-  Total de enfermedades respiratorias registradas (asma + bronquitis + EPOC).  
-  Ejemplo: `3`.
-
-- **`traffic.vehicles_count`**:  
-  Número de vehículos en circulación detectados en el área de monitoreo.  
-  Ejemplo: `1000`.
-
-- **`traffic.industrial_activity`**:  
-  Nivel de actividad industrial en la zona. Puede tomar valores como `"low"`, `"moderate"`, o `"high"`.  
-  Ejemplo: `"moderate"`.
-
-- **`traffic.environmental_factors.fire_active`**:  
-  Indicador booleano que muestra si hay un incendio activo (`true`) o no (`false`).  
-  Ejemplo: `true`.
-
-- **`traffic.environmental_factors.fire_intensity`**:  
-  Nivel de intensidad del incendio detectado. Puede ser `"low"`, `"moderate"` o `"high"`.  
-  Ejemplo: `"high"`.
-  
 ## 3. Requisitos
 Debe haber como mínimo 3 nodos en los clusters (en cada uno):
 Hadoop (HDFS/Yarn)
@@ -124,45 +32,13 @@ Spark
 ![image](https://github.com/user-attachments/assets/4a360f4a-3007-4646-92e2-289e0c5d676c)
 
 Kafka
-![image](https://github.com/user-attachments/assets/1803b1be-1aea-4d21-8c91-63ead014e844)
+Hemos actualizado nuestro kafka a la versión 4.0.0
+![image](https://github.com/user-attachments/assets/1d2feb40-6772-4ea7-9e3f-e7edf1420f69)
 
 
-
-## 4.Actualización de la nueva versión de kafka
-
-La versión que tenemos actualmente es la 3.9.0 tenemos que actulizarla a la 4.0.0 
-![image](https://github.com/user-attachments/assets/452c991f-933a-424f-834b-cc165a3d906f)
-![image](https://github.com/user-attachments/assets/edd70d7f-7d7f-4f51-a9da-361b080c9e23)
-![image](https://github.com/user-attachments/assets/ab9e9c8f-4181-4f47-a0b4-9b6b899b439b)
-![image](https://github.com/user-attachments/assets/af891f4c-b579-411c-ac09-16af7a717ca2)
-
-Apache Kafka puede ser iniciado usando KRaft
-
-Kafka con KRaft
-Kafka se puede ejecutar usando el modo KRaft mediante scripts locales y archivos descargados o mediante la imagen de docker
-
-Usando los archivos descargados
-
-Genera un cluster UUID
-
-KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"
-Formatea el directorio de log
-
-bin/kafka-storage.sh format --standalone -t $KAFKA_CLUSTER_ID -c config/server.properties 
-Ejecuta el servidor Kafka
-
-bin/kafka-server-start.sh config/server.properties
-
-
-## 5.Configuración del Clúster de Kafka 
-1.Vamos a establecer todos los archivos de configuración en una carpeta de ejemplo llamada proyectoBDA_MLU, que en mi caso estará alojada en /opt/kafka/proyecto_MLU
+## 4.Configuración del Clúster de Kafka 
+1.Vamos a establecer todos los archivos de configuración en una carpeta  llamada proyectoBDA_MLU, que en mi caso estará alojada en /opt/kafka/proyecto_MLU
 ![image](https://github.com/user-attachments/assets/e12ef486-f0bd-4ca7-b4fa-3a83788f20b7)
-
-Dado que todas las instancias se ejecutarán en el mismo nodo, es crucial asignar puertos únicos y directorios de log para cada broker y el controller.
-
-Configuración:
-Para el controller, debemos usar como base la configuración de propiedades de controller de kafka (KRaft mode) que se encuentran config/kraft/controller.properties
-Para cada broker, necesitaremos crear un archivo de configuración por separado. Para ello debemos usar como base la configuración de propiedades de brokers de kafka que se encuentran config/kraft/broker.properties
 
 Creamos los directorios necesarios para nuestro proyecto_MLU
 
@@ -170,6 +46,14 @@ Creamos los directorios necesarios para nuestro proyecto_MLU
 mkdir -p /opt/kafka/proyecto_MLU/config
 mkdir -p /opt/kafka/proyecto_MLU/logs
 ````
+
+En nuestra arquitectura vamos a tener lo siguiente:
+Un controller que va a ser el nodo responsable de poder coordinal el clúster.Se va a encargar de gestionar los eventos como la creación y eliminación de topics,la asignaciñon de paerticiones y la detección de fallos en los brokers.
+Para el controller, debemos usar como base la configuración de propiedades de controller de kafka que se encuentran config/controller.properties
+
+Dos brokers,donde cada uno va a estar identificado por un Id y va a contener ciertas particiones de un topic.va a permitir replicar y poder particionar dichos topics balanceando la carga de almacenamiento entre los brokers.Esto perimite q kafka sea tolerante a fallos y escalable.
+Para cada broker, necesitaremos crear un archivo de configuración por separado. Para ello debemos usar como base la configuración de propiedades de brokers de kafka que se encuentran config//broker.properties
+
 Hacemos 2 y 1 copia de los ficheros correspondientes de configuración para cada uno
 
 ````
@@ -262,14 +146,16 @@ plugin.path=/opt/kafka/proyecto_MLU/libs
 listeners=http://localhost:8084
 
 ````
-Iniciamos Kafka
+Antes de arrancar los servicios del controller y los brokers,necesitamos iniciar Kafka.Por ello vamos a generar un identificador único para el clúster.Este ID se va a utilizar para cada uno de los nodos (controller y brokers)para identificarse como parte del mismo clúster
+
+Generamos el ID del clúster
 ````
 KAFKA_CLUSTER_ID="$(/opt/kafka_2.13-4.0.0/bin/kafka-storage.sh random-uuid)"
 echo $KAFKA_CLUSTER_ID
 ````
 ![image](https://github.com/user-attachments/assets/eb9b2605-8862-43f8-bb7d-7f7c47474a31)
 
-#Formateamos los directorios de log
+Después de generar el ID ,vamos a formatear los directorios de log de cada nodo.Esto nos va a asegurar que cada nodo este vinculado al mismo cluster.id y pueda participar en la gestión del clúester
 ````
 /opt/kafka_2.13-4.0.0/bin/kafka-storage.sh format -t $KAFKA_CLUSTER_ID --standalone -c /opt/kafka/proyecto_MLU/config/controller1.properties
 /opt/kafka_2.13-4.0.0/bin/kafka-storage.sh format -t $KAFKA_CLUSTER_ID -c /opt/kafka/proyecto_MLU/config/broker1.properties
@@ -277,7 +163,7 @@ echo $KAFKA_CLUSTER_ID
 ````
 ![image](https://github.com/user-attachments/assets/1ab03493-51c0-4fff-aeae-ff9e5e469d62)
 
-Iniciamos los server(1 controller y 2 brokers) cada uno en una terminal
+Iniciamos los server(1 controller y 2 brokers) cada uno en una terminal distinta
 
 ````
 #Ejecuta el servidor Kafka
@@ -286,16 +172,23 @@ Iniciamos los server(1 controller y 2 brokers) cada uno en una terminal
 /opt/kafka_2.13-4.0.0/bin/kafka-server-start.sh /opt/kafka/proyecto_MLU/config/broker2.properties
 ````
 
- Creación del Topic
-Creamos el topic con factor de replica 2 y 3 particiones. El topic debe conectarse a un broker.
+Creamos el topic con factor de replica 2 y 4 particiones ya que en nuestros datos sintécticos vamos a coger los datos de 4 zonas distintas de la ciudad. Cada partición va a manejar los datos y los eventos específicos de cada zona. El topic debe conectarse a un broker.
 ````
 /opt/kafka_2.13-4.0.0/bin/kafka-topics.sh --create --topic air-quality --bootstrap-server 192.168.11.10:9094 --replication-factor 2 --partitions 4
 ````
 ![image](https://github.com/user-attachments/assets/1ae0aafe-e850-437c-a781-9aa21d2dc3ba)
 
-Creamos el producer.py
+Una vez creado el topic,vamos a iniciar el productor Kafka que simula datos recogidos por sensores distribuidos en las 4 zonas de Madrid.
 
 ![image](https://github.com/user-attachments/assets/32c45acc-f051-4c7e-88e7-e2d7afb407b1)
+
+Necesitamos un consumer que lea los eventos del topic air-quality. Este consumer está implementado en PySpark Structured Streaming para poder analizar los datos de forma continua y reactiva.
+El consumer:
+Lee el flujo de mensajes desde Kafka.
+Extrae y estructura los datos JSON recibidos.
+Evalúa si el AQI supera cierto umbral y lanza una alerta si hay alta contaminación.
+Imprime un resumen por microbatch en consola.
+Esto nos permite monitorear la ciudad segundo a segundo con un enfoque Big Data.
 
 ````
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.4 --master spark://192.168.11.10:7077 /opt/kafka/proyecto_MLU/consumer.py

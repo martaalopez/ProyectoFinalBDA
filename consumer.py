@@ -75,7 +75,7 @@ def process_batch(batch_df, epoch_id):
         # Filtrar las alertas de alta contaminación
         high_alerts = pd_df[pd_df['alert'] == 'HIGH POLLUTION']
         if not high_alerts.empty:
-            print("🚨 ALERTAS DE ALTA CONTAMINACIÓN:")
+            print("ALERTAS DE ALTA CONTAMINACIÓN:")
             print(high_alerts[['city', 'ts', 'updated_aqi']].to_string(index=False))
 
 # Ejecutar el stream con foreachBatch para procesar los datos en microbatches

@@ -3,41 +3,61 @@ from kafka import KafkaProducer
 from datetime import datetime
 import random
 import json
+import time
 
-# Inicializar Faker
+# Inicializar Faker para generar datos falsos si es necesario (no se está usando activamente aquí)
 fake = Faker()
 
-# Configurar Kafka Producer
+# Configurar el productor de Kafka
 producer = KafkaProducer(
-    bootstrap_servers='192.168.11.10:9094',
-    value_serializer=lambda v: json.dumps(v).encode('utf-8')
+    bootstrap_servers='192.168.11.10:9094',  # Dirección del broker de Kafka
+    value_serializer=lambda v: json.dumps(v).encode('utf-8')  # Serializa los mensajes como JSON
 )
 
-# Zonas definidas
+# Definición de las zonas con sus características geográficas y de contaminación
 ZONES = {
-    "residential": {"latitude": 40.4168, "longitude": -3.7038, "traffic_factor": 0.5, "fire_probability": 0.1, "industry_factor": 0.2},
-    "industrial": {"latitude": 40.4168, "longitude": -3.7178, "traffic_factor": 1.5, "fire_probability": 0.05, "industry_factor": 2.0},
-    "center": {"latitude": 40.4198, "longitude": -3.7028, "traffic_factor": 2.0, "fire_probability": 0.15, "industry_factor": 1.0},
-    "suburb": {"latitude": 40.4567, "longitude": -3.7314, "traffic_factor": 1.0, "fire_probability": 0.25, "industry_factor": 0.5}
+    "residential": {
+        "latitude": 40.4168, "longitude": -3.7038,
+        "traffic_factor": 0.5, "fire_probability": 0.1, "industry_factor": 0.2
+    },
+    "industrial": {
+        "latitude": 40.4168, "longitude": -3.7178,
+        "traffic_factor": 1.5, "fire_probability": 0.05, "industry_factor": 2.0
+    },
+    "center": {
+        "latitude": 40.4198, "longitude": -3.7028,
+        "traffic_factor": 2.0, "fire_probability": 0.15, "industry_factor": 1.0
+    },
+    "suburb": {
+        "latitude": 40.4567, "longitude": -3.7314,
+        "traffic_factor": 1.0, "fire_probability": 0.25, "industry_factor": 0.5
+    }
 }
 
-# Función para detectar hora punta o fin de semana
+# Función para detectar si es hora punta o fin de semana
 def get_traffic_condition(ts):
     dt = datetime.fromisoformat(ts)
-    is_weekend = dt.weekday() >= 5
-    if not is_weekend and dt.hour in [8,9,14,15,20]:
+    is_weekend = dt.weekday() >= 5  # 5 y 6 son sábado y domingo
+    if not is_weekend and dt.hour in [8, 9, 14, 15, 20]:  # Horas punta entre semana
         return "peak"
     return "weekend" if is_weekend else "normal"
 
-# Función para generar evento completo
-def generate_event():
+# Función principal para generar el evento de calidad del aire por zona
+def generate_event(zone_name, zone):
     city = "Madrid"
     country = "Spain"
-    ts = datetime.utcnow().isoformat()
+    ts = datetime.utcnow().isoformat()  # Timestamp actual en formato ISO
+
+    # AQI base + ajustes por tráfico e industria
+    base_aqi = random.randint(10, 100)
+    industry_boost = int(50 * zone["industry_factor"])
+    traffic_boost = int(30 * zone["traffic_factor"])
     pollution = {
-        "aqius": random.randint(10, 200),
-        "mainus": random.choice(["p1", "p2", "p3"])
+        "aqius": base_aqi + industry_boost + traffic_boost,
+        "mainus": random.choice(["p1", "p2", "p3"])  # Contaminante principal simulado
     }
+
+    # Datos de tráfico simulados
     traffic = {
         "vehicles_count": random.randint(1000, 7000),
         "vehicles_passed": random.randint(50, 200),
@@ -47,14 +67,10 @@ def generate_event():
             "fire_intensity": random.choice(["low", "medium", "high"])
         }
     }
-    location = {
-        "latitude": random.uniform(40.0, 41.0),
-        "longitude": random.uniform(-3.7, -3.5)
-    }
 
-    # Asignar zona
-    zone = random.choice(list(ZONES.values()))
+    # Condiciones específicas de la zona
     zone_conditions = {
+        "zone": zone_name,
         "latitude": zone["latitude"],
         "longitude": zone["longitude"],
         "traffic_factor": zone["traffic_factor"],
@@ -62,28 +78,40 @@ def generate_event():
         "industry_factor": zone["industry_factor"],
         "vehicles_count": int(random.randint(1000, 7000) * zone["traffic_factor"]),
         "fire_active": random.random() < zone["fire_probability"],
-        "industrial_activity": "high" if zone["industry_factor"] > 1 else ("moderate" if zone["industry_factor"] == 1 else "low")
+        "industrial_activity": (
+            "high" if zone["industry_factor"] > 1
+            else "moderate" if zone["industry_factor"] == 1
+            else "low"
+        )
     }
 
-    # Determinar condición de tráfico
+    # Determinar condición de tráfico (peak, normal, weekend)
     traffic_condition = get_traffic_condition(ts)
 
-    # Calcular AQI actualizado
+    # Calcular AQI ajustado según la situación del momento
     aqi = pollution["aqius"]
+
     if traffic_condition == "peak":
-        aqi += random.randint(20, 60)
-    elif traffic_condition == "weekend" and zone_conditions["fire_active"]:
+        aqi += int(zone_conditions["vehicles_count"] * 0.01)  # Aumento por volumen de coches
+        aqi += random.randint(5, 15)  # Variación aleatoria extra
+
+    if traffic_condition == "weekend" and zone_conditions["fire_active"]:
         aqi += 100 if traffic["environmental_factors"]["fire_intensity"] == "high" else 50
+
     if zone_conditions["fire_active"]:
         aqi += 50 if traffic["environmental_factors"]["fire_intensity"] == "low" else 100
 
+    # Estructura del evento final
     event = {
         "city": city,
         "country": country,
         "ts": ts,
         "pollution": pollution,
         "traffic": traffic,
-        "location": location,
+        "location": {
+            "latitude": zone["latitude"],
+            "longitude": zone["longitude"]
+        },
         "zone_conditions": zone_conditions,
         "traffic_condition": traffic_condition,
         "updated_aqi": aqi
@@ -91,16 +119,17 @@ def generate_event():
 
     return event
 
-# Enviar datos en bucle
+# Función principal que produce los eventos a Kafka en bucle
 def main():
     while True:
-        event = generate_event()
-        producer.send("air_quality_topic", value=event)
-        print("✅ Sent to Kafka:", event)
-        producer.flush()
-        # Esperar 1 segundo entre envíos
-        import time
-        time.sleep(1)
+        for zone_name, zone in ZONES.items():
+            event = generate_event(zone_name, zone)
+            producer.send("air_quality_topic", value=event)  # Enviar a Kafka
+            print(f"Sent to Kafka ({zone_name}):", event)
+        producer.flush()  # Asegurar que se envían todos los mensajes
+        time.sleep(1)  # Esperar 1 segundo antes de repetir
 
+# Ejecutar main si es el script principal
 if __name__ == "__main__":
     main()
+

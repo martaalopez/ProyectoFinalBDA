@@ -1,12 +1,8 @@
-from faker import Faker
 from kafka import KafkaProducer
 from datetime import datetime
 import random
 import json
 import time
-
-# Inicializar Faker para generar datos falsos si es necesario (no se está usando activamente aquí)
-fake = Faker()
 
 # Configurar el productor de Kafka
 producer = KafkaProducer(
@@ -44,7 +40,7 @@ def get_traffic_condition(ts):
 
 # Función principal para generar el evento de calidad del aire por zona
 def generate_event(zone_name, zone):
-    city = "Madrid"
+    city = fake.city()  # Generamos un nombre de ciudad aleatorio usando Faker
     country = "Spain"
     ts = datetime.utcnow().isoformat()  # Timestamp actual en formato ISO
 
@@ -54,7 +50,7 @@ def generate_event(zone_name, zone):
     traffic_boost = int(30 * zone["traffic_factor"])
     pollution = {
         "aqius": base_aqi + industry_boost + traffic_boost,
-        "mainus": random.choice(["p1", "p2", "p3"])  # Contaminante principal simulado
+        "mainus": fake.word()  # Generamos un contaminante aleatorio usando Faker
     }
 
     # Datos de tráfico simulados
@@ -85,6 +81,9 @@ def generate_event(zone_name, zone):
         )
     }
 
+    # Generación de direcciones aleatorias con Faker
+    address = fake.address()
+
     # Determinar condición de tráfico (peak, normal, weekend)
     traffic_condition = get_traffic_condition(ts)
 
@@ -114,7 +113,8 @@ def generate_event(zone_name, zone):
         },
         "zone_conditions": zone_conditions,
         "traffic_condition": traffic_condition,
-        "updated_aqi": aqi
+        "updated_aqi": aqi,
+        "address": address  # Incluir la dirección generada
     }
 
     return event
@@ -122,14 +122,23 @@ def generate_event(zone_name, zone):
 # Función principal que produce los eventos a Kafka en bucle
 def main():
     while True:
+        # Crear una lista para los eventos de las 4 zonas
+        all_events = []
+        
         for zone_name, zone in ZONES.items():
             event = generate_event(zone_name, zone)
-            producer.send("air_quality_topic", value=event)  # Enviar a Kafka
-            print(f"Sent to Kafka ({zone_name}):", event)
+            all_events.append(event)  # Guardamos el evento de cada zona
+        
+        # Enviar todos los eventos de una vez al topic de Kafka
+        for event in all_events:
+            producer.send("air_quality_topic", value=event)  # Enviar cada evento individualmente
+            print(f"Sent to Kafka: {event}")
+
         producer.flush()  # Asegurar que se envían todos los mensajes
         time.sleep(1)  # Esperar 1 segundo antes de repetir
 
 # Ejecutar main si es el script principal
 if __name__ == "__main__":
     main()
+
 

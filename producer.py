@@ -81,9 +81,6 @@ def generate_event(zone_name, zone):
         )
     }
 
-    # Generación de direcciones aleatorias con Faker
-    address = fake.address()
-
     # Determinar condición de tráfico (peak, normal, weekend)
     traffic_condition = get_traffic_condition(ts)
 
@@ -114,7 +111,6 @@ def generate_event(zone_name, zone):
         "zone_conditions": zone_conditions,
         "traffic_condition": traffic_condition,
         "updated_aqi": aqi,
-        "address": address  # Incluir la dirección generada
     }
 
     return event

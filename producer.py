@@ -40,7 +40,7 @@ def get_traffic_condition(ts):
 
 # Función principal para generar el evento de calidad del aire por zona
 def generate_event(zone_name, zone):
-    city = fake.city()  # Generamos un nombre de ciudad aleatorio usando Faker
+    city = "Madrid" 
     country = "Spain"
     ts = datetime.utcnow().isoformat()  # Timestamp actual en formato ISO
 
@@ -50,7 +50,7 @@ def generate_event(zone_name, zone):
     traffic_boost = int(30 * zone["traffic_factor"])
     pollution = {
         "aqius": base_aqi + industry_boost + traffic_boost,
-        "mainus": fake.word()  # Generamos un contaminante aleatorio usando Faker
+        "mainus": random.choice(["p1", "p2", "p3"]) 
     }
 
     # Datos de tráfico simulados

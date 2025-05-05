@@ -180,7 +180,8 @@ Creamos el topic con factor de replica 2 y 4 particiones ya que en nuestros dato
 
 Una vez creado el topic,vamos a iniciar el productor Kafka que simula datos recogidos por sensores distribuidos en las 4 zonas de Madrid.
 
-![image](https://github.com/user-attachments/assets/32c45acc-f051-4c7e-88e7-e2d7afb407b1)
+![image](https://github.com/user-attachments/assets/b2580c3e-d669-4182-b859-ebd608c29227)
+
 
 Necesitamos un consumer que lea los eventos del topic air-quality. Este consumer está implementado en PySpark Structured Streaming para poder analizar los datos de forma continua y reactiva.
 El consumer:
@@ -191,8 +192,16 @@ Imprime un resumen por microbatch en consola.
 Esto nos permite monitorear la ciudad segundo a segundo con un enfoque Big Data.
 
 ````
+/opt/kafka_2.13-4.0.0/bin/kafka-console-consumer.sh --topic air-quality --from-beginning --bootstrap-server 192.168.11.10:9094
+````
+Vemos si se estan v consumiendo correctamente  los datos una vez lanzada la aplicación
+````
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.4 --master spark://192.168.11.10:7077 /opt/kafka/proyecto_MLU/consumer.py
 ````
+
+cd /opt/hadoop-3.3.6/spark-3.5.0
+spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 --master spark://192.168.11.10:7077 /opt/kafka/proyecto_MLU/data_stream/consumer.py
+
 
 
 

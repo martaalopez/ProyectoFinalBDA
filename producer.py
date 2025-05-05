@@ -25,7 +25,7 @@ ZONES = {
 def get_traffic_condition(ts):
     dt = datetime.fromisoformat(ts)
     is_weekend = dt.weekday() >= 5
-    if not is_weekend and dt.hour in [8, 14, 20]:
+    if not is_weekend and dt.hour in [8,9,14,15,20]:
         return "peak"
     return "weekend" if is_weekend else "normal"
 

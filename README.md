@@ -200,9 +200,6 @@ Lanzamos spark master y los workers del cluster.
 ````
 /opt/hadoop-3.4.1/spark-3.5.4/sbin/start-master.sh
 /opt/hadoop-3.4.1/spark-3.5.4/sbin/start-workers.sh
-
-/opt/hadoop-3.4.1/spark-3.5.4$ ./sbin/start-master.sh 
-/opt/hadoop-3.4.1/spark-3.5.4$ ./sbin/start-workers.sh
 ````
 Vemos si se estan v consumiendo correctamente  los datos una vez lanzada la aplicación
 ````

@@ -256,7 +256,7 @@ Aprovecharemos la Consumer API de Kafka para ver está consumiendo los datos cor
 ````
 
 ````
-bin/connect-distributed.sh /opt/kafka/poryecto_MLU/config/worker1.properties
+/opt/kafka_2.13-4.0.0/bin/connect-distributed.sh /opt/kafka/proyecto_MLU/config/worker1.properties
 ````
 
 Lanzamos spark master y los workers del cluster.

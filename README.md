@@ -255,6 +255,10 @@ Aprovecharemos la Consumer API de Kafka para ver está consumiendo los datos cor
 /opt/kafka_2.13-4.0.0/bin/kafka-console-consumer.sh --topic air-quality --from-beginning --bootstrap-server 192.168.11.10:9094
 ````
 
+````
+bin/connect-distributed.sh /opt/kafka/poryecto_MLU/config/worker1.properties
+````
+
 Lanzamos spark master y los workers del cluster.
 ````
 /opt/hadoop-3.4.1/spark-3.5.4/sbin/start-master.sh
@@ -266,7 +270,7 @@ spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.4 --maste
 ````
 Lanzamos el productor
 ````
-python3 /opt/kafka/ejemplo7/producer_positions.py
+python3 /opt/kafka/proyecto_MLU/data_stream/producer_positions.py
 ````
 
 Vamos a comprobar si se esta guardadno los datos tanto por consoloa como por interfaz gráfica

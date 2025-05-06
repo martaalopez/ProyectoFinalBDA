@@ -3,7 +3,7 @@ from pyspark.sql.functions import col, from_json
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType, FloatType, BooleanType
 import pandas as pd
 
-# Esquema actualizado con el nuevo campo "address"
+# Esquema actualizado según la estructura del evento
 schema = StructType([
     StructField("city", StringType(), True),
     StructField("country", StringType(), True),
@@ -26,6 +26,7 @@ schema = StructType([
         StructField("longitude", FloatType(), True)
     ])),
     StructField("zone_conditions", StructType([
+        StructField("zone", StringType(), True),
         StructField("latitude", FloatType(), True),
         StructField("longitude", FloatType(), True),
         StructField("traffic_factor", FloatType(), True),
@@ -36,8 +37,7 @@ schema = StructType([
         StructField("industrial_activity", StringType(), True)
     ])),
     StructField("traffic_condition", StringType(), True),
-    StructField("updated_aqi", IntegerType(), True),
-    StructField("address", StringType(), True)  # Campo nuevo
+    StructField("updated_aqi", IntegerType(), True)
 ])
 
 # Crear sesión de Spark
@@ -66,15 +66,17 @@ def process_batch(batch_df, epoch_id):
     pd_df = batch_df.toPandas()
 
     if not pd_df.empty:
+        # Añadir columna de alerta
         pd_df['alert'] = pd_df['updated_aqi'].apply(lambda x: 'HIGH POLLUTION' if x > 100 else 'OK')
 
         print(f"\n=== Lote {epoch_id} ===")
         print(pd_df[['city', 'ts', 'updated_aqi', 'alert']].head(10))
 
+        # Filtrar alertas de alta contaminación
         high_alerts = pd_df[pd_df['alert'] == 'HIGH POLLUTION']
         if not high_alerts.empty:
             print("ALERTAS DE ALTA CONTAMINACIÓN:")
-            print(high_alerts[['city', 'ts', 'updated_aqi', 'address']].to_string(index=False))
+            print(high_alerts[['city', 'ts', 'updated_aqi', 'zone_conditions', 'traffic_condition']].to_string(index=False))
 
 # Ejecutar stream
 query = parsed_df \

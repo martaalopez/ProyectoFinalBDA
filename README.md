@@ -21,6 +21,58 @@ Centro: Zona con alto volumen de tráfico, ideal para observar el impacto del tr
 Residencial: Área con menor densidad de vehículos, donde se espera una menor contaminación.
 Industrial: Región con alta actividad industrial, donde predominan los contaminantes derivados del humo y procesos fabriles.
 Suburbana: Zonas periféricas con mezcla de factores naturales y urbanos, y mayor probabilidad de incendios forestales.
+Tenemos además varias condiciones para que podemos simular bien nuestros datos y se acerquen lo más posible a la realidad.
+Gracias por la aclaración. Vamos a tener en cuenta esta lógica en la simulación. Aquí te resumo todas las condiciones actuales que se usan para generar los datos sintéticos en tu script de Python:
+
+---
+
+1. Horario de simulación
+
+   * Comienza a las 12:00 del mediodía.
+
+2. **Condiciones de tráfico por hora**
+
+   * Horas punta: 8, 9, 14, 15, 20 (más tráfico).
+   * Menos tráfico en fines de semana.
+   * Tráfico normal fuera de horas punta.
+
+3. Zonas diferenciadas
+
+   * `residential`, `industrial`, `center`, `suburb` con distintos factores:
+
+     * `traffic_factor`, `fire_probability`, `industry_factor`, `vehicle_rate`.
+
+4. Vehículos
+
+   * Cantidad depende del `vehicle_rate` por zona.
+   * Aumenta el conteo acumulado de vehículos en cada paso.
+
+5. Fuegos
+
+   * Ocurren aleatoriamente según `fire_probability`.
+   * Duración entre 3 y 10 minutos, dependiendo de la zona.
+   * Influyen en el aumento del AQI.
+
+6. AQI (calidad del aire)
+
+   * Cambia en cada paso según:
+
+     * Fuegos (intensidad: `low`, `medium`, `high`).
+     * Tráfico (proporcional al número de vehículos).
+     * Actividad industrial.
+     * Entre las 12:00 y las 14:00: aumento **lento** (1-3 puntos si hay tráfico).
+     * A partir de las 14:00: aumento **más rápido** (por tráfico postlaboral).
+
+7. Eventos especiales añadidos
+
+   * Ej: manifestaciones o conciertos en el centro.
+   * Aumentan el tráfico de forma significativa y afectan negativamente al AQI.
+
+8. Accidentes de tráfico añadidos
+
+   * Ocurren aleatoriamente con una baja probabilidad.
+   * Aumentan el tráfico en la zona afectada.
+   * Causan subida rápida del AQI por atascos.
 
 ## 3. Requisitos
 Debe haber como mínimo 3 nodos en los clusters (en cada uno):
@@ -180,6 +232,7 @@ Creamos el topic con factor de replica 2 y 4 particiones ya que en nuestros dato
 
 
 Una vez creado el topic,vamos a crear el productor Kafka que simula datos recogidos por sensores distribuidos en las 4 zonas de Madrid.
+
 ![image](https://github.com/user-attachments/assets/b2580c3e-d669-4182-b859-ebd608c29227)
 
 

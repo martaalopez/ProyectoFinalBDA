@@ -141,7 +141,7 @@ def main():
         
         for event in all_events:
             producer.send("air_quality_topic", value=event)
-            print(f"Sent to Kafka: {event['zone_conditions']['zone']}, AQI: {event['updated_aqi']}, Fire: {event['zone_conditions']['fire_active']}")
+            print(event)
         
         producer.flush()
         time.sleep(1)

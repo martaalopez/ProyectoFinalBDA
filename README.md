@@ -77,19 +77,25 @@ Gracias por la aclaración. Vamos a tener en cuenta esta lógica en la simulaci�
 ## 3. Requisitos
 Debe haber como mínimo 3 nodos en los clusters (en cada uno):
 Hadoop (HDFS/Yarn)
+
 ![image](https://github.com/user-attachments/assets/bbe8c104-5059-4658-88ab-952a1f15c1cb)
+
 ![image](https://github.com/user-attachments/assets/ee90e9d2-2931-43d7-b1bb-297e8eb30cb9)
+
 
 Spark
 ![image](https://github.com/user-attachments/assets/4a360f4a-3007-4646-92e2-289e0c5d676c)
 
+
 Kafka
 Hemos actualizado nuestro kafka a la versión 4.0.0
+
 ![image](https://github.com/user-attachments/assets/1d2feb40-6772-4ea7-9e3f-e7edf1420f69)
 
 
 ## 4.Configuración del Clúster de Kafka 
 1.Vamos a establecer todos los archivos de configuración en una carpeta  llamada proyectoBDA_MLU, que en mi caso estará alojada en /opt/kafka/proyecto_MLU
+
 ![image](https://github.com/user-attachments/assets/e12ef486-f0bd-4ca7-b4fa-3a83788f20b7)
 
 Creamos los directorios necesarios para nuestro proyecto_MLU

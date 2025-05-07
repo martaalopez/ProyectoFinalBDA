@@ -52,7 +52,7 @@ df = spark \
     .readStream \
     .format("kafka") \
     .option("kafka.bootstrap.servers", "192.168.11.10:9094") \
-    .option("subscribe", "air_quality_topic") \
+    .option("subscribe", "air_quality") \
     .option("startingOffsets", "latest") \
     .load()
 

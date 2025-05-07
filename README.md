@@ -204,6 +204,24 @@ plugin.path=/opt/kafka/proyecto_MLU/libs
 listeners=http://localhost:8084
 
 ````
+## 5.Levantamos sistemas 
+Empezamos levantando Hadoop
+````
+cd $HADOOP_HOME
+stop-dfs.sh
+start-dfs.sh
+
+# Comprobar modo seguro
+hdfs dfsadmin -safemode get
+hdfs dfsadmin -safemode leave
+````
+Lanzamos spark master y los workers del cluster.
+````
+/opt/hadoop-3.4.1/spark-3.5.4/sbin/start-master.sh
+/opt/hadoop-3.4.1/spark-3.5.4/sbin/start-workers.sh
+````
+Ahora levantamos kafka 
+
 Antes de arrancar los servicios del controller y los brokers,necesitamos iniciar Kafka.Por ello vamos a generar un identificador único para el clúster.Este ID se va a utilizar para cada uno de los nodos (controller y brokers)para identificarse como parte del mismo clúster
 
 Generamos el ID del clúster
@@ -234,6 +252,10 @@ Creamos el topic con factor de replica 2 y 4 particiones ya que en nuestros dato
 ````
 /opt/kafka_2.13-4.0.0/bin/kafka-topics.sh --create --topic air-quality --bootstrap-server 192.168.11.10:9094 --replication-factor 2 --partitions 4
 ````
+````
+
+/opt/kafka_2.13-4.0.0/bin/kafka-topics.sh --delete --bootstrap-server 192.168.11.10:9094 --topic  air-quality
+````
 ![image](https://github.com/user-attachments/assets/1ae0aafe-e850-437c-a781-9aa21d2dc3ba)
 
 
@@ -259,11 +281,6 @@ Aprovecharemos la Consumer API de Kafka para ver está consumiendo los datos cor
 /opt/kafka_2.13-4.0.0/bin/connect-distributed.sh /opt/kafka/proyecto_MLU/config/worker1.properties
 ````
 
-Lanzamos spark master y los workers del cluster.
-````
-/opt/hadoop-3.4.1/spark-3.5.4/sbin/start-master.sh
-/opt/hadoop-3.4.1/spark-3.5.4/sbin/start-workers.sh
-````
 Vemos si se estan v consumiendo correctamente  los datos una vez lanzada la aplicación
 ````
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.4 --master spark://192.168.11.10:7077 /opt/kafka/proyecto_MLU/data_stream/consumer.py

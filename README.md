@@ -168,7 +168,7 @@ log.dirs=/opt/kafka/proyecto_MLU/logs/broker2
 ## 5.Levantamos sistemas 
 Vamos a activar todos los servicios para que nuestro flujo de datos pueda funcionar de manera correcta.
 
-#5.1 Levantamos HDFS (Hadoop Distributed File System)
+## 5.1 Levantamos HDFS (Hadoop Distributed File System)
 Levantamos HDFS que será nuestro sistema de almacenamiento distribuido,donde los datos procesados se guardarán.
 ````
 cd $HADOOP_HOME
@@ -179,14 +179,14 @@ start-dfs.sh
 hdfs dfsadmin -safemode get
 hdfs dfsadmin -safemode leave
 ````
-#5.2 Arrancamos Spark Master y Workers
+## 5.2 Arrancamos Spark Master y Workers
 Lanzamos spark master y los workers del cluster.
 Spark va a ser el encargado de leer los datos desde kafka y poder analizarlos en tiempo real.
 ````
 /opt/hadoop-3.4.1/spark-3.5.4/sbin/start-master.sh
 /opt/hadoop-3.4.1/spark-3.5.4/sbin/start-workers.sh
 ````
-#5.3 Iniciamos Kafka (Controller + Brokers)
+## 5.3 Iniciamos Kafka (Controller + Brokers)
 Antes de arrancar los servicios del controller y los brokers,necesitamos iniciar Kafka.Por ello vamos a generar un identificador único para el clúster.Este ID se va a utilizar para cada uno de los nodos (controller y brokers)para identificarse como parte del mismo clúster
 
 Generamos el ID del clúster
@@ -212,7 +212,7 @@ Iniciamos los server(1 controller y 2 brokers) cada uno en una terminal distinta
 /opt/kafka_2.13-4.0.0/bin/kafka-server-start.sh /opt/kafka/proyecto_MLU/config/broker1.properties
 /opt/kafka_2.13-4.0.0/bin/kafka-server-start.sh /opt/kafka/proyecto_MLU/config/broker2.properties
 ````
-#5.4 Creamos el Topic Kafka
+## 5.4 Creamos el Topic Kafka
 Creamos el topic  llamado air-quality con factor de replica 2 y 4 particiones ya que en nuestros datos sintécticos vamos a coger los datos de 4 zonas distintas de la ciudad. Cada partición va a manejar los datos y los eventos específicos de cada zona.
 ````
 /opt/kafka_2.13-4.0.0/bin/kafka-topics.sh --create --topic air-quality --bootstrap-server 192.168.11.10:9094 --replication-factor 2 --partitions 4
@@ -228,7 +228,7 @@ Verificación
 ![image](https://github.com/user-attachments/assets/1ae0aafe-e850-437c-a781-9aa21d2dc3ba)
 
 
-# 5.6 Creación del producer y del consumer
+## 5.6 Creación del producer y del consumer
 Vamos a crear el productor Kafka que simula datos recogidos por sensores distribuidos en las 4 zonas de Madrid ,más tarde lo ejecutaremos.
 Déspues necesitamos un consumer que lea los eventos del topic air-quality. Este consumer está implementado en PySpark Structured Streaming para poder analizar los datos de forma continua y reactiva.
 El consumer :
@@ -238,18 +238,18 @@ Evalúa si el AQI supera cierto umbral y lanza una alerta si hay alta contaminac
 Imprime un resumen por microbatch en consola.
 Esto nos permite monitorear la ciudad segundo a segundo con un enfoque Big Data.
 
-# 5.7 Ejecutamos el Consumer
+## 5.7 Ejecutamos el Consumer
 Este paso debe hacerse antes del producer,ya que el consumer necesita estar escuchando el stream desde el principio para no perder datos.
 
 ````
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.4 --master spark://192.168.11.10:7077 /opt/kafka/proyecto_MLU/data_stream/consumer.py
 ````
-#5.8 Ejecutamos el Producer Kafka
+## 5.8 Ejecutamos el Producer Kafka
 Lanzamos el productor
 ````
 python3 /opt/kafka/proyecto_MLU/data_stream/producer_positions.py
 ````
-# 5.9 Visualizamos la información
+## 5.9 Visualizamos la información
 
 Aprovecharemos la Consumer API de Kafka para ver está consumiendo los datos correctamente una vez lanzada la aplicación
 ````

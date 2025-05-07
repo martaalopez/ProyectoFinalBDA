@@ -146,7 +146,7 @@ def main():
                 all_events.append(event)
 
             for event in all_events:
-                producer.send("air_quality_topic", value=event)
+                producer.send("air_quality", value=event)
                 print(event)
 
             producer.flush()

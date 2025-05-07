@@ -36,7 +36,7 @@ SPECIAL_EVENTS = {
 }
 
 # Tiempo de simulación
-SIM_TIME = datetime(2024, 1, 1, 0, 0, 0)  # Empieza a medianoche
+SIM_TIME = datetime(2024, 1, 1, 12, 0, 0)
 SIM_STEP = timedelta(minutes=1)           # Cada iteración = 1 minuto simulado
 REAL_SLEEP_TIME = 3                       # Cada iteración = 3 segundos reales
 

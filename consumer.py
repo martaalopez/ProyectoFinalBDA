@@ -77,6 +77,11 @@ def process_batch(batch_df, epoch_id):
         if not high_alerts.empty:
             print("ALERTAS DE ALTA CONTAMINACIÓN:")
             print(high_alerts[['city', 'ts', 'updated_aqi', 'zone_conditions', 'traffic_condition']].to_string(index=False))
+ # Guardar el DataFrame original en HDFS (en formato Parquet)
+    batch_df.write \
+        .mode("append") \
+        .parquet("hdfs://localhost:9000/opt/kafka/proyecto_MLU/data/")
+    
 
 # Ejecutar stream
 query = parsed_df \

@@ -164,46 +164,7 @@ listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,
 # Log Basics
 log.dirs=/opt/kafka/proyecto_MLU/logs/broker2
 ````
-Creamos los workers
-````
-   nano /opt/kafka/proyecto_MLU/config/worker1.properties
-````
-````
-bootstrap.servers=localhost:9094,localhost:9095
-group.id=connect-cluster
-key.converter=org.apache.kafka.connect.json.JsonConverter
-value.converter=org.apache.kafka.connect.json.JsonConverter
-key.converter.schemas.enable=true
-value.converter.schemas.enable=true
-offset.storage.topic=connect-offsets
-offset.storage.replication.factor=2
-config.storage.topic=connect-configs
-config.storage.replication.factor=2
-status.storage.topic=connect-status
-status.storage.replication.factor=2
-plugin.path=/opt/kafka/proyecto_MLU/libs
-listeners=http://localhost:8083
-````
-````
- nano /opt/kafka/proyecto_MLU/config/worker2.properties
-`````
-````
-bootstrap.servers=localhost:9094,localhost:9095
-group.id=connect-cluster
-key.converter=org.apache.kafka.connect.json.JsonConverter
-value.converter=org.apache.kafka.connect.json.JsonConverter
-key.converter.schemas.enable=true
-value.converter.schemas.enable=true
-offset.storage.topic=connect-offsets
-offset.storage.replication.factor=2
-config.storage.topic=connect-configs
-config.storage.replication.factor=2
-status.storage.topic=connect-status
-status.storage.replication.factor=2
-plugin.path=/opt/kafka/proyecto_MLU/libs
-listeners=http://localhost:8084
 
-````
 ## 5.Levantamos sistemas 
 Vamos a activar todos los servicios para que nuestro flujo de datos pueda funcionar de manera correcta.
 
@@ -266,9 +227,7 @@ Verificación
 ````
 ![image](https://github.com/user-attachments/assets/1ae0aafe-e850-437c-a781-9aa21d2dc3ba)
 
-````
-/opt/kafka_2.13-4.0.0/bin/connect-distributed.sh /opt/kafka/proyecto_MLU/config/worker1.properties
-````
+
 # 5.6 Creación del producer y del consumer
 Vamos a crear el productor Kafka que simula datos recogidos por sensores distribuidos en las 4 zonas de Madrid ,más tarde lo ejecutaremos.
 Déspues necesitamos un consumer que lea los eventos del topic air-quality. Este consumer está implementado en PySpark Structured Streaming para poder analizar los datos de forma continua y reactiva.

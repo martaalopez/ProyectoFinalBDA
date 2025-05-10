@@ -191,7 +191,9 @@ Antes de arrancar los servicios del controller y los brokers,necesitamos iniciar
 
 Generamos el ID del clúster
 ````
+#Generamos un cluster UUID y los IDs de los controllers
 KAFKA_CLUSTER_ID="$(/opt/kafka_2.13-4.0.0/bin/kafka-storage.sh random-uuid)"
+CONTROLLER_1_UUID="$(/opt/kafka_2.13-4.0.0/bin/kafka-storage.sh random-uuid)"
 echo $KAFKA_CLUSTER_ID
 ````
 ![image](https://github.com/user-attachments/assets/eb9b2605-8862-43f8-bb7d-7f7c47474a31)
@@ -208,9 +210,9 @@ Iniciamos los server(1 controller y 2 brokers) cada uno en una terminal distinta
 
 ````
 #Ejecuta el servidor Kafka
-/opt/kafka_2.13-4.0.0/bin/kafka-server-start.sh /opt/kafka/proyecto_MLU/config/controller1.properties
-/opt/kafka_2.13-4.0.0/bin/kafka-server-start.sh /opt/kafka/proyecto_MLU/config/broker1.properties
-/opt/kafka_2.13-4.0.0/bin/kafka-server-start.sh /opt/kafka/proyecto_MLU/config/broker2.properties
+/opt/kafka_2.13-4.0.0/bin/kafka-server-start_proyecto_MLU.sh /opt/kafka/proyecto_MLU/config/controller1.properties
+/opt/kafka_2.13-4.0.0/bin/kafka-server-start_proyecto_MLU.sh /opt/kafka/proyecto_MLU/config/broker1.properties
+/opt/kafka_2.13-4.0.0/bin/kafka-server-start_proyecto_MLU.sh /opt/kafka/proyecto_MLU/config/broker2.properties
 ````
 ## 5.4 Creamos el Topic Kafka
 Creamos el topic  llamado air-quality con factor de replica 2 y 4 particiones ya que en nuestros datos sintécticos vamos a coger los datos de 4 zonas distintas de la ciudad. Cada partición va a manejar los datos y los eventos específicos de cada zona.
@@ -264,6 +266,64 @@ Visualización web del sistema de archivos HDFS:
 
 http://192.168.56.10:9870/explorer.html
 
+
+````
+cp /opt/kafka_2.13-4.0.0/bin/kafka-server-start.sh /opt/kafka_2.13-4.0.0/bin/kafka-server-start_proyecto_MLU.sh
+````
+
+````
+nano /opt/kafka_2.13-4.0.0/bin/kafka-server-start_proyecto_MLU.sh
+````
+cp /opt/prometheus-2.53.4/prometheus.yml /opt/prometheus-2.53.4/prometheus_proyecto_MLU.yml
+
+````
+nano /opt/prometheus-2.53.4/prometheus_proyecto_MLU.yml
+````
+
+
+````
+# my global config
+global:
+  scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: "prometheus"
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: "kafka"
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: [
+        "localhost:11001", # Controller 1 (node.id=1)
+        "localhost:11002", # Broker 1 (node.id=2)
+        "localhost:11003", # Broker 3 (node.id=3)
+      ]
+````
 
 
 

@@ -53,7 +53,7 @@ df = spark \
     .format("kafka") \
     .option("kafka.bootstrap.servers", "192.168.11.10:9094") \
     .option("subscribe", "air_quality") \
-    .option("startingOffsets", "latest") \
+    .option("startingOffsets", "earliest") \  # Cambié esto para consumir todos los mensajes desde el principio
     .load()
 
 # Parsear JSON
@@ -61,8 +61,20 @@ parsed_df = df.selectExpr("CAST(value AS STRING)") \
     .select(from_json(col("value"), schema).alias("data")) \
     .select("data.*")
 
-# Procesar lote
+# Crear un DataFrame acumulativo vacío para almacenar las alertas de contaminación
+accumulated_schema = StructType([
+    StructField("city", StringType(), True),
+    StructField("alert", StringType(), True),
+    StructField("timestamp", StringType(), True)
+])
+
+accumulated_df = spark.createDataFrame([], accumulated_schema)
+
+# Función para procesar cada lote de datos
 def process_batch(batch_df, epoch_id):
+    global accumulated_df  # Utilizar el DataFrame acumulativo global
+
+    # Convertir a Pandas DataFrame para poder procesar fácilmente
     pd_df = batch_df.toPandas()
 
     if not pd_df.empty:
@@ -77,11 +89,24 @@ def process_batch(batch_df, epoch_id):
         if not high_alerts.empty:
             print("ALERTAS DE ALTA CONTAMINACIÓN:")
             print(high_alerts[['city', 'ts', 'updated_aqi', 'zone_conditions', 'traffic_condition']].to_string(index=False))
- # Guardar el DataFrame original en HDFS (en formato Parquet)
-    batch_df.write \
-        .mode("append") \
-        .parquet("hdfs://localhost:9000/opt/kafka/proyecto_MLU/data/")
-    
+        
+        # Convertir las alertas filtradas en un DataFrame de Spark
+        high_alerts_spark_df = spark.createDataFrame(high_alerts[['city', 'alert', 'ts']])
+
+        # Acumular las alertas de alta contaminación
+        accumulated_df = accumulated_df.union(high_alerts_spark_df)
+
+        # Mostrar el DataFrame acumulativo hasta ahora
+        accumulated_df.show()
+
+    try:
+        # Guardar el DataFrame original en HDFS (en formato Parquet)
+        batch_df.write \
+            .mode("append") \
+            .parquet("hdfs://cluster-bda:9000/opt/kafka/proyecto_MLU/data/")
+        print("Datos escritos en HDFS correctamente.")
+    except Exception as e:
+        print(f"Error escribiendo en HDFS: {e}")
 
 # Ejecutar stream
 query = parsed_df \
@@ -90,4 +115,5 @@ query = parsed_df \
     .outputMode("append") \
     .start()
 
+# Esperar a que termine el streaming
 query.awaitTermination()

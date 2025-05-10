@@ -53,7 +53,7 @@ df = spark \
     .format("kafka") \
     .option("kafka.bootstrap.servers", "192.168.11.10:9094") \
     .option("subscribe", "air_quality") \
-    .option("startingOffsets", "earliest") \  # Cambié esto para consumir todos los mensajes desde el principio
+    .option("startingOffsets", "earliest")
     .load()
 
 # Parsear JSON

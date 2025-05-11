@@ -249,7 +249,7 @@ spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.4 --maste
 ## 5.8 Ejecutamos el Producer Kafka
 Lanzamos el productor
 ````
-python3 /opt/kafka/proyecto_MLU/data_stream/producer_positions.py
+python3 /opt/kafka/proyecto_MLU/data_stream/producer.py
 ````
 ## 5.9 Visualizamos la información
 

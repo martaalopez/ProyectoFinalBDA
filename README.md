@@ -262,9 +262,13 @@ Para ver los archivos generados en HDFS
 ````
 hdfs dfs -ls /opt/kafka/proyecto_MLU/data/
 ````
+![image](https://github.com/user-attachments/assets/baca4845-0b2b-4fcb-9ee1-004e7e53dcd1)
+
 Visualización web del sistema de archivos HDFS:
 
 http://192.168.56.10:9870/explorer.html
+
+![image](https://github.com/user-attachments/assets/eb74a8c9-18de-4be6-85c3-ced1ca068ade)
 
 
 ````
@@ -324,10 +328,15 @@ scrape_configs:
         "localhost:11003", # Broker 3 (node.id=3)
       ]
 ````
+hdfs dfs -cp /opt/kafka/proyecto_MLU/data/*.parquet /user/marta/parquet_data/
 
+````
+hdfs dfs -get  /kafka/data/*.parquet  /opt/kafka/proyecto_MLU/data/ 
+````
 
-
-
+hdfs dfs -get /user/marta/parquet_data/* /opt/kafka/proyecto_MLU/data
+En local hacemos el siguiente comando
+C:\Users\usuario>scp -r marta@192.168.56.10:/opt/kafka/proyecto_MLU/data/ "C:/Users/usuario/Desktop/datos_generados/"
 
 
 

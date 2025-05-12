@@ -217,7 +217,7 @@ Iniciamos los server(1 controller y 2 brokers) cada uno en una terminal distinta
 ## 5.4 Creamos el Topic Kafka
 Creamos el topic  llamado air-quality con factor de replica 2 y 4 particiones ya que en nuestros datos sintécticos vamos a coger los datos de 4 zonas distintas de la ciudad. Cada partición va a manejar los datos y los eventos específicos de cada zona.
 ````
-/opt/kafka_2.13-4.0.0/bin/kafka-topics.sh --create --topic air-quality --bootstrap-server 192.168.11.10:9094 --replication-factor 2 --partitions 4
+/opt/kafka_2.13-4.0.0/bin/kafka-topics.sh --create --topic air-quality --bootstrap-server localhost:9094 --replication-factor 2 --partitions 4
 ````
 Para eliminar el topic si es necesario:
 ````

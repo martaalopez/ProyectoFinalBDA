@@ -3,40 +3,26 @@ from pyspark.sql.functions import col, from_json
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType, FloatType, BooleanType
 import pandas as pd
 
-# Esquema actualizado según la estructura del evento
+# Esquema actualizado según la estructura del evento (sin campos anidados)
 schema = StructType([
     StructField("city", StringType(), True),
     StructField("country", StringType(), True),
     StructField("ts", StringType(), True),
-    StructField("pollution", StructType([
-        StructField("aqius", IntegerType(), True),
-        StructField("mainus", StringType(), True)
-    ])),
-    StructField("traffic", StructType([
-        StructField("vehicles_count", IntegerType(), True),
-        StructField("vehicles_passed", IntegerType(), True),
-        StructField("industrial_activity", StringType(), True),
-        StructField("environmental_factors", StructType([
-            StructField("fire_active", BooleanType(), True),
-            StructField("fire_intensity", StringType(), True)
-        ]))
-    ])),
-    StructField("location", StructType([
-        StructField("latitude", FloatType(), True),
-        StructField("longitude", FloatType(), True)
-    ])),
-    StructField("zone_conditions", StructType([
-        StructField("zone", StringType(), True),
-        StructField("latitude", FloatType(), True),
-        StructField("longitude", FloatType(), True),
-        StructField("traffic_factor", FloatType(), True),
-        StructField("fire_probability", FloatType(), True),
-        StructField("industry_factor", FloatType(), True),
-        StructField("vehicles_count", IntegerType(), True),
-        StructField("fire_active", BooleanType(), True),
-        StructField("industrial_activity", StringType(), True)
-    ])),
+    StructField("pollution_aqius", IntegerType(), True),
+    StructField("pollution_mainus", StringType(), True),
+    StructField("vehicles_count", IntegerType(), True),
+    StructField("vehicles_passed", IntegerType(), True),
+    StructField("industrial_activity", StringType(), True),
+    StructField("fire_active", BooleanType(), True),
+    StructField("fire_intensity", StringType(), True),
+    StructField("latitude", FloatType(), True),
+    StructField("longitude", FloatType(), True),
+    StructField("zone", StringType(), True),
+    StructField("traffic_factor", FloatType(), True),
+    StructField("fire_probability", FloatType(), True),
+    StructField("industry_factor", FloatType(), True),
     StructField("traffic_condition", StringType(), True),
+    StructField("special_event", StringType(), True),
     StructField("updated_aqi", IntegerType(), True)
 ])
 
@@ -53,7 +39,7 @@ df = spark \
     .format("kafka") \
     .option("kafka.bootstrap.servers", "192.168.11.10:9094") \
     .option("subscribe", "air_quality") \
-    .option("startingOffsets", "earliest")
+    .option("startingOffsets", "earliest") \
     .load()
 
 # Parsear JSON
@@ -61,19 +47,8 @@ parsed_df = df.selectExpr("CAST(value AS STRING)") \
     .select(from_json(col("value"), schema).alias("data")) \
     .select("data.*")
 
-# Crear un DataFrame acumulativo vacío para almacenar las alertas de contaminación
-accumulated_schema = StructType([
-    StructField("city", StringType(), True),
-    StructField("alert", StringType(), True),
-    StructField("timestamp", StringType(), True)
-])
-
-accumulated_df = spark.createDataFrame([], accumulated_schema)
-
 # Función para procesar cada lote de datos
 def process_batch(batch_df, epoch_id):
-    global accumulated_df  # Utilizar el DataFrame acumulativo global
-
     # Convertir a Pandas DataFrame para poder procesar fácilmente
     pd_df = batch_df.toPandas()
 
@@ -88,16 +63,15 @@ def process_batch(batch_df, epoch_id):
         high_alerts = pd_df[pd_df['alert'] == 'HIGH POLLUTION']
         if not high_alerts.empty:
             print("ALERTAS DE ALTA CONTAMINACIÓN:")
-            print(high_alerts[['city', 'ts', 'updated_aqi', 'zone_conditions', 'traffic_condition']].to_string(index=False))
+            print(high_alerts[['city', 'ts', 'updated_aqi', 'zone', 'traffic_condition']].to_string(index=False))
         
         # Convertir las alertas filtradas en un DataFrame de Spark
         high_alerts_spark_df = spark.createDataFrame(high_alerts[['city', 'alert', 'ts']])
 
-        # Acumular las alertas de alta contaminación
-        accumulated_df = accumulated_df.union(high_alerts_spark_df)
+        # Aquí puedes procesar más lógicas si es necesario para acumular resultados, o guardarlos en un DataFrame
 
-        # Mostrar el DataFrame acumulativo hasta ahora
-        accumulated_df.show()
+        # Mostrar el DataFrame acumulativo (puedes guardarlo en otro lugar si lo deseas)
+        high_alerts_spark_df.show()
 
     try:
         # Guardar el DataFrame original en HDFS (en formato Parquet)

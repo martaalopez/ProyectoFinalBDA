@@ -335,8 +335,11 @@ hdfs dfs -get  /kafka/data/*.parquet  /opt/kafka/proyecto_MLU/data/
 ````
 
 hdfs dfs -get /user/marta/parquet_data/* /opt/kafka/proyecto_MLU/data
-En local hacemos el siguiente comando
-C:\Users\usuario>scp -r marta@192.168.56.10:/opt/kafka/proyecto_MLU/data/ "C:/Users/usuario/Desktop/datos_generados/"
+
+COnectamos a powerbi con 
+````
+http://192.168.56.10:9870/webhdfs/v1/opt/kafka/proyecto_MLU/data/?op=LISTSTATUS
+````
 
 
 

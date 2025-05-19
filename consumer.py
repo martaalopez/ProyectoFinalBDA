@@ -73,14 +73,14 @@ def process_batch(batch_df, epoch_id):
         # Mostrar el DataFrame acumulativo (puedes guardarlo en otro lugar si lo deseas)
         high_alerts_spark_df.show()
 
-    try:
+    #try:
         # Guardar el DataFrame original en HDFS (en formato Parquet)
-        batch_df.write \
-            .mode("append") \
-            .parquet("hdfs://cluster-bda:9870/opt/kafka/proyecto_MLU/data/")
-        print("Datos escritos en HDFS correctamente.")
-    except Exception as e:
-        print(f"Error escribiendo en HDFS: {e}")
+        #batch_df.write \
+            #.mode("append") \
+            #.parquet("hdfs://cluster-bda:9870/opt/kafka/proyecto_MLU/data/")
+        #print("Datos escritos en HDFS correctamente.")
+    #except Exception as e:
+        #print(f"Error escribiendo en HDFS: {e}")
 
 # Ejecutar stream
 query = parsed_df \

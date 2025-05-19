@@ -77,7 +77,7 @@ def process_batch(batch_df, epoch_id):
         # Guardar el DataFrame original en HDFS (en formato Parquet)
         batch_df.write \
             .mode("append") \
-            .parquet("hdfs://cluster-bda:9000/opt/kafka/proyecto_MLU/data/")
+            .parquet("hdfs://cluster-bda:9870/opt/kafka/proyecto_MLU/data/")
         print("Datos escritos en HDFS correctamente.")
     except Exception as e:
         print(f"Error escribiendo en HDFS: {e}")

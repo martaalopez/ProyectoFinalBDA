@@ -341,6 +341,12 @@ COnectamos a powerbi con
 http://192.168.56.10:9870/webhdfs/v1/opt/kafka/proyecto_MLU/data/?op=LISTSTATUS
 ````
 
+````
+/opt/hadoop-3.4.1/spark-3.5.4/sbin/stop-all.sh
+sleep 5
+/opt/hadoop-3.4.1/spark-3.5.4/sbin/start-all.sh
+````
+
 
 
 

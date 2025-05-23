@@ -338,7 +338,7 @@ hdfs dfs -get /user/marta/parquet_data/* /opt/kafka/proyecto_MLU/data
 
 COnectamos a powerbi con 
 ````
-http://192.168.56.10:9870/webhdfs/v1/opt/kafka/proyecto_MLU/data/?op=LISTSTATUS
+http://192.168.56.10:9870/webhdfs/v1/opt/kafka/proyecto_MLU/data
 ````
 
 ````

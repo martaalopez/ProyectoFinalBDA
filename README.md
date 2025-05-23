@@ -351,6 +351,10 @@ sleep 5
 http://192.168.56.10:9870/webhdfs/v1/opt/kafka/proyecto_MLU/data/
 ````
 
+````
+PYTHONPATH=$HOME/.local/lib/python3.10/site-packages spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.4 --master spark://192.168.11.10:7077 /opt/kafka/proyecto_MLU/data_stream/consumer.py
+````
+
 
 
 

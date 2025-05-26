@@ -29,6 +29,7 @@ Gracias por la aclaración. Vamos a tener en cuenta esta lógica en la simulaci�
 1. Horario de simulación
 
    * Comienza a las 12:00 del mediodía.
+   * En nuestra simulación,cada 3 segundos en tiempo real equivalen a 1 minuto en tiempo simulado.
 
 2. **Condiciones de tráfico por hora**
 
@@ -52,6 +53,7 @@ Gracias por la aclaración. Vamos a tener en cuenta esta lógica en la simulaci�
    * Ocurren aleatoriamente según `fire_probability`.
    * Duración entre 3 y 10 minutos, dependiendo de la zona.
    * Influyen en el aumento del AQI.
+   * En las zonas suburbanas es más probable que se origine un incendio
 
 6. AQI (calidad del aire)
 
@@ -65,8 +67,9 @@ Gracias por la aclaración. Vamos a tener en cuenta esta lógica en la simulaci�
 
 7. Eventos especiales añadidos
 
-   * Ej: manifestaciones o conciertos en el centro.
+   * Ej: partidos de fútbol o conciertos en el centro.
    * Aumentan el tráfico de forma significativa y afectan negativamente al AQI.
+   * En las zonas industriales y suburbanas no hay eventos especiales.
 
 8. Accidentes de tráfico añadidos
 
@@ -236,15 +239,54 @@ Déspues necesitamos un consumer que lea los eventos del topic air-quality. Este
 El consumer :
 Lee el flujo de mensajes desde Kafka.
 Extrae y estructura los datos JSON recibidos.
-Evalúa si el AQI supera cierto umbral y lanza una alerta si hay alta contaminación.
 Imprime un resumen por microbatch en consola.
-Esto nos permite monitorear la ciudad segundo a segundo con un enfoque Big Data.
+Para facilitar la conexión con Power BI,además de almacenar los datos en HDFS,hemos creado una tabla en MySQL.Esto nos permite guardar y actualizar los datos generados de forma más sencilla y accesible para herramientas de análisis.
+
+## 5.6.1 Creación de la tabla en MYSQL
+````
+sudo mysql -u root -p
+````
+Creamos la base de datos
+````
+CREATE DATABASE kafka_air_quality;
+````
+
+![image](https://github.com/user-attachments/assets/38af9f9c-adb3-466c-be61-fb6a4f90ee21)
+
+Creamos la tabla
+````
+CREATE TABLE air_quality_events (
+    city VARCHAR(100),
+    country VARCHAR(100),
+    ts VARCHAR(100),
+    pollution_aqius INT,
+    pollution_mainus VARCHAR(100),
+    vehicles_count INT,
+    vehicles_passed INT,
+    industrial_activity VARCHAR(100),
+    fire_active BOOLEAN,
+    fire_intensity VARCHAR(100),
+    latitude FLOAT,
+    longitude FLOAT,
+    zone VARCHAR(100),
+    traffic_factor FLOAT,
+    fire_probability FLOAT,
+    industry_factor FLOAT,
+    traffic_condition VARCHAR(100),
+    special_event VARCHAR(100),
+    updated_aqi INT
+);
+````
+
+![image](https://github.com/user-attachments/assets/112a9eec-10c7-47d0-ae86-0c5d33b21928)
+
+
 
 ## 5.7 Ejecutamos el Consumer
 Este paso debe hacerse antes del producer,ya que el consumer necesita estar escuchando el stream desde el principio para no perder datos.
 
 ````
-spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.4 --master spark://192.168.11.10:7077 /opt/kafka/proyecto_MLU/data_stream/consumer.py
+PYTHONPATH=$HOME/.local/lib/python3.10/site-packages spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.4 --master spark://192.168.11.10:7077 /opt/kafka/proyecto_MLU/data_stream/consumer.py
 ````
 ## 5.8 Ejecutamos el Producer Kafka
 Lanzamos el productor
@@ -274,6 +316,10 @@ http://192.168.56.10:9870/explorer.html
 ````
 cp /opt/kafka_2.13-4.0.0/bin/kafka-server-start.sh /opt/kafka_2.13-4.0.0/bin/kafka-server-start_proyecto_MLU.sh
 ````
+Visualizamos que los datos se han guardado en nuestra base de datos de Mysql 
+
+![image](https://github.com/user-attachments/assets/39c16059-7e8e-44f0-ba78-a850521f9fe3)
+
 Creamos 
 ````
 nano /opt/kafka_2.13-4.0.0/bin/kafka-server-start_proyecto_MLU.sh
@@ -328,13 +374,7 @@ scrape_configs:
         "localhost:11003", # Broker 3 (node.id=3)
       ]
 ````
-hdfs dfs -cp /opt/kafka/proyecto_MLU/data/*.parquet /user/marta/parquet_data/
-
-````
-hdfs dfs -get  /kafka/data/*.parquet  /opt/kafka/proyecto_MLU/data/ 
-````
-
-hdfs dfs -get /user/marta/parquet_data/* /opt/kafka/proyecto_MLU/data
+# 6.Visualización en PowerBI
 
 COnectamos a powerbi con 
 ````
@@ -351,9 +391,6 @@ sleep 5
 http://192.168.56.10:9870/webhdfs/v1/opt/kafka/proyecto_MLU/data/
 ````
 
-````
-PYTHONPATH=$HOME/.local/lib/python3.10/site-packages spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.4 --master spark://192.168.11.10:7077 /opt/kafka/proyecto_MLU/data_stream/consumer.py
-````
 
 
 

@@ -189,6 +189,13 @@ Spark va a ser el encargado de leer los datos desde kafka y poder analizarlos en
 /opt/hadoop-3.4.1/spark-3.5.4/sbin/start-master.sh
 /opt/hadoop-3.4.1/spark-3.5.4/sbin/start-workers.sh
 ````
+
+````
+/opt/hadoop-3.4.1/spark-3.5.4/sbin/stop-all.sh
+sleep 5
+/opt/hadoop-3.4.1/spark-3.5.4/sbin/start-all.sh
+````
+
 ## 5.3 Iniciamos Kafka (Controller + Brokers)
 Antes de arrancar los servicios del controller y los brokers,necesitamos iniciar Kafka.Por ello vamos a generar un identificador único para el clúster.Este ID se va a utilizar para cada uno de los nodos (controller y brokers)para identificarse como parte del mismo clúster
 
@@ -375,21 +382,18 @@ scrape_configs:
       ]
 ````
 ## 6.Visualización en PowerBI
+En este apartado,abordaremos el proceso para conectar con PowerBI con nuestra base de datos MYSQL con el fin de realizar un análisis visual dinámico de los datos almacenados.
 
-COnectamos a powerbi con 
-````
-http://192.168.56.10:9870/webhdfs/v1/opt/kafka/proyecto_MLU/data
-````
+* Conexión de PowerBI con la base de datos MYSQL
+Para comenzar abrimos PowerBI y seleccionamos la opción de conectamos a una base de datos MySQL.Esta conexión nos permitirá extraer los datos necesarios directamente desde nuestra base,asegurando que los informes reflejen siempre la información más reciente.
 
-````
-/opt/hadoop-3.4.1/spark-3.5.4/sbin/stop-all.sh
-sleep 5
-/opt/hadoop-3.4.1/spark-3.5.4/sbin/start-all.sh
-````
+![image](https://github.com/user-attachments/assets/db769c6b-aeda-4546-96c7-e8ee26775ad9)
 
-````
-http://192.168.56.10:9870/webhdfs/v1/opt/kafka/proyecto_MLU/data/
-````
+* Introducimos nuestra IP donde se encuentra alojada nuestra base de datos MYSQL ,así como el nombre  específico de nuestra base de datos que queremos consultar.Además tendremos que introducir nuestro usuario y contraseña.
+
+![image](https://github.com/user-attachments/assets/03825a69-aae7-4101-bef5-f0def19f6b8a)
+
+
 
 
 

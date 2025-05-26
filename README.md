@@ -374,7 +374,7 @@ scrape_configs:
         "localhost:11003", # Broker 3 (node.id=3)
       ]
 ````
-# 6.Visualización en PowerBI
+## 6.Visualización en PowerBI
 
 COnectamos a powerbi con 
 ````

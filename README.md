@@ -22,75 +22,102 @@ Residencial: Área con menor densidad de vehículos, donde se espera una menor c
 Industrial: Región con alta actividad industrial, donde predominan los contaminantes derivados del humo y procesos fabriles.
 Suburbana: Zonas periféricas con mezcla de factores naturales y urbanos, y mayor probabilidad de incendios forestales.
 Tenemos además varias condiciones para que podemos simular bien nuestros datos y se acerquen lo más posible a la realidad.
-Gracias por la aclaración. Vamos a tener en cuenta esta lógica en la simulación. Aquí te resumo todas las condiciones actuales que se usan para generar los datos sintéticos en tu script de Python:
+ Vamos a tener en cuenta esta lógica en la simulación. 
 
 ---
 
-1. Horario de simulación
+* Horario de simulación
+El sistema inicia la simulación a las 9:00 de la mañana del día 1 de enero de 2025. Cada segundo en el mundo real representa un minuto en el tiempo simulado, por lo tanto, cada iteración genera datos nuevos que reflejan las condiciones en cada zona con una altísima frecuencia temporal. Esto permite realizar un análisis casi en tiempo real.
 
-   * Comienza a las 12:00 del mediodía.
-   * En nuestra simulación,cada 3 segundos en tiempo real equivalen a 1 minuto en tiempo simulado.
+* Condiciones de tráfico
+Las condiciones del tráfico son un factor importante para el cálculo del AQI (índice de calidad del aire). Se tienen en cuenta dos aspectos principales: el día de la semana y la hora del día.
 
-2. **Condiciones de tráfico por hora**
+Durante los días de semana, se considera que hay horas punta (a las 8, 9, 14, 15 y 20 horas), donde el tráfico es más denso. Durante los fines de semana, el tráfico disminuye notablemente. Si el momento actual de la simulación coincide con una hora punta en día laborable, se clasifica como condición de tráfico “peak”; si es fin de semana, se clasifica como “weekend”, y en los demás casos como “normal”.
 
-   * Horas punta: 8, 9, 14, 15, 20 (más tráfico).
-   * Menos tráfico en fines de semana.
-   * Tráfico normal fuera de horas punta.
+Cada zona reacciona de manera diferente a estas condiciones. Por ejemplo, en el centro de Madrid se registra un mayor número de vehículos durante las horas punta, mientras que en zonas suburbanas la variación es mínima.
 
-3. Zonas diferenciadas
+* Conteo y acumulación de vehículos
+En cada paso de la simulación, se genera un número aleatorio de vehículos que han pasado por cada zona, en función de su densidad de tráfico y la condición actual (hora punta o no). Este número se acumula en un contador que representa el total de vehículos presentes en la zona.
 
-   * `residential`, `industrial`, `center`, `suburb` con distintos factores:
+Para evitar una acumulación infinita, se aplica una “decadencia” que simula el hecho de que algunos vehículos abandonan la zona con el tiempo. Este mecanismo permite mantener una representación realista del flujo vehicular.
 
-     * `traffic_factor`, `fire_probability`, `industry_factor`, `vehicle_rate`.
+* Incendios forestales y urbanos
+Los incendios son otro factor crítico en esta simulación. Cada zona tiene asignada una probabilidad específica de que ocurra un incendio. Por ejemplo, en las zonas suburbanas, esta probabilidad es significativamente mayor, ya que se simula una mayor cercanía a entornos forestales.
 
-4. Vehículos
+Cuando ocurre un incendio, se le asigna una duración (en minutos simulados) y una intensidad (baja, media o alta). Durante el tiempo que dure el incendio, el AQI de esa zona aumenta dependiendo de la intensidad. Una vez transcurrido el tiempo, el incendio se considera extinguido y se restablece el estado de normalidad.
 
-   * Cantidad depende del `vehicle_rate` por zona.
-   * Aumenta el conteo acumulado de vehículos en cada paso.
+* Eventos especiales
+Solo en la zona centro se simulan eventos especiales como conciertos y partidos de fútbol. Estos eventos están programados para horas específicas del día: a las 18:00 se celebra un concierto, y a las 20:00 un partido de fútbol. Cuando ocurre uno de estos eventos, se incrementa drásticamente el número de vehículos en la zona y se eleva el AQI debido al aumento del tráfico.
 
-5. Fuegos
+* Accidentes de tráfico
+Otro factor inesperado y aleatorio introducido en la simulación son los accidentes de tráfico. Su probabilidad de ocurrencia es baja, pero se incrementa ligeramente en la zona centro debido a su alta densidad de tránsito. Si ocurre un accidente, el AQI se ve afectado negativamente, simulando el efecto de los atascos y la congestión prolongada.
 
-   * Ocurren aleatoriamente según `fire_probability`.
-   * Duración entre 3 y 10 minutos, dependiendo de la zona.
-   * Influyen en el aumento del AQI.
-   * En las zonas suburbanas es más probable que se origine un incendio
+Cálculo del índice AQI
+El AQI se ajusta dinámicamente en cada paso de la simulación. Parte de un valor inicial entre 40 y 70 para cada zona, y luego cambia en función de los siguientes factores:
 
-6. AQI (calidad del aire)
+Penalización por horas punta.
 
-   * Cambia en cada paso según:
+Número de vehículos acumulados en la zona.
 
-     * Fuegos (intensidad: `low`, `medium`, `high`).
-     * Tráfico (proporcional al número de vehículos).
-     * Actividad industrial.
-     * Entre las 12:00 y las 14:00: aumento **lento** (1-3 puntos si hay tráfico).
-     * A partir de las 14:00: aumento **más rápido** (por tráfico postlaboral).
+Existencia e intensidad de incendios.
 
-7. Eventos especiales añadidos
+Presencia de eventos especiales.
 
-   * Ej: partidos de fútbol o conciertos en el centro.
-   * Aumentan el tráfico de forma significativa y afectan negativamente al AQI.
-   * En las zonas industriales y suburbanas no hay eventos especiales.
+Actividad industrial.
 
-8. Accidentes de tráfico añadidos
+Ocurrencia de accidentes.
 
-   * Ocurren aleatoriamente con una baja probabilidad.
-   * Aumentan el tráfico en la zona afectada.
-   * Causan subida rápida del AQI por atascos.
+Además, se aplican límites para evitar valores irreales. El AQI nunca baja de 10 ni sube de 200. En condiciones normales (sin incendios, ni eventos, ni horas punta), se tiende a estabilizar por debajo de 100, excepto en zonas como el centro donde la actividad constante puede llevarlo a valores más altos.
+
+
 
 ## 3. Requisitos
 Debe haber como mínimo 3 nodos en los clusters (en cada uno):
 Hadoop (HDFS/Yarn)
 
+Hadoop es el sistema responsable del almacenamiento distribuido de grandes volúmenes de datos (HDFS) y de la gestión de recursos y ejecución de tareas distribuidas (YARN).
+
+Contar con al menos tres nodos en el cluster Hadoop permite:
+
+Distribuir los datos entre múltiples máquinas (DataNodes).
+
+Mantener un nodo maestro (NameNode) que coordina la lectura y escritura en el sistema de archivos.
+
+Asegurar la replicación de los datos en diferentes nodos para prevenir pérdidas en caso de fallos.
+
+Esto permite una infraestructura resiliente, escalable y tolerante a errores.
 ![image](https://github.com/user-attachments/assets/bbe8c104-5059-4658-88ab-952a1f15c1cb)
 
 ![image](https://github.com/user-attachments/assets/ee90e9d2-2931-43d7-b1bb-297e8eb30cb9)
 
 
 Spark
+Apache Spark es el motor encargado del procesamiento distribuido de los datos. A diferencia de Hadoop MapReduce, Spark permite trabajar en memoria, lo que lo hace mucho más rápido y eficiente para el análisis de grandes volúmenes de datos.
+
+Tener tres nodos como mínimo en el cluster Spark ofrece varias ventajas:
+
+Distribución paralela del procesamiento.
+
+Coordinación de tareas desde el nodo maestro (Driver).
+
+Ejecución simultánea de trabajos en los nodos trabajadores (Workers).
+
+Mejora del rendimiento y la robustez del sistema frente a posibles fallos.
 ![image](https://github.com/user-attachments/assets/4a360f4a-3007-4646-92e2-289e0c5d676c)
 
 
 Kafka
+Apache Kafka es la tecnología utilizada para gestionar el flujo de mensajes en tiempo real. En este proyecto, Kafka se encarga de transmitir los eventos generados por los sensores virtuales (como los datos de calidad del aire, tráfico, incendios, etc.).
+
+Se ha actualizado Kafka a la versión 4.0.0, lo que introduce una mejora importante: la eliminación de la dependencia de Zookeeper, gracias al nuevo sistema de metadatos KRaft (Kafka Raft Metadata mode).
+
+Para Kafka, un cluster de al menos tres nodos es esencial para:
+
+Garantizar la replicación de mensajes entre distintos brokers.
+
+Mantener un quorum en el consenso distribuido, tanto con Zookeeper (en versiones antiguas) como con KRaft.
+
+Asegurar la persistencia de los datos y la disponibilidad del sistema frente a fallos.
 Hemos actualizado nuestro kafka a la versión 4.0.0
 
 ![image](https://github.com/user-attachments/assets/1d2feb40-6772-4ea7-9e3f-e7edf1420f69)
@@ -173,6 +200,9 @@ Vamos a activar todos los servicios para que nuestro flujo de datos pueda funcio
 
 ## 5.1 Levantamos HDFS (Hadoop Distributed File System)
 Levantamos HDFS que será nuestro sistema de almacenamiento distribuido,donde los datos procesados se guardarán.
+Se inician los servicios del NameNode y los DataNodes, permitiendo el almacenamiento distribuido de grandes volúmenes de datos.
+Se activa YARN, que gestionará los recursos y la ejecución de procesos en los distintos nodos del clúster.
+Esto asegura que todo lo que se procese o almacene posteriormente tenga soporte escalable y tolerante a fallos.
 ````
 cd $HADOOP_HOME
 stop-dfs.sh
@@ -185,6 +215,9 @@ hdfs dfsadmin -safemode leave
 ## 5.2 Arrancamos Spark Master y Workers
 Lanzamos spark master y los workers del cluster.
 Spark va a ser el encargado de leer los datos desde kafka y poder analizarlos en tiempo real.
+Activamos el Spark Master y varios Spark Workers para permitir el procesamiento en paralelo de grandes cantidades de datos.
+Spark será el encargado de consumir los datos desde Kafka y transformarlos, analizarlos o agregarlos en tiempo real.
+Esta etapa garantiza que tengamos la capacidad computacional necesaria para realizar análisis complejos y responder con rapidez.
 ````
 /opt/hadoop-3.4.1/spark-3.5.4/sbin/start-master.sh
 /opt/hadoop-3.4.1/spark-3.5.4/sbin/start-workers.sh
@@ -225,7 +258,10 @@ Iniciamos los server(1 controller y 2 brokers) cada uno en una terminal distinta
 /opt/kafka_2.13-4.0.0/bin/kafka-server-start_proyecto_MLU.sh /opt/kafka/proyecto_MLU/config/broker2.properties
 ````
 ## 5.4 Creamos el Topic Kafka
-Creamos el topic  llamado air-quality con factor de replica 2 y 4 particiones ya que en nuestros datos sintécticos vamos a coger los datos de 4 zonas distintas de la ciudad. Cada partición va a manejar los datos y los eventos específicos de cada zona.
+En esta fase, procedemos a la creación del tópico principal de Kafka donde se publicarán todos los eventos generados por nuestro productor de datos en tiempo real. Este tópico se denominará air-quality, ya que su función será centralizar la información relacionada con la calidad del aire, tráfico, incendios y eventos especiales en distintas zonas de la ciudad.
+
+Dado que nuestra simulación abarca cuatro zonas geográficas distintas de Madrid (centro, residencial, industrial y suburbana), decidimos configurar el tópico con 4 particiones, de manera que cada una pueda gestionar de forma paralela y eficiente los eventos específicos de una zona. Esto mejora el rendimiento del sistema, permite mayor paralelización en el consumo de datos y facilita una asignación lógica de responsabilidades entre los consumidores.
+Además, se ha definido un factor de replicación de 2, con el objetivo de garantizar una mayor tolerancia a fallos. Esto significa que cada partición estará replicada en al menos dos nodos del clúster, lo cual asegura disponibilidad incluso si uno de los brokers falla.
 ````
 /opt/kafka_2.13-4.0.0/bin/kafka-topics.sh --create --topic air-quality --bootstrap-server 192.168.11.10:9094 --replication-factor 2 --partitions 4
 ````
@@ -233,7 +269,8 @@ Para eliminar el topic si es necesario:
 ````
 /opt/kafka_2.13-4.0.0/bin/kafka-topics.sh --delete --bootstrap-server 192.168.11.10:9094 --topic  air-quality
 ````
-Verificación
+Verificación:
+Para comprobar que el tópico ha sido creado correctamente y está activo en nuestro clúster Kafka, usamos:
 ````
 /opt/kafka_2.13-4.0.0/bin/kafka-topics.sh --list --bootstrap-server 192.168.11.10:9094
 ````
@@ -241,7 +278,9 @@ Verificación
 
 
 ## 5.6 Creación del producer y del consumer
-Vamos a crear el productor Kafka que simula datos recogidos por sensores distribuidos en las 4 zonas de Madrid ,más tarde lo ejecutaremos.
+Vamos a crear el productor Kafka que es el componente encargado de simular la generación de datos que normalmente serían capturados por sensores distribuidos en las cuatro zonas de Madrid: centro, residencial, industrial y suburbana. Este productor, implementado en Python, genera eventos sintéticos que incluyen variables como la calidad del aire, el conteo de vehículos, incendios activos y eventos especiales, y los envía en tiempo real al tópico air-quality de Kafka.
+
+Este proceso simula el comportamiento de sensores reales que envían datos periódicos, permitiéndonos realizar pruebas y análisis de manera controlada y repetible.
 Déspues necesitamos un consumer que lea los eventos del topic air-quality. Este consumer está implementado en PySpark Structured Streaming para poder analizar los datos de forma continua y reactiva.
 El consumer :
 Lee el flujo de mensajes desde Kafka.
@@ -250,17 +289,19 @@ Imprime un resumen por microbatch en consola.
 Para facilitar la conexión con Power BI,además de almacenar los datos en HDFS,hemos creado una tabla en MySQL.Esto nos permite guardar y actualizar los datos generados de forma más sencilla y accesible para herramientas de análisis.
 
 ## 5.6.1 Creación de la tabla en MYSQL
+
+Primero, accedemos a la consola de MySQL con privilegios de administrador utilizando el siguiente comando:
 ````
 sudo mysql -u root -p
 ````
-Creamos la base de datos
+Una vez dentro, creamos una base de datos llamada kafka_air_quality que servirá como contenedor para las tablas relacionadas con nuestro proyecto:
 ````
 CREATE DATABASE kafka_air_quality;
 ````
 
 ![image](https://github.com/user-attachments/assets/38af9f9c-adb3-466c-be61-fb6a4f90ee21)
 
-Creamos la tabla
+Dentro de la base de datos, creamos la tabla air_quality_events. Esta tabla almacenará toda la información capturada y procesada, con columnas que representan las diferentes variables de interés, tales como la calidad del aire, conteo de vehículos, presencia de incendios, y más:
 ````
 CREATE TABLE air_quality_events (
     city VARCHAR(100),
@@ -290,97 +331,51 @@ CREATE TABLE air_quality_events (
 
 
 ## 5.7 Ejecutamos el Consumer
-Este paso debe hacerse antes del producer,ya que el consumer necesita estar escuchando el stream desde el principio para no perder datos.
+
+Es fundamental iniciar el consumidor antes de poner en marcha el productor. Esto asegura que el consumer esté activo desde el inicio del flujo de datos y no se pierda ninguna información emitida por el productor.
+Para ejecutar el consumidor utilizamos spark-submit con las librerías necesarias para conectar Spark con Kafka. El comando es el siguiente:
 
 ````
 PYTHONPATH=$HOME/.local/lib/python3.10/site-packages spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.4 --master spark://192.168.11.10:7077 /opt/kafka/proyecto_MLU/data_stream/consumer.py
 ````
 ## 5.8 Ejecutamos el Producer Kafka
-Lanzamos el productor
+
+Una vez que el consumidor está corriendo y escuchando el stream, procedemos a iniciar el productor. El producer simula la generación y envío de datos sintéticos desde las distintas zonas de la ciudad, alimentando el flujo que será consumido y analizado.
+Para lanzar el productor ejecutamos:
 ````
 python3 /opt/kafka/proyecto_MLU/data_stream/producer.py
 ````
+Este script comenzará a enviar los eventos generados al topic Kafka, dando inicio a la simulación y procesamiento de datos.
+
 ## 5.9 Visualizamos la información
 
-Aprovecharemos la Consumer API de Kafka para ver está consumiendo los datos correctamente una vez lanzada la aplicación
+Para asegurarnos de que los datos se están consumiendo correctamente y el flujo de información está activo, utilizaremos la Consumer API de Kafka para monitorear el consumo en tiempo real. Ejecutamos el siguiente comando para ver los mensajes que llegan al topic air-quality desde el principio:
 ````
 /opt/kafka_2.13-4.0.0/bin/kafka-console-consumer.sh --topic air-quality --from-beginning --bootstrap-server 192.168.11.10:9094
 ````
-Para ver los archivos generados en HDFS
+Este comando mostrará en la consola los eventos que el consumidor está recibiendo, permitiendo verificar que los datos fluyen correctamente.
+
+Además, para comprobar que los datos se están almacenando correctamente en el sistema de archivos distribuido HDFS, podemos listar los archivos generados con:
 
 ````
 hdfs dfs -ls /opt/kafka/proyecto_MLU/data/
 ````
 ![image](https://github.com/user-attachments/assets/baca4845-0b2b-4fcb-9ee1-004e7e53dcd1)
 
-Visualización web del sistema de archivos HDFS:
+* Visualización web del sistema de archivos HDFS:
+
+También podemos acceder a la interfaz web de HDFS para una visualización más amigable de los archivos y directorios:
 
 http://192.168.56.10:9870/explorer.html
 
 ![image](https://github.com/user-attachments/assets/eb74a8c9-18de-4be6-85c3-ced1ca068ade)
 
-
-````
-cp /opt/kafka_2.13-4.0.0/bin/kafka-server-start.sh /opt/kafka_2.13-4.0.0/bin/kafka-server-start_proyecto_MLU.sh
-````
-Visualizamos que los datos se han guardado en nuestra base de datos de Mysql 
+* Visualizamos que los datos se han guardado en nuestra base de datos de Mysql 
+Finalmente, verificamos que los datos se hayan insertado correctamente en la base de datos MySQL, donde se almacenan para facilitar su análisis y conexión con herramientas como Power BI.
 
 ![image](https://github.com/user-attachments/assets/39c16059-7e8e-44f0-ba78-a850521f9fe3)
 
-Creamos 
-````
-nano /opt/kafka_2.13-4.0.0/bin/kafka-server-start_proyecto_MLU.sh
-````
-cp /opt/prometheus-2.53.4/prometheus.yml /opt/prometheus-2.53.4/prometheus_proyecto_MLU.yml
 
-````
-nano /opt/prometheus-2.53.4/prometheus_proyecto_MLU.yml
-````
-
-
-````
-# my global config
-global:
-  scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
-  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
-  # scrape_timeout is set to the global default (10s).
-
-# Alertmanager configuration
-alerting:
-  alertmanagers:
-    - static_configs:
-        - targets:
-          # - alertmanager:9093
-
-# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
-rule_files:
-  # - "first_rules.yml"
-  # - "second_rules.yml"
-
-# A scrape configuration containing exactly one endpoint to scrape:
-# Here it's Prometheus itself.
-scrape_configs:
-  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
-  - job_name: "prometheus"
-
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
-
-    static_configs:
-      - targets: ["localhost:9090"]
-
-  - job_name: "kafka"
-
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
-
-    static_configs:
-      - targets: [
-        "localhost:11001", # Controller 1 (node.id=1)
-        "localhost:11002", # Broker 1 (node.id=2)
-        "localhost:11003", # Broker 3 (node.id=3)
-      ]
-````
 ## 6.Visualización en PowerBI
 En este apartado,abordaremos el proceso para conectar con PowerBI con nuestra base de datos MYSQL con el fin de realizar un análisis visual dinámico de los datos almacenados.
 
@@ -539,6 +534,67 @@ Este gráfico compara el Índice de Calidad del Aire (AQI) promedio en la zona s
   - Restricciones a actividades que puedan generar chispas en épocas de riesgo
 
 Este análisis demuestra que, aunque la zona suburbana disfruta normalmente de la mejor calidad del aire, es precisamente la más vulnerable a los efectos catastróficos de los incendios forestales, requiriendo estrategias específicas de protección.
+
+ ## 7.Prometehus
+
+ Para implementarlo debemos de 
+
+ Para monitorear nuestro sistema, vamos a configurar Prometheus específicamente para nuestro proyecto. Los pasos son los siguientes:
+ 
+Creamos 
+````
+nano /opt/kafka_2.13-4.0.0/bin/kafka-server-start_proyecto_MLU.sh
+````
+cp /opt/prometheus-2.53.4/prometheus.yml /opt/prometheus-2.53.4/prometheus_proyecto_MLU.yml
+
+````
+nano /opt/prometheus-2.53.4/prometheus_proyecto_MLU.yml
+````
+
+
+````
+# my global config
+global:
+  scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: "prometheus"
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: "kafka"
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: [
+        "localhost:11001", # Controller 1 (node.id=1)
+        "localhost:11002", # Broker 1 (node.id=2)
+        "localhost:11003", # Broker 3 (node.id=3)
+      ]
+````
 
 
 

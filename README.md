@@ -393,6 +393,158 @@ Para comenzar abrimos PowerBI y seleccionamos la opción de conectamos a una bas
 
 ![image](https://github.com/user-attachments/assets/03825a69-aae7-4101-bef5-f0def19f6b8a)
 
+## 6.1 Promedio de AQI
+
+![image](https://github.com/user-attachments/assets/544aaaba-3959-4da6-853d-dd6b1b6088a7)
+
+## 1. Descripción
+Se presentan los datos sobre el Índice de Calidad del Aire (AQI) promedio y su distribución porcentual en cuatro zonas distintas de Madrid, obtenidos a través de un sistema de monitoreo en tiempo real con datos sintéticos.
+
+## 2. Datos Generales
+El análisis revela marcadas diferencias en la calidad del aire entre las zonas monitoreadas:
+- Las zonas **industrial** y **centro** concentran aproximadamente el 66.45% del AQI total combinado (33.25% y 33.2% respectivamente).
+- La zona **residencial** contribuye con el 14.68% del AQI total.
+- La zona **suburbana** muestra el menor impacto, con valores mínimos de contaminación.
+
+## 3. Distribución de Contaminación por Zona
+Los datos demuestran claramente cómo los factores urbanos e industriales afectan la calidad del aire:
+- **Zona Industrial (33.25%, AQI ≈163)**: Presenta los valores más altos, directamente vinculados a la actividad fabril y emisiones industriales.
+- **Centro (33.2%, AQI ≈163)**: Muestra niveles similares a la zona industrial, atribuibles al intenso tráfico vehicular y alta densidad urbana.
+- **Residencial (14.68%, AQI ≈72)**: Exhibe niveles moderados, reflejando menor actividad contaminante pero aún afectada por el entorno urbano.
+- **Suburbana (AQI ≈9)**: Registra la mejor calidad de aire, beneficiada por menor densidad poblacional y mayor presencia de áreas verdes.
+
+## 4. Interpretación de Resultados
+Este patrón de distribución confirma las hipótesis iniciales del proyecto:
+1. **Impacto de la actividad humana**: Las zonas con mayor intervención antropogénica (industrial y centro) muestran claramente los peores indicadores.
+2. **Efecto del tráfico vehicular**: La similitud entre centro e industrial sugiere que el tráfico puede ser tan contaminante como la actividad industrial.
+3. **Beneficios de la planificación urbana**: La zona residencial, aunque urbana, muestra valores significativamente mejores, posiblemente por mejor planificación y menores factores contaminantes.
+4. **Ventajas de las áreas periféricas**: La zona suburbana confirma que alejarse de los núcleos urbanos principales mejora notablemente la calidad del aire.
+
+Estos resultados subrayan la necesidad de políticas diferenciadas por zona:
+- Medidas estrictas de control de emisiones industriales
+- Restricciones de tráfico en el centro urbano
+- Incentivos para mantener bajos los niveles en zonas residenciales
+- Protección de las áreas suburbanas como pulmones urbanos
+
+El sistema implementado demuestra ser efectivo para identificar patrones espaciales de contaminación, permitiendo una toma de decisiones basada en datos en tiempo cuasi-real.
+
+## 6.2 Análisis de Calidad del Aire (AQI) en Zonas Industriales
+
+![image](https://github.com/user-attachments/assets/1e0466c1-0bd8-4bcd-b98e-ed48cce9cc14)
+
+
+## 1. Descripción
+Este gráfico presenta tres métricas clave de calidad del aire (AQI) específicamente relacionadas con zonas industriales: AQI Alta Industria, AQI Baja Industria y AQI Media Industria, desglosadas por diferentes zonas urbanas.
+
+## 2. Datos Generales
+El análisis muestra cómo varía el impacto industrial en la calidad del aire según la zona:
+- Se comparan tres indicadores de contaminación industrial (alta, baja y media)
+- Las zonas analizadas incluyen: industrial, centro, residencial y suburbana
+
+## 3. Distribución del AQI Industrial por Zona
+
+### **Zona Industrial**
+- Muestra los valores más extremos en **AQI Alta Industria**, confirmando el fuerte impacto de la actividad fabril
+- Presenta también variación significativa entre AQI Alta y Baja Industria, indicando fluctuaciones según horarios de producción
+
+### **Centro**
+- Registra valores intermedios de **AQI Media Industria**, sugiriendo contaminación industrial transportada
+- Posible efecto combinado de emisiones locales y contaminantes industriales arrastrados por el viento
+
+### **Zona Residencial**
+- Exhibe valores moderados en **AQI Baja Industria**, pero con presencia detectable
+- Indica que la contaminación industrial afecta áreas circundantes, aunque en menor medida
+
+### **Zona Suburbana**
+- Muestra los valores más bajos en los tres indicadores
+- Confirma que es la menos afectada por emisiones industriales directas
+
+## 4. Interpretación de Resultados
+
+1. **Impacto geográfico de la industria**: La contaminación industrial no se limita a su zona de origen, sino que se extiende a áreas vecinas.
+
+2. **Variabilidad temporal**: La diferencia entre AQI Alta y Baja Industria sugiere que:
+   - Los picos de producción industrial generan contaminación aguda
+   - Existen momentos de menor impacto (noches, fines de semana)
+
+3. **Transporte de contaminantes**: Los valores en zona centro indican que:
+   - Los contaminantes industriales viajan por la atmósfera
+   - Se combinan con otras fuentes de polución urbana
+
+4. **Efecto protector de la distancia**: La zona suburbana demuestra cómo el alejamiento geográfico reduce la exposición a contaminantes industriales.
+
+## 5. Conclusiones Operativas
+
+- **Para autoridades**:
+  - Necesidad de monitoreo continuo en zonas aledañas a polos industriales
+  - Establecer protocolos para episodios de AQI Alta Industria
+  - Regular horarios de máxima producción contaminante
+
+- **Para urbanistas**:
+  - Mantener suficiente distancia entre zonas industriales y residenciales
+  - Considerar patrones de viento predominantes en la planificación urbana
+
+- **Para ciudadanos**:
+  - Informar sobre variaciones horarias de calidad del aire
+  - Recomendar precauciones en episodios de AQI Alta Industria
+
+## 6.3 Análisis del Impacto de Incendios en la Calidad del Aire (AQI) en Zona Suburbana
+
+![image](https://github.com/user-attachments/assets/ffcc1651-a7e6-4f4f-8319-a426d9596614)
+
+## 1. Descripción
+Este gráfico compara el Índice de Calidad del Aire (AQI) promedio en la zona suburbana en dos escenarios distintos: cuando no hay incendios activos (Avg AQI Sin Fuego) y cuando existen incendios forestales (Avg AQI Con Fuego).
+
+## 2. Datos Clave
+- **AQI Sin Fuego**: Muestra la calidad del aire base en condiciones normales
+- **AQI Con Fuego**: Refleja el deterioro de la calidad del aire durante incendios forestales
+
+## 3. Hallazgos Principales
+
+### **Condiciones Normales (Sin Fuego)**
+- La zona suburbana mantiene un AQI bajo en ausencia de incendios
+- Corresponde a los valores más saludables del sistema de monitoreo
+- Refleja los beneficios de:
+  - Menor densidad poblacional
+  - Mayor vegetación
+  - Alejamiento de fuentes contaminantes urbanas
+
+### **Durante Incendios (Con Fuego)**
+- Se observa un incremento significativo del AQI
+- El aumento puede ser de 5 a 10 veces el valor base (según intensidad del fuego)
+- Factores que contribuyen:
+  - Emisión directa de partículas PM2.5 y PM10
+  - Generación de hollín y cenizas
+  - Transporte de contaminantes por el viento
+
+## 4. Interpretación
+
+1. **Vulnerabilidad ambiental**: Aunque normalmente es la zona con mejor aire, la suburbana es la más afectada durante incendios forestales.
+
+2. **Efecto agudo**: Los incendios causan deterioro rápido y severo de la calidad del aire, transformando temporalmente el área suburbana en la más contaminada.
+
+3. **Duración del impacto**: Los efectos pueden persistir días después de controlado el incendio, especialmente por material particulado residual.
+
+## 5. Recomendaciones
+
+- **Sistema de alerta temprana**: Implementar protocolos específicos para incendios en áreas suburbanas
+- **Monitoreo reforzado**: Aumentar la densidad de sensores durante la temporada de incendios
+- **Plan de contingencia**:
+  - Mascarillas N95 para población vulnerable
+  - Recomendaciones de permanecer en interiores
+  - Cierre preventivo de escuelas en áreas afectadas
+- **Prevención**:
+  - Mantenimiento de cortafuegos
+  - Campañas de concienciación sobre riesgo de incendios
+  - Restricciones a actividades que puedan generar chispas en épocas de riesgo
+
+Este análisis demuestra que, aunque la zona suburbana disfruta normalmente de la mejor calidad del aire, es precisamente la más vulnerable a los efectos catastróficos de los incendios forestales, requiriendo estrategias específicas de protección.
+
+
+
+
+
+
 
 
 

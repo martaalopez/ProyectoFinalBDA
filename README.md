@@ -536,19 +536,20 @@ Este gráfico compara el Índice de Calidad del Aire (AQI) promedio en la zona s
 Este análisis demuestra que, aunque la zona suburbana disfruta normalmente de la mejor calidad del aire, es precisamente la más vulnerable a los efectos catastróficos de los incendios forestales, requiriendo estrategias específicas de protección.
 
  ## 7.Prometehus
-
- Para implementarlo debemos de 
-
- Para monitorear nuestro sistema, vamos a configurar Prometheus específicamente para nuestro proyecto. Los pasos son los siguientes:
  
 Creamos 
 ````
 nano /opt/kafka_2.13-4.0.0/bin/kafka-server-start_proyecto_MLU.sh
 ````
+
 cp /opt/prometheus-2.53.4/prometheus.yml /opt/prometheus-2.53.4/prometheus_proyecto_MLU.yml
 
 ````
 nano /opt/prometheus-2.53.4/prometheus_proyecto_MLU.yml
+````
+Iniciamos Prometheus. Vamos a su directorio ````/opt/prometheus-2.53.4. ````Levantamos prometheus
+````
+./prometheus --config.file=prometheus_proyecto_MLU.yml
 ````
 
 
@@ -595,8 +596,46 @@ scrape_configs:
         "localhost:11003", # Broker 3 (node.id=3)
       ]
 ````
+Comprobamos que prometheus captura correctamente el endpoint ````http://192.168.56.10:9090/targets```` (recuerda que accedemos desde nuestro host con esta configuración de red a nuestra máquina)
 
 ![image](https://github.com/user-attachments/assets/f661253c-c5f8-4228-8281-1dbf0f7d63a1)
+
+## 8.Graphana
+
+````
+sudo apt-get install -y adduser libfontconfig1 musl
+````
+````
+wget https://dl.grafana.com/enterprise/release/grafana-enterprise_12.0.1_amd64.deb
+````
+````
+sudo dpkg -i grafana-enterprise_12.0.1_amd64.deb
+````
+
+![image](https://github.com/user-attachments/assets/82de1195-7d43-45f6-b290-cdba015fd09c)
+
+````
+
+sudo systemctl daemon-reload
+sudo systemctl enable grafana-server.service
+sudo systemctl start grafana-server.service
+sudo systemctl status grafana-server.service
+
+ systemctl start grafana-server
+````
+
+![image](https://github.com/user-attachments/assets/c32af78e-fbf2-494e-8795-423c7919bf4c)
+
+Abrimos el navegador
+````
+http://192.168.56.10:3000/dashboards
+````
+
+![image](https://github.com/user-attachments/assets/0472e088-f189-4951-944a-2cefef7fe166)
+
+
+
+
 
 
 

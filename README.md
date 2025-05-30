@@ -596,6 +596,9 @@ scrape_configs:
       ]
 ````
 
+![image](https://github.com/user-attachments/assets/f661253c-c5f8-4228-8281-1dbf0f7d63a1)
+
+
 
 
 

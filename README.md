@@ -535,6 +535,46 @@ Este gráfico compara el Índice de Calidad del Aire (AQI) promedio en la zona s
 
 Este análisis demuestra que, aunque la zona suburbana disfruta normalmente de la mejor calidad del aire, es precisamente la más vulnerable a los efectos catastróficos de los incendios forestales, requiriendo estrategias específicas de protección.
 
+## 6.4  Promedio de Vehículos por Minuto y AQI por Zona
+
+### 1. Descripción General  
+El gráfico muestra dos métricas clave para tres zonas distintas (center, residential, suburb,industrial):  
+- **Avg Vehículo Por Minuto**: Número promedio de vehículos que transitan por minuto.  
+- **AOI Promedio por Zona**: Índice de Calidad del Aire (AQI) promedio en cada zona
+
+---
+
+### 2. Datos Clave  
+- **Zona center:  
+  - Como podemos ver a partir de la 14:00 horas el AQI sube considerablemente a 200 y la media de coches por minuto incrementa tambien 
+ 
+   ![image](https://github.com/user-attachments/assets/8765ecf5-cf39-4ea5-84a0-753ef89f4658)
+ 
+
+- **Zonas residential
+  En el caso de la zona residencial el nivel de AQI se mantiene constante durante practicamente todo el dia 
+
+  ![image](https://github.com/user-attachments/assets/6aced553-6157-472b-a6f5-2c640d33d8e5)
+ 
+- **Zonas suburbana
+  En la zona suburbana, se observa que el tráfico vehicular es bajo (pocos coches por minuto en comparación con zonas urbanas),pero existen picos repentinos de AQI (contaminación elevada en momentos específicos).
+  La posible causa principal puede ser los incendios forestales o agrícolas cercanos ya que no coincide con aumentos de tráfico y es un fenómeno temporal y abrupto (no constante como en zonas industriales).
+
+ ![image](https://github.com/user-attachments/assets/cafbdca9-5887-4f9b-a82f-d55783fa4fbb)
+
+- **Zonas industriales
+  En zonas industriales, el AQI (Índice de Calidad del Aire) sufre fluctuaciones significativas debido a la actividad fabril. En este caso, se observa un incremento sostenido del AQI durante el horario laboral (de 9:00 a 13:00 horas), lo que sugiere una correlación directa entre la actividad industrial y la contaminación del aire.
+
+ ![image](https://github.com/user-attachments/assets/9575f8ef-099c-4694-ba67-dd5150ceddc5)
+
+---
+
+### Conclusión  
+El gráfico actual proporciona una estructura potencialmente útil para analizar tráfico y AQI 
+
+![image](https://github.com/user-attachments/assets/ba3605f6-c018-4555-ab64-de2be18b5f09)
+
+
  ## 7.Prometehus
  
 Creamos 

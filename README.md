@@ -591,6 +591,9 @@ Iniciamos Prometheus. Vamos a su directorio ````/opt/prometheus-2.53.4. ````Leva
 ````
 ./prometheus --config.file=prometheus_proyecto_MLU.yml
 ````
+````
+curl http://localhost:11001/metrics
+````
 
 
 ````

@@ -593,6 +593,8 @@ Iniciamos Prometheus. Vamos a su directorio ````/opt/prometheus-2.53.4. ````Leva
 ````
 ````
 curl http://localhost:11001/metrics
+curl http://localhost:11002/metrics
+curl http://localhost:11003/metrics
 ````
 
 
@@ -642,6 +644,10 @@ scrape_configs:
 Comprobamos que prometheus captura correctamente el endpoint ````http://192.168.56.10:9090/targets```` (recuerda que accedemos desde nuestro host con esta configuración de red a nuestra máquina)
 
 ![image](https://github.com/user-attachments/assets/f661253c-c5f8-4228-8281-1dbf0f7d63a1)
+
+
+![image](https://github.com/user-attachments/assets/d1eae758-eb03-4b81-be8c-effd0fe766f9)
+
 
 ## 8.Graphana
 

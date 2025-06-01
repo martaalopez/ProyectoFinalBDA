@@ -682,6 +682,12 @@ http://192.168.56.10:3000/dashboards
 
 ![image](https://github.com/user-attachments/assets/0472e088-f189-4951-944a-2cefef7fe166)
 
+![image](https://github.com/user-attachments/assets/fcf68def-b75a-40c5-adc7-cb9c5bd19d7d)
+
+![image](https://github.com/user-attachments/assets/96508635-e8fa-4291-ba1f-1cd905c7d106)
+
+
+
 
 
 

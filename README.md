@@ -4,72 +4,24 @@
 -->
 ## 1.Introducción
 
-Hoy en dia la calidad del aire y la contaminacion son factores ambientales muy preocupantes en nuestra sociedad .El trafico  diario de vehiculos ,tanto de personas que van al trabajo como de padres q van a llevar a sus hijos al colegio son factores que hacen que aumente  el deterioro de la calidad de aire.
-Además algunos fenómenos naturales como los incendios forestales pueden tener un fuerte impacto en la contaminación atmosférica,al igual que la actividad industrial,donde las emisiones de humo y partículas contaminantes se mezclan con la atmósfera, empeorando aún más la situación.
+Hoy en día, la calidad del aire y la contaminación son factores ambientales que generan gran preocupación en nuestra sociedad.
+El tráfico diario de vehículos es una de las principales causas del deterioro de la calidad del aire.
+Además, ciertos fenómenos naturales como los incendios forestales pueden tener un impacto significativo en la contaminación atmosférica. A esto se suma la actividad industrial, cuyas emisiones de humo y partículas contaminantes se mezclan con la atmósfera, agravando aún más la situación.
 
 Esto puede hacer que existan consecuencias directas en la salud publica, un articulo  revela que 2000 niños mueren cada dia en el mundo por mal calidad del aire,por ello he decidido hacer una investigación que se enfoca en el monitoreo y análisis de los principales factores que afectan la calidad del aire, con el objetivo de identificar los eventos más frecuentes y críticos. A partir de estos datos, espero poder extraer conclusiones que contribuyan a diseñar soluciones eficientes para combatir este grave problema global.
   
 
 ## 2.Fuente de Informacion
 
-Para poder abarcar con todo esto vamos a apoyarnos en los datos proporcionados  por la AirVisual API la cual  ofrece información sobre el tiempo, la calidad del aire y los incendios activos,etc...
+Para poder abarcar con todo esto vamos a apoyarnos en los datos proporcionados por la AirVisual API la cual ofrece información sobre el tiempo, la calidad del aire y los incendios activos,etc...
 Sin embargo, esta API presenta un problema:los datos se actualizan cada hora ,mientras que nuestro objetivo es realizar un monitoreo en tiempo real, actualizando los datos cada segundo.
 
 Por ello vamos a generar  unos datos sinteticos,  incluyendo no solo las variables básicas ofrecidas por la API, sino también otros datos adicionales que considero relevantes para un análisis más completo,como el tráfico, la actividad industrial y la probabilidad de incendios.
 Los datos ficticios se recogerán desde sensores virtuales distribuidos en cuatro zonas distintas de Madrid:
-Centro: Zona con alto volumen de tráfico, ideal para observar el impacto del tránsito urbano.
-Residencial: Área con menor densidad de vehículos, donde se espera una menor contaminación.
-Industrial: Región con alta actividad industrial, donde predominan los contaminantes derivados del humo y procesos fabriles.
-Suburbana: Zonas periféricas con mezcla de factores naturales y urbanos, y mayor probabilidad de incendios forestales.
-Tenemos además varias condiciones para que podemos simular bien nuestros datos y se acerquen lo más posible a la realidad.
- Vamos a tener en cuenta esta lógica en la simulación. 
-
----
-
-* Horario de simulación
-El sistema inicia la simulación a las 9:00 de la mañana del día 1 de enero de 2025. Cada segundo en el mundo real representa un minuto en el tiempo simulado, por lo tanto, cada iteración genera datos nuevos que reflejan las condiciones en cada zona con una altísima frecuencia temporal. Esto permite realizar un análisis casi en tiempo real.
-
-* Condiciones de tráfico
-Las condiciones del tráfico son un factor importante para el cálculo del AQI (índice de calidad del aire). Se tienen en cuenta dos aspectos principales: el día de la semana y la hora del día.
-
-Durante los días de semana, se considera que hay horas punta (a las 8, 9, 14, 15 y 20 horas), donde el tráfico es más denso. Durante los fines de semana, el tráfico disminuye notablemente. Si el momento actual de la simulación coincide con una hora punta en día laborable, se clasifica como condición de tráfico “peak”; si es fin de semana, se clasifica como “weekend”, y en los demás casos como “normal”.
-
-Cada zona reacciona de manera diferente a estas condiciones. Por ejemplo, en el centro de Madrid se registra un mayor número de vehículos durante las horas punta, mientras que en zonas suburbanas la variación es mínima.
-
-* Conteo y acumulación de vehículos
-En cada paso de la simulación, se genera un número aleatorio de vehículos que han pasado por cada zona, en función de su densidad de tráfico y la condición actual (hora punta o no). Este número se acumula en un contador que representa el total de vehículos presentes en la zona.
-
-Para evitar una acumulación infinita, se aplica una “decadencia” que simula el hecho de que algunos vehículos abandonan la zona con el tiempo. Este mecanismo permite mantener una representación realista del flujo vehicular.
-
-* Incendios forestales y urbanos
-Los incendios son otro factor crítico en esta simulación. Cada zona tiene asignada una probabilidad específica de que ocurra un incendio. Por ejemplo, en las zonas suburbanas, esta probabilidad es significativamente mayor, ya que se simula una mayor cercanía a entornos forestales.
-
-Cuando ocurre un incendio, se le asigna una duración (en minutos simulados) y una intensidad (baja, media o alta). Durante el tiempo que dure el incendio, el AQI de esa zona aumenta dependiendo de la intensidad. Una vez transcurrido el tiempo, el incendio se considera extinguido y se restablece el estado de normalidad.
-
-* Eventos especiales
-Solo en la zona centro se simulan eventos especiales como conciertos y partidos de fútbol. Estos eventos están programados para horas específicas del día: a las 18:00 se celebra un concierto, y a las 20:00 un partido de fútbol. Cuando ocurre uno de estos eventos, se incrementa drásticamente el número de vehículos en la zona y se eleva el AQI debido al aumento del tráfico.
-
-* Accidentes de tráfico
-Otro factor inesperado y aleatorio introducido en la simulación son los accidentes de tráfico. Su probabilidad de ocurrencia es baja, pero se incrementa ligeramente en la zona centro debido a su alta densidad de tránsito. Si ocurre un accidente, el AQI se ve afectado negativamente, simulando el efecto de los atascos y la congestión prolongada.
-
-Cálculo del índice AQI
-El AQI se ajusta dinámicamente en cada paso de la simulación. Parte de un valor inicial entre 40 y 70 para cada zona, y luego cambia en función de los siguientes factores:
-
-Penalización por horas punta.
-
-Número de vehículos acumulados en la zona.
-
-Existencia e intensidad de incendios.
-
-Presencia de eventos especiales.
-
-Actividad industrial.
-
-Ocurrencia de accidentes.
-
-Además, se aplican límites para evitar valores irreales. El AQI nunca baja de 10 ni sube de 200. En condiciones normales (sin incendios, ni eventos, ni horas punta), se tiende a estabilizar por debajo de 100, excepto en zonas como el centro donde la actividad constante puede llevarlo a valores más altos.
-
-
+Centro: La cual tiene un alto volumen de tráfico
+Residencial: Es un área más residencial con menos tráfico de vehículos.
+Industrial: Es una zona con alta actividad industrial,donde predominan los contaminantes derivados del humo y procesos fabriles.
+Suburbana: Es una zona de factores naturales y con una mayor probabilidad de incendios forestales.
 
 ## 3. Requisitos
 Debe haber como mínimo 3 nodos en los clusters (en cada uno):
@@ -92,7 +44,7 @@ Esto permite una infraestructura resiliente, escalable y tolerante a errores.
 
 
 Spark
-Apache Spark es el motor encargado del procesamiento distribuido de los datos. A diferencia de Hadoop MapReduce, Spark permite trabajar en memoria, lo que lo hace mucho más rápido y eficiente para el análisis de grandes volúmenes de datos.
+Apache Spark es el motor encargado del procesamiento distribuido de los datos. A diferencia de Hadoop MapReduce,Spark permite trabajar en memoria,lo que lo hace mucho más rápido y eficiente para el análisis de grandes volúmenes de datos.
 
 Tener tres nodos como mínimo en el cluster Spark ofrece varias ventajas:
 
@@ -107,24 +59,14 @@ Mejora del rendimiento y la robustez del sistema frente a posibles fallos.
 
 
 Kafka
-Apache Kafka es la tecnología utilizada para gestionar el flujo de mensajes en tiempo real. En este proyecto, Kafka se encarga de transmitir los eventos generados por los sensores virtuales (como los datos de calidad del aire, tráfico, incendios, etc.).
-
-Se ha actualizado Kafka a la versión 4.0.0, lo que introduce una mejora importante: la eliminación de la dependencia de Zookeeper, gracias al nuevo sistema de metadatos KRaft (Kafka Raft Metadata mode).
-
-Para Kafka, un cluster de al menos tres nodos es esencial para:
-
-Garantizar la replicación de mensajes entre distintos brokers.
-
-Mantener un quorum en el consenso distribuido, tanto con Zookeeper (en versiones antiguas) como con KRaft.
-
-Asegurar la persistencia de los datos y la disponibilidad del sistema frente a fallos.
-Hemos actualizado nuestro kafka a la versión 4.0.0
+Apache Kafka es la tecnología utilizada para gestionar el flujo de mensajes en tiempo real. En este proyecto,Kafka se encarga de transmitir los eventos generados por los sensores virtuales (como los datos de calidad del aire, tráfico, incendios, etc.).
+Se ha actualizado Kafka a la versión 4.0.0,lo que introduce una mejora importante:la eliminación de la dependencia de Zookeeper,gracias al nuevo sistema de metadatos KRaft (Kafka Raft Metadata mode).
 
 ![image](https://github.com/user-attachments/assets/1d2feb40-6772-4ea7-9e3f-e7edf1420f69)
 
 
 ## 4.Configuración del Clúster de Kafka 
-1.Vamos a establecer todos los archivos de configuración en una carpeta  llamada proyectoBDA_MLU, que en mi caso estará alojada en /opt/kafka/proyecto_MLU
+1.Vamos a establecer todos los archivos de configuración en una carpeta  llamada proyectoBDA_MLU,que en mi caso estará alojada en /opt/kafka/proyecto_MLU
 
 ![image](https://github.com/user-attachments/assets/e12ef486-f0bd-4ca7-b4fa-3a83788f20b7)
 
@@ -137,7 +79,7 @@ mkdir -p /opt/kafka/proyecto_MLU/logs
 
 En nuestra arquitectura vamos a tener lo siguiente:
 Un controller que va a ser el nodo responsable de poder coordinal el clúster.Se va a encargar de gestionar los eventos como la creación y eliminación de topics,la asignaciñon de paerticiones y la detección de fallos en los brokers.
-Para el controller, debemos usar como base la configuración de propiedades de controller de kafka que se encuentran config/controller.properties
+Para el controller,debemos usar como base la configuración de propiedades de controller de kafka que se encuentran config/controller.properties
 
 Dos brokers,donde cada uno va a estar identificado por un Id y va a contener ciertas particiones de un topic.va a permitir replicar y poder particionar dichos topics balanceando la carga de almacenamiento entre los brokers.Esto perimite q kafka sea tolerante a fallos y escalable.
 Para cada broker, necesitaremos crear un archivo de configuración por separado. Para ello debemos usar como base la configuración de propiedades de brokers de kafka que se encuentran config//broker.properties
@@ -216,20 +158,145 @@ hdfs dfsadmin -safemode leave
 Lanzamos spark master y los workers del cluster.
 Spark va a ser el encargado de leer los datos desde kafka y poder analizarlos en tiempo real.
 Activamos el Spark Master y varios Spark Workers para permitir el procesamiento en paralelo de grandes cantidades de datos.
-Spark será el encargado de consumir los datos desde Kafka y transformarlos, analizarlos o agregarlos en tiempo real.
 Esta etapa garantiza que tengamos la capacidad computacional necesaria para realizar análisis complejos y responder con rapidez.
-````
-/opt/hadoop-3.4.1/spark-3.5.4/sbin/start-master.sh
-/opt/hadoop-3.4.1/spark-3.5.4/sbin/start-workers.sh
-````
 
 ````
 /opt/hadoop-3.4.1/spark-3.5.4/sbin/stop-all.sh
-sleep 5
 /opt/hadoop-3.4.1/spark-3.5.4/sbin/start-all.sh
 ````
 
 ## 5.3 Iniciamos Kafka (Controller + Brokers)
+Como más adelante utilizaremos Prometheus y Grafana,se ha preparado un script personalizado llamado kafka-server-start_proyecto_MLU.sh adaptado especialmente para este proyecto.
+
+1.Configurar Prometheus
+Duplicamos el archivo de configuración por defecto y creamos uno específico para el proyecto:
+
+````
+cp /opt/prometheus-2.53.4/prometheus.yml /opt/prometheus-2.53.4/prometheus_proyecto_MLU.yml
+nano /opt/prometheus-2.53.4/prometheus_proyecto_MLU.yml
+````
+Dentro del archivo prometheus_proyecto_MLU.yml, usamos la siguiente configuración:
+
+````
+# my global config
+global:
+  scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: "prometheus"
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: "kafka"
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: [
+        "localhost:11001", # Controller 1 (node.id=1)
+        "localhost:11002", # Broker 1 (node.id=2)
+        "localhost:11003", # Broker 3 (node.id=3)
+      ]
+````
+
+2.Creamos el script de inicio de Kafka personalizado
+Creamos y editamos el siguiente archivo:
+````
+nano /opt/kafka_2.13-4.0.0/bin/kafka-server-start_proyecto_MLU.sh
+````
+Este script incluye una configuración adicional para habilitar JMX Exporter, lo que permitirá monitorear los nodos de Kafka con Prometheus.
+El siguiente fragmento se añade al inicio del script para activar el agente de monitoreo JMX Exporter según el node.id configurado en cada server.properties:
+````
+# --- INICIO DE MODIFICACIÓN PARA JMX EXPORTER ---
+
+# Establecemos KAFKA_OPTS por defecto si no está definido
+KAFKA_OPTS=${KAFKA_OPTS:-}
+
+# Encontrar la ruta al archivo server.properties (o cualquier archivo .properties)
+PROPERTIES_FILE=""
+for arg in "$@"; do
+  if [[ "$arg" == *".properties" ]]; then
+    PROPERTIES_FILE="$arg"
+    break
+  fi
+done
+
+# Variables para JMX Exporter
+JMX_AGENT_PATH="/opt/kafka_2.13-4.0.0/libs/jmx_prometheus_javaagent-1.2.0.jar"
+# Ruta al archivo de configuración del JMX Exporter. Si no usas uno, déjala vacía pero mantén el ':' en el argumento final.
+JMX_CONFIG_FILE="/opt/kafka_2.13-4.0.0/config/jmx-exporter-kafka.yml"
+
+# Lógica para determinar el puerto y configurar KAFKA_OPTS
+NODE_ID=""
+JMX_PORT=""
+JMX_JAVAAGENT_ARG=""
+
+# 1. Intentar extraer node.id del archivo properties
+if [ -n "$PROPERTIES_FILE" ] && [ -f "$PROPERTIES_FILE" ]; then
+    NODE_ID=$(grep "^[[:space:]]*node.id[[:space:]]*=" "$PROPERTIES_FILE" | head -1 | sed "s/^[[:space:]]*node.id[[:space:]]*=//" | cut -d'#' -f1 | tr -d '[:space:]')
+fi
+
+# 2. Validar NODE_ID y calcular JMX_PORT
+if ! [[ "$NODE_ID" =~ ^[0-9]+$ ]]; then
+    echo "WARNING: JMX Exporter: No se pudo determinar el node.id del archivo $PROPERTIES_FILE o no es un número válido ('$NODE_ID')." >&2
+    echo "WARNING: JMX Exporter NO será cargado para esta instancia de Kafka." >&2
+# 3. Validar si el JAR del JMX Exporter existe y es legible
+elif [ ! -r "$JMX_AGENT_PATH" ]; then
+    echo "ERROR: JMX Exporter: El archivo JAR NO se encuentra o no es legible: $JMX_AGENT_PATH" >&2
+    echo "WARNING: JMX Exporter NO será cargado para esta instancia de Kafka." >&2
+# 4. Validar si el archivo de configuración existe y es legible (si se especificó uno)
+elif [ -n "$JMX_CONFIG_FILE" ] && [ ! -r "$JMX_CONFIG_FILE" ]; then
+    echo "ERROR: JMX Exporter: El archivo de configuración NO se encuentra o no es legible: $JMX_CONFIG_FILE" >&2
+    echo "WARNING: JMX Exporter NO será cargado para esta instancia de Kafka." >&2
+# 5. Si todas las validaciones pasan, construir el argumento y configurar KAFKA_OPTS
+else
+    JMX_BASE_PORT=11000 # Puerto base, JMX_PORT = JMX_BASE_PORT + NODE_ID
+    JMX_PORT=$((JMX_BASE_PORT + NODE_ID))
+
+    # Construir el argumento del javaagent: =puerto:/ruta/config (o =puerto:)
+    JMX_JAVAAGENT_ARG="-javaagent:$JMX_AGENT_PATH=$JMX_PORT"
+    if [ -n "$JMX_CONFIG_FILE" ]; then
+        JMX_JAVAAGENT_ARG="${JMX_JAVAAGENT_ARG}:${JMX_CONFIG_FILE}" # Añadir : y la ruta del archivo
+    else
+        JMX_JAVAAGENT_ARG="${JMX_JAVAAGENT_ARG}:" # Si no hay archivo, añadir solo el :
+    fi
+
+
+    # Añadir el argumento del javaagent a KAFKA_OPTS
+    if [ -z "$KAFKA_OPTS" ]; then
+      export KAFKA_OPTS="$JMX_JAVAAGENT_ARG"
+    else
+      export KAFKA_OPTS="$KAFKA_OPTS $JMX_JAVAAGENT_ARG" # Añadir un espacio antes por si ya hay opciones
+    fi
+
+    echo "DEBUG: JMX Exporter: Configurado en puerto $JMX_PORT para node.id=$NODE_ID." >&2
+    echo "DEBUG: JMX Exporter: KAFKA_OPTS resultante: '$KAFKA_OPTS'" >&2
+fi
+
+# --- FIN DE MODIFICACIÓN PARA JMX EXPORTER ---
+````
 Antes de arrancar los servicios del controller y los brokers,necesitamos iniciar Kafka.Por ello vamos a generar un identificador único para el clúster.Este ID se va a utilizar para cada uno de los nodos (controller y brokers)para identificarse como parte del mismo clúster
 
 Generamos el ID del clúster
@@ -260,7 +327,7 @@ Iniciamos los server(1 controller y 2 brokers) cada uno en una terminal distinta
 ## 5.4 Creamos el Topic Kafka
 En esta fase, procedemos a la creación del tópico principal de Kafka donde se publicarán todos los eventos generados por nuestro productor de datos en tiempo real. Este tópico se denominará air-quality, ya que su función será centralizar la información relacionada con la calidad del aire, tráfico, incendios y eventos especiales en distintas zonas de la ciudad.
 
-Dado que nuestra simulación abarca cuatro zonas geográficas distintas de Madrid (centro, residencial, industrial y suburbana), decidimos configurar el tópico con 4 particiones, de manera que cada una pueda gestionar de forma paralela y eficiente los eventos específicos de una zona. Esto mejora el rendimiento del sistema, permite mayor paralelización en el consumo de datos y facilita una asignación lógica de responsabilidades entre los consumidores.
+Dado que nuestra simulación abarca cuatro zonas geográficas distintas de Madrid (centro, residencial, industrial y suburbana), decidimos configurar el tópico con 4 particiones, de manera que cada una pueda gestionar de forma paralela y eficiente los eventos específicos de una zona. Esto mejora el rendimiento del sistema,permite mayor paralelización en el consumo de datos y facilita una asignación lógica de responsabilidades entre los consumidores.
 Además, se ha definido un factor de replicación de 2, con el objetivo de garantizar una mayor tolerancia a fallos. Esto significa que cada partición estará replicada en al menos dos nodos del clúster, lo cual asegura disponibilidad incluso si uno de los brokers falla.
 ````
 /opt/kafka_2.13-4.0.0/bin/kafka-topics.sh --create --topic air-quality --bootstrap-server 192.168.11.10:9094 --replication-factor 2 --partitions 4
@@ -279,8 +346,29 @@ Para comprobar que el tópico ha sido creado correctamente y está activo en nue
 
 ## 5.6 Creación del producer y del consumer
 Vamos a crear el productor Kafka que es el componente encargado de simular la generación de datos que normalmente serían capturados por sensores distribuidos en las cuatro zonas de Madrid: centro, residencial, industrial y suburbana. Este productor, implementado en Python, genera eventos sintéticos que incluyen variables como la calidad del aire, el conteo de vehículos, incendios activos y eventos especiales, y los envía en tiempo real al tópico air-quality de Kafka.
+Tenemos además varias condiciones para que podemos simular bien nuestros datos y se acerquen lo más posible a la realidad.
+Vamos a tener en cuenta esta lógica en la simulación.
+---
 
-Este proceso simula el comportamiento de sensores reales que envían datos periódicos, permitiéndonos realizar pruebas y análisis de manera controlada y repetible.
+* Horario de simulación
+El sistema inicia la simulación a las 9:00 de la mañana del día 2 de enero de 2025 que es jueves. Cada segundo en el mundo real representa cinco minutos en el tiempo simulado.
+
+* Condiciones de tráfico
+Las condiciones del tráfico son un factor importante para el cálculo del AQI (índice de calidad del aire). Se tienen en cuenta dos aspectos principales: el día de la semana y la hora del día.
+
+Durante los días de semana, se considera que hay horas punta (a las 8, 9, 14, 15 y 20 horas), donde hay más tráfico en el centro de la ciudad. Durante los fines de semana,el tráfico disminuye.Si el momento actual de la simulación coincide con una hora punta , se clasifica como condición de tráfico “peak”, si es fin de semana, se clasifica como “weekend”, y en los demás casos como “normal”.
+
+Cada zona dispone de diferentes condiciones.Por ejemplo,en el centro de Madrid se registra un mayor número de vehículos durante las horas punta,mientras que en zonas suburbanas la variación es mínima.
+
+* Factor industrial
+En las zonas industriales,este factor tiene una influencia mucho mayor.Es en estas áreas donde se concentra la mayor emisión de contaminantes debido a la actividad de fábricas y procesos industriales. Por lo tanto, son las zonas donde más se notará el impacto en la calidad del aire.
+
+* Incendios forestales 
+Los incendios son otro factor muy importante en esta simulación.Cada zona tiene asignada una probabilidad específica de que ocurra un incendio.Por ejemplo,en las zonas suburbanas es más probable que se originen incendios.
+
+* Eventos especiales
+Solo en la zona del centro se simulan eventos especiales como conciertos y partidos de fútbol. Cuando ocurre uno de estos eventos,se incrementa el número de vehículos en la zona y se eleva el AQI debido al aumento del tráfico.
+
 Déspues necesitamos un consumer que lea los eventos del topic air-quality. Este consumer está implementado en PySpark Structured Streaming para poder analizar los datos de forma continua y reactiva.
 El consumer :
 Lee el flujo de mensajes desde Kafka.
@@ -329,7 +417,6 @@ CREATE TABLE air_quality_events (
 ![image](https://github.com/user-attachments/assets/112a9eec-10c7-47d0-ae86-0c5d33b21928)
 
 
-
 ## 5.7 Ejecutamos el Consumer
 
 Es fundamental iniciar el consumidor antes de poner en marcha el productor. Esto asegura que el consumer esté activo desde el inicio del flujo de datos y no se pierda ninguna información emitida por el productor.
@@ -340,7 +427,7 @@ PYTHONPATH=$HOME/.local/lib/python3.10/site-packages spark-submit --packages org
 ````
 ## 5.8 Ejecutamos el Producer Kafka
 
-Una vez que el consumidor está corriendo y escuchando el stream, procedemos a iniciar el productor. El producer simula la generación y envío de datos sintéticos desde las distintas zonas de la ciudad, alimentando el flujo que será consumido y analizado.
+Una vez que el consumidor está corriendo y escuchando el stream, procedemos a iniciar el productor.El producer simula la generación y envío de datos sintéticos desde las distintas zonas de la ciudad, alimentando el flujo que será consumido y analizado.
 Para lanzar el productor ejecutamos:
 ````
 python3 /opt/kafka/proyecto_MLU/data_stream/producer.py
@@ -392,8 +479,16 @@ Para comenzar abrimos PowerBI y seleccionamos la opción de conectamos a una bas
 
 ![image](https://github.com/user-attachments/assets/544aaaba-3959-4da6-853d-dd6b1b6088a7)
 
+````
+AQI Promedio por Zona = 
+AVERAGEX(
+    VALUES('kafka_air_quality air_quality_events'[zone]),
+    CALCULATE(AVERAGE('kafka_air_quality air_quality_events'[pollution_aqius]))
+)
+````
+
 ## 1. Descripción
-Se presentan los datos sobre el Índice de Calidad del Aire (AQI) promedio y su distribución porcentual en cuatro zonas distintas de Madrid, obtenidos a través de un sistema de monitoreo en tiempo real con datos sintéticos.
+Se presentan los datos sobre el Índice de Calidad del Aire (AQI) promedio y su distribución porcentual en cuatro zonas distintas de Madrid.
 
 ## 2. Datos Generales
 El análisis revela marcadas diferencias en la calidad del aire entre las zonas monitoreadas:
@@ -409,19 +504,21 @@ Los datos demuestran claramente cómo los factores urbanos e industriales afecta
 - **Suburbana (AQI ≈9)**: Registra la mejor calidad de aire, beneficiada por menor densidad poblacional y mayor presencia de áreas verdes.
 
 ## 4. Interpretación de Resultados
-Este patrón de distribución confirma las hipótesis iniciales del proyecto:
-1. **Impacto de la actividad humana**: Las zonas con mayor intervención antropogénica (industrial y centro) muestran claramente los peores indicadores.
-2. **Efecto del tráfico vehicular**: La similitud entre centro e industrial sugiere que el tráfico puede ser tan contaminante como la actividad industrial.
-3. **Beneficios de la planificación urbana**: La zona residencial, aunque urbana, muestra valores significativamente mejores, posiblemente por mejor planificación y menores factores contaminantes.
-4. **Ventajas de las áreas periféricas**: La zona suburbana confirma que alejarse de los núcleos urbanos principales mejora notablemente la calidad del aire.
 
-Estos resultados subrayan la necesidad de políticas diferenciadas por zona:
-- Medidas estrictas de control de emisiones industriales
-- Restricciones de tráfico en el centro urbano
-- Incentivos para mantener bajos los niveles en zonas residenciales
-- Protección de las áreas suburbanas como pulmones urbanos
+Los datos confirman lo esperado:
 
-El sistema implementado demuestra ser efectivo para identificar patrones espaciales de contaminación, permitiendo una toma de decisiones basada en datos en tiempo cuasi-real.
+1. **Actividad humana**: Las zonas industrial y centro tienen peor calidad del aire por fábricas y tráfico.
+2. **Tráfico**: El centro es casi tan contaminado como la zona industrial.
+3. **Planeación urbana**: La zona residencial tiene mejor aire, posiblemente por mejor diseño urbano.
+4. **Zonas alejadas**: La suburbana tiene el mejor aire gracias a menos población y más naturaleza.
+
+### Recomendaciones
+
+* Controlar las emisiones en zonas industriales.
+* Reducir el tráfico en el centro.
+* Cuidar la calidad del aire en zonas residenciales.
+* Proteger las zonas suburbanas como espacios verdes.
+
 
 ## 6.2 Análisis de Calidad del Aire (AQI) en Zonas Industriales
 
@@ -537,6 +634,20 @@ Este análisis demuestra que, aunque la zona suburbana disfruta normalmente de l
 
 ## 6.4  Promedio de Vehículos por Minuto y AQI por Zona
 
+````
+Avg Vehiculo Por Minuto = AVERAGEX(
+    VALUES('kafka_air_quality air_quality_events'[ts]),
+    CALCULATE(AVERAGE('kafka_air_quality air_quality_events'[vehicles_passed]))
+)
+````
+````
+AQI Promedio por Zona = 
+AVERAGEX(
+    VALUES('kafka_air_quality air_quality_events'[zone]),
+    CALCULATE(AVERAGE('kafka_air_quality air_quality_events'[pollution_aqius]))
+)
+````
+
 ### 1. Descripción General  
 El gráfico muestra dos métricas clave para tres zonas distintas (center, residential, suburb,industrial):  
 - **Avg Vehículo Por Minuto**: Número promedio de vehículos que transitan por minuto.  
@@ -575,77 +686,68 @@ El gráfico actual proporciona una estructura potencialmente útil para analizar
 ![image](https://github.com/user-attachments/assets/ba3605f6-c018-4555-ab64-de2be18b5f09)
 
 
-![image](https://github.com/user-attachments/assets/3b9d1532-e11d-4c4b-83c2-b3a1139cfcbc)
 
+
+![image](https://github.com/user-attachments/assets/3b9d1532-e11d-4c4b-83c2-b3a1139cfcbc)
+Creamos una nueva columna
+````
+Día de la semana = 
+VAR FechaConvertida = DATEVALUE(LEFT([ts], 10)) // Convierte solo la parte de fecha
+VAR FechaBase = DATE(YEAR(FechaConvertida), 1, 2) // 2 de enero del mismo año
+VAR DiasDiferencia = DATEDIFF(FechaBase, FechaConvertida, DAY)
+VAR DiaSemanaNum = MOD(DiasDiferencia + 4, 7) + 1
+RETURN
+SWITCH(
+    DiaSemanaNum,
+    1, "Domingo",
+    2, "Lunes",
+    3, "Martes",
+    4, "Miércoles",
+    5, "Jueves",
+    6, "Viernes",
+    7, "Sábado",
+    "Desconocido"
+)
+````
+
+````
+AQI Promedio por Zona = 
+AVERAGEX(
+    VALUES('kafka_air_quality air_quality_events'[zone]),
+    CALCULATE(AVERAGE('kafka_air_quality air_quality_events'[pollution_aqius]))
+)
+````
 
 
  ## 7.Prometehus
- 
-Creamos 
-````
-nano /opt/kafka_2.13-4.0.0/bin/kafka-server-start_proyecto_MLU.sh
-````
 
-cp /opt/prometheus-2.53.4/prometheus.yml /opt/prometheus-2.53.4/prometheus_proyecto_MLU.yml
+En esta etapa, ponemos en marcha Prometheus para comenzar a recolectar métricas de nuestras fuentes configuradas.
 
-````
-nano /opt/prometheus-2.53.4/prometheus_proyecto_MLU.yml
-````
-Iniciamos Prometheus. Vamos a su directorio ````/opt/prometheus-2.53.4. ````Levantamos prometheus
+1.Iniciar Prometheus
+
+Vamos a su directorio ````/opt/prometheus-2.53.4 ````
+
+Luego, arrancamos Prometheus usando nuestro archivo de configuración personalizado:
 ````
 ./prometheus --config.file=prometheus_proyecto_MLU.yml
 ````
+2. Verificar Endpoints de Métricas
+   
+Una vez iniciado, comprobamos que nuestros endpoints están sirviendo correctamente las métricas:
 ````
 curl http://localhost:11001/metrics
 curl http://localhost:11002/metrics
 curl http://localhost:11003/metrics
 ````
+3. Confirmar Captura de Prometheus
+   
+Desde el navegador del host , accedemos a la interfaz de Prometheus:
 
+````http://192.168.56.10:9090/targets````
 
-````
-# my global config
-global:
-  scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
-  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
-  # scrape_timeout is set to the global default (10s).
-
-# Alertmanager configuration
-alerting:
-  alertmanagers:
-    - static_configs:
-        - targets:
-          # - alertmanager:9093
-
-# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
-rule_files:
-  # - "first_rules.yml"
-  # - "second_rules.yml"
-
-# A scrape configuration containing exactly one endpoint to scrape:
-# Here it's Prometheus itself.
-scrape_configs:
-  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
-  - job_name: "prometheus"
-
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
-
-    static_configs:
-      - targets: ["localhost:9090"]
-
-  - job_name: "kafka"
-
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
-
-    static_configs:
-      - targets: [
-        "localhost:11001", # Controller 1 (node.id=1)
-        "localhost:11002", # Broker 1 (node.id=2)
-        "localhost:11003", # Broker 3 (node.id=3)
-      ]
-````
-Comprobamos que prometheus captura correctamente el endpoint ````http://192.168.56.10:9090/targets```` (recuerda que accedemos desde nuestro host con esta configuración de red a nuestra máquina)
+4. Visualización
+   
+Las siguientes imágenes muestran la interfaz de Prometheus funcionando correctamente, con los targets en estado activo ("UP"):
 
 ![image](https://github.com/user-attachments/assets/f661253c-c5f8-4228-8281-1dbf0f7d63a1)
 
@@ -655,18 +757,31 @@ Comprobamos que prometheus captura correctamente el endpoint ````http://192.168.
 
 ## 8.Graphana
 
+En este apartado instalamos y configuramos Grafana, la herramienta de visualización de métricas que se integra con Prometheus.
+
+1. Instalación de Dependencias
+   
+Primero, instalamos los paquetes necesarios para que Grafana funcione correctamente:
 ````
 sudo apt-get install -y adduser libfontconfig1 musl
 ````
+2. Descargar e Instalar Grafana Enterprise
+   
+Descargamos el paquete .deb de Grafana Enterprise versión 12.0.1:
 ````
 wget https://dl.grafana.com/enterprise/release/grafana-enterprise_12.0.1_amd64.deb
 ````
+Instalamos el paquete:
 ````
 sudo dpkg -i grafana-enterprise_12.0.1_amd64.deb
 ````
+Esto instalará Grafana como un servicio del sistema.
 
 ![image](https://github.com/user-attachments/assets/82de1195-7d43-45f6-b290-cdba015fd09c)
 
+3. Iniciar y Habilitar el Servicio
+   
+Recargamos los servicios del sistema y configuramos Grafana para que inicie automáticamente con el sistema:
 ````
 
 sudo systemctl daemon-reload
@@ -679,10 +794,23 @@ sudo systemctl status grafana-server.service
 
 ![image](https://github.com/user-attachments/assets/c32af78e-fbf2-494e-8795-423c7919bf4c)
 
-Abrimos el navegador
+4. Acceso a la Interfaz Web
+   
+Una vez iniciado el servicio, accedemos a Grafana desde el navegador web:
 ````
 http://192.168.56.10:3000/dashboards
 ````
+5. Visualización y Paneles
+   
+Al ingresar por primera vez, Grafana solicitará iniciar sesión (usuario: admin, contraseña por defecto: admin, luego pedirá cambiarla). Desde ahí, se pueden:
+
+Crear dashboards personalizados.
+
+Agregar Prometheus como fuente de datos.
+
+Visualizar las métricas capturadas de forma gráfica.
+
+Aquí vemos capturas del panel de control y algunos ejemplos de dashboards en funcionamiento:
 
 ![image](https://github.com/user-attachments/assets/0472e088-f189-4951-944a-2cefef7fe166)
 

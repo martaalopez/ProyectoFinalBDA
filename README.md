@@ -575,6 +575,10 @@ El gráfico actual proporciona una estructura potencialmente útil para analizar
 ![image](https://github.com/user-attachments/assets/ba3605f6-c018-4555-ab64-de2be18b5f09)
 
 
+![image](https://github.com/user-attachments/assets/3b9d1532-e11d-4c4b-83c2-b3a1139cfcbc)
+
+
+
  ## 7.Prometehus
  
 Creamos 

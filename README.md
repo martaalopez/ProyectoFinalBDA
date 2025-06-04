@@ -1,7 +1,99 @@
 # Proyecto Final BDA 2024-25
 
  <!-- ![ChatGPT Image 26 abr 2025, 12_03_57](https://github.com/user-attachments/assets/6102e595-1fdc-4c95-bc74-89ab9ad7bd9c)
+
 -->
+
+# Proyecto Final BDA 2024-25
+
+<!-- ![ChatGPT Image 26 abr 2025, 12:03:57](https://github.com/user-attachments/assets/6102e595-1fdc-4c95-bc74-89ab9ad7bd9c) -->
+
+## Índice
+
+1. [Introducción](#1-introducción)
+2. [Fuente de Información](#2-fuente-de-información)
+3. [Requisitos](#3-requisitos)
+4. [Configuración del Clúster de Kafka](#4-configuración-del-clúster-de-kafka)
+5. [Levantamos Sistemas](#5-levantamos-sistemas)
+   - [5.1 Levantamos HDFS](#51-levantamos-hdfs-hadoop-distributed-file-system)
+   - [5.2 Arrancamos Spark Master y Workers](#52-arrancamos-spark-master-y-workers)
+   - [5.3 Iniciamos Kafka](#53-iniciamos-kafka-controller--brokers)
+   - [5.4 Creamos el Topic Kafka](#54-creamos-el-topic-kafka)
+   - [5.5 Creación de la tabla en MySQL](#55-creación-de-la-tabla-en-mysql)
+   - [5.6 Creación del producer y del consumer](#56-creación-del-producer-y-del-consumer)
+     - [5.6.1 Ejecutamos el Consumer](#561-ejecutamos-el-consumer)
+     - [5.6.2 Ejecutamos el Producer Kafka](#562-ejecutamos-el-producer-kafka)
+     - [5.6.3 Visualizamos la información](#563-visualizamos-la-información)
+6. [Visualización en PowerBI](#6-visualización-en-powerbi)
+   - [6.1 Promedio de AQI](#61-promedio-de-aqi)
+   - [6.2 Análisis de Calidad del Aire (AQI) en Zonas Industriales](#62-análisis-de-calidad-del-aire-aqi-en-zonas-industriales)
+   - [6.3 Análisis del Impacto de Incendios en la Calidad del Aire](#63-análisis-del-impacto-de-incendios-en-la-calidad-del-aire-aqi-en-zona-suburbana)
+   - [6.4 Promedio de Vehículos por Minuto y AQI por Zona](#64-promedio-de-vehículos-por-minuto-y-aqi-por-zona)
+   - [6.5 Distribución del AQI por Día de la Semana](#65-distribución-del-aqi-por-día-de-la-semana)
+7. [Prometheus](#7-prometehus)
+8. [Grafana](#8-graphana)
+
+## 1. Introducción
+[Contenido de la introducción...]
+
+## 2. Fuente de Información
+[Contenido sobre las fuentes de información...]
+
+## 3. Requisitos
+[Contenido sobre los requisitos...]
+
+## 4. Configuración del Clúster de Kafka
+[Contenido sobre la configuración de Kafka...]
+
+## 5. Levantamos Sistemas
+### 5.1 Levantamos HDFS (Hadoop Distributed File System)
+[Contenido sobre HDFS...]
+
+### 5.2 Arrancamos Spark Master y Workers
+[Contenido sobre Spark...]
+
+### 5.3 Iniciamos Kafka (Controller + Brokers)
+[Contenido sobre inicio de Kafka...]
+
+### 5.4 Creamos el Topic Kafka
+[Contenido sobre creación de topics...]
+
+### 5.5 Creación de la tabla en MySQL
+[Contenido sobre MySQL...]
+
+### 5.6 Creación del producer y del consumer
+#### 5.6.1 Ejecutamos el Consumer
+[Contenido sobre el consumer...]
+
+#### 5.6.2 Ejecutamos el Producer Kafka
+[Contenido sobre el producer...]
+
+#### 5.6.3 Visualizamos la información
+[Contenido sobre visualización...]
+
+## 6. Visualización en PowerBI
+### 6.1 Promedio de AQI
+[Contenido sobre AQI promedio...]
+
+### 6.2 Análisis de Calidad del Aire (AQI) en Zonas Industriales
+[Contenido sobre zonas industriales...]
+
+### 6.3 Análisis del Impacto de Incendios en la Calidad del Aire (AQI) en Zona Suburbana
+[Contenido sobre incendios...]
+
+### 6.4 Promedio de Vehículos por Minuto y AQI por Zona
+[Contenido sobre tráfico...]
+
+### 6.5 Distribución del AQI por Día de la Semana
+[Contenido sobre días de la semana...]
+
+## 7. Prometheus
+[Contenido sobre Prometheus...]
+
+## 8. Grafana
+[Contenido sobre Grafana...]
+
+
 ## 1.Introducción
 
 Hoy en día, la calidad del aire y la contaminación son factores ambientales que generan gran preocupación en nuestra sociedad.

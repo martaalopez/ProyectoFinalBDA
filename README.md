@@ -321,7 +321,6 @@ Generamos el ID del clúster
 ````
 #Generamos un cluster UUID y los IDs de los controllers
 KAFKA_CLUSTER_ID="$(/opt/kafka_2.13-4.0.0/bin/kafka-storage.sh random-uuid)"
-CONTROLLER_1_UUID="$(/opt/kafka_2.13-4.0.0/bin/kafka-storage.sh random-uuid)"
 echo $KAFKA_CLUSTER_ID
 ````
 ![image](https://github.com/user-attachments/assets/eb9b2605-8862-43f8-bb7d-7f7c47474a31)

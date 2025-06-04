@@ -13,284 +13,185 @@ producer = KafkaProducer(
 ZONE_STATE = {}
 
 ZONES = {
-    "residential": {"latitude": 40.4168, "longitude": -3.7038, "traffic_factor": 0.5, "fire_probability": 0.1, "industry_factor": 0.2, "vehicle_rate": 0.02},
-    "industrial":  {"latitude": 40.4168, "longitude": -3.7178, "traffic_factor": 1.5, "fire_probability": 0.05, "industry_factor": 2.0, "vehicle_rate": 0.1},
-    "center":      {"latitude": 40.4198, "longitude": -3.7028, "traffic_factor": 2.0, "fire_probability": 0.15, "industry_factor": 1.0, "vehicle_rate": 0.2},
-    "suburb":      {"latitude": 40.4567, "longitude": -3.7314, "traffic_factor": 0.3, "fire_probability": 0.25, "industry_factor": 0.5, "vehicle_rate": 0.01},
+    "residential": {"latitude": 40.519799, "longitude": -3.633613, "traffic_factor": 0.5, "fire_probability": 0.05, "industry_factor": 0.1, "vehicle_rate": 0.05},
+    "industrial":  {"latitude": 40.348246, "longitude": -3.799463, "traffic_factor": 1.5, "fire_probability": 0.01, "industry_factor": 2.0, "vehicle_rate": 0.2},
+    "center":      {"latitude": 40.419285, "longitude": -3.696985, "traffic_factor": 2.5, "fire_probability": 0.01, "industry_factor": 0.3, "vehicle_rate": 0.3},
+    "suburb":      {"latitude": 40.613517, "longitude": -3.848663, "traffic_factor": 0.1, "fire_probability": 0.3, "industry_factor": 0.0, "vehicle_rate": 0.01},
 }
 
 for zone in ZONES:
     ZONE_STATE[zone] = {
-        "aqi": random.randint(50, 80),
+        "aqi": random.randint(30, 60),
         "fire_active": False,
         "fire_end_time": None,
         "fire_intensity": None,
         "vehicles_count": 0
     }
 
-SPECIAL_EVENTS = {
-    (2024, 1, 1, 18): "concert",
-    (2024, 1, 1, 21): "football_match"
-}
+SPECIAL_EVENTS = [
+    {
+        "name": "concert",
+        "start": datetime(2025, 1, 3, 18, 0),
+        "end": datetime(2025, 1, 3, 19, 0)
+    },
+    {
+        "name": "football_match",
+        "start": datetime(2025, 1, 4, 20, 0),
+        "end": datetime(2025, 1, 4, 21, 0)
+    }
+]
 
-SIM_TIME = datetime(2024, 1, 1, 12, 0, 0)
-SIM_STEP = timedelta(minutes=1)
-REAL_SLEEP_TIME = 3
+
+
+SIM_TIME = datetime(2025, 1, 2, 9, 0, 0)  # Jueves 2 a las 9:00 directamente
+SIM_STEP = timedelta(minutes=5)  # Cada segundo real simula 5 minutos
+REAL_SLEEP_TIME = 1  # 1 segundo real = 5 minutos simulados
+
 
 def check_special_event(sim_time):
-    return SPECIAL_EVENTS.get((sim_time.year, sim_time.month, sim_time.day, sim_time.hour))
+    for event in SPECIAL_EVENTS:
+        if event["start"] <= sim_time < event["end"]:
+            return event["name"]
+    return None
+
 
 def get_traffic_condition(sim_dt):
     is_weekend = sim_dt.weekday() >= 5
-    return "peak" if sim_dt.hour in [8, 9, 14, 15, 20] and not is_weekend else ("weekend" if is_weekend else "normal")
+    peak_hours = [8, 9, 14, 15, 20]
+    return "peak" if not is_weekend and sim_dt.hour in peak_hours else "weekend" if is_weekend else "normal"
 
 def generate_event(zone_name, zone, sim_time):
-    ts = sim_time.isoformat()
     state = ZONE_STATE[zone_name]
-    vehicles_passed = int(zone["vehicle_rate"])
-    state["vehicles_count"] += vehicles_passed
+    ts = sim_time.isoformat()
+    condition = get_traffic_condition(sim_time)
 
-    fire_duration = random.randint(5, 10) if zone_name == "suburb" else random.randint(3, 6)
+    if zone_name == "center":
+        vehicles_passed = random.randint(30, 50) if condition == "peak" else random.randint(10, 20)
+    elif zone_name == "industrial":
+        vehicles_passed = random.randint(20, 40) if condition == "peak" else random.randint(10, 20)
+    elif zone_name == "residential":
+        vehicles_passed = random.randint(10, 15) if condition == "peak" else random.randint(5, 10)
+    else:  # suburb
+        vehicles_passed = random.randint(1, 5)
+
+    # Decay de vehículos + nuevos
+    state["vehicles_count"] = int(state["vehicles_count"] * 0.9) + vehicles_passed
+
+    # Incendios
     if not state["fire_active"] and random.random() < zone["fire_probability"]:
         state["fire_active"] = True
-        state["fire_end_time"] = sim_time + timedelta(minutes=fire_duration)
+        state["fire_end_time"] = sim_time + timedelta(hours=2)
         state["fire_intensity"] = random.choice(["low", "medium", "high"])
     elif state["fire_active"] and sim_time >= state["fire_end_time"]:
         state["fire_active"] = False
         state["fire_end_time"] = None
         state["fire_intensity"] = None
 
-    special_event = check_special_event(sim_time)
+    special_event = check_special_event(sim_time) if zone_name == "center" else None
     if special_event:
-        vehicles_extra = random.randint(30, 100)
-        state["vehicles_count"] += vehicles_extra
+        state["vehicles_count"] += random.randint(30, 50)
 
-    aqi_change = random.randint(-4, 4)
+    aqi = state["aqi"]
+    delta = 0
+
+    # Vehículos
+    delta += int(state["vehicles_count"] * 0.02)
+
+    # Tráfico en hora punta
+    if condition == "peak":
+        delta += 10
+
+    # Incendios
     if state["fire_active"]:
-        aqi_change += {"low": 5, "medium": 10, "high": 20}[state["fire_intensity"]]
+        delta += {"low": 5, "medium": 10, "high": 20}[state["fire_intensity"]]
     else:
-        aqi_change -= 2
+        delta -= 2
 
-    aqi_change += int(state["vehicles_count"] * 0.01)
+    # Factor industrial solo si aplica por hora y zona
+    if zone_name == "industrial" and sim_time.hour in [9, 10, 11, 12]:
+        delta += random.randint(30, 50)
+    elif zone_name in ["residential", "center"]:
+        delta += int(zone["industry_factor"] * 5)
 
-    if zone_name == "industrial":
-        aqi_change += int(50 * zone["industry_factor"])
-
+    # Evento especial
     if special_event:
-        aqi_change += 10
+        delta += 10
 
-    accident_chance = 0.01 if zone_name == "center" else 0.005
-    accident_occurred = random.random() < accident_chance
-    if accident_occurred:
-        aqi_change += 15
+    # Accidentes
+    if random.random() < (0.01 if zone_name == "center" else 0.003):
+        delta += 15
 
-    state["aqi"] = max(10, min(500, state["aqi"] + aqi_change))
+    # AQI final
+    new_aqi = max(10, min(200, aqi + delta))
 
-    # EVENTO PLANO (sin anidaciones)
-    event = {
+    # Normalizar según zona
+    if zone_name == "suburb":
+        if state["fire_active"]:
+            new_aqi = min(max(new_aqi, 50), 100)
+        else:
+            new_aqi = min(new_aqi, 50)
+
+    elif zone_name == "residential":
+        new_aqi = min(new_aqi, 100)
+
+    elif zone_name == "industrial":
+        if sim_time.hour in [9, 10, 11, 12]:
+            new_aqi = min(max(new_aqi, 150), 200)
+        else:
+            new_aqi = min(max(new_aqi, 101), 150)
+
+    elif zone_name == "center":
+        if condition == "peak":
+            new_aqi = min(max(new_aqi, 150), 200)
+        else:
+            new_aqi = min(max(new_aqi, 101), 150)
+
+    state["aqi"] = new_aqi
+
+        # Aplicar condiciones de fin de semana
+    if sim_time.weekday() >= 5:  # 5=sábado, 6=domingo
+        if zone_name == "center":
+            new_aqi = min(max(new_aqi, 100), 115)
+        elif zone_name == "industrial":
+            new_aqi = min(max(new_aqi, 50), 100)
+
+
+
+    return {
         "city": "Madrid",
         "country": "Spain",
         "ts": ts,
-        "pollution_aqius": state["aqi"],
+        "hour": sim_time.strftime("%H:%M:%S"),
+        "pollution_aqius": new_aqi,
         "pollution_mainus": random.choice(["p1", "p2", "p3"]),
         "vehicles_count": state["vehicles_count"],
         "vehicles_passed": vehicles_passed,
-        "industrial_activity": (
-            "high" if zone["industry_factor"] > 1
-            else "moderate" if zone["industry_factor"] == 1
-            else "low"
-        ),
+        "industrial_activity": "high" if zone["industry_factor"] > 1 else "moderate" if zone["industry_factor"] > 0 else "low",
         "fire_active": state["fire_active"],
         "fire_intensity": state["fire_intensity"] if state["fire_active"] else "none",
-        "accident": "yes" if accident_occurred else "no",
+        "accident": "yes" if random.random() < 0.01 else "no",
         "latitude": zone["latitude"],
         "longitude": zone["longitude"],
         "zone": zone_name,
         "traffic_factor": zone["traffic_factor"],
         "fire_probability": zone["fire_probability"],
         "industry_factor": zone["industry_factor"],
-        "traffic_condition": get_traffic_condition(sim_time),
+        "traffic_condition": condition,
         "special_event": special_event if special_event else "none",
-        "updated_aqi": state["aqi"]
     }
-
-    return event
 
 def main():
     global SIM_TIME
     while True:
-        if SIM_TIME.hour >= 12:
+        if SIM_TIME.hour >= 9:
             for zone_name, zone in ZONES.items():
                 event = generate_event(zone_name, zone, SIM_TIME)
-                producer.send("air_quality", value=event)
+                producer.send("air-quality", value=event)
                 print(event)
 
             producer.flush()
-
         SIM_TIME += SIM_STEP
         time.sleep(REAL_SLEEP_TIME)
-
-if __name__ == "__main__":
-    main()
-
-
-
-from kafka import KafkaProducer
-from datetime import datetime, timedelta
-import random
-import json
-import time
-
-# Configurar el productor de Kafka
-producer = KafkaProducer(
-    bootstrap_servers='192.168.11.10:9094',
-    value_serializer=lambda v: json.dumps(v).encode('utf-8')
-)
-
-# Estado persistente de cada zona
-ZONE_STATE = {}
-
-ZONES = {
-    "residential": {"latitude": 40.4168, "longitude": -3.7038, "traffic_factor": 0.5, "fire_probability": 0.1, "industry_factor": 0.2, "vehicle_rate": 0.02},
-    "industrial":  {"latitude": 40.4168, "longitude": -3.7178, "traffic_factor": 1.5, "fire_probability": 0.05, "industry_factor": 2.0, "vehicle_rate": 0.1},
-    "center":      {"latitude": 40.4198, "longitude": -3.7028, "traffic_factor": 2.0, "fire_probability": 0.15, "industry_factor": 1.0, "vehicle_rate": 0.2},
-    "suburb":      {"latitude": 40.4567, "longitude": -3.7314, "traffic_factor": 0.3, "fire_probability": 0.25, "industry_factor": 0.5, "vehicle_rate": 0.01},
-}
-
-for zone in ZONES:
-    ZONE_STATE[zone] = {
-        "aqi": random.randint(50, 80),
-        "fire_active": False,
-        "fire_end_time": None,
-        "fire_intensity": None,
-        "vehicles_count": 0
-    }
-
-# Eventos especiales programados (hora exacta)
-SPECIAL_EVENTS = {
-    (2024, 1, 1, 18): "concert",
-    (2024, 1, 1, 21): "football_match"
-}
-
-# Tiempo de simulación
-SIM_TIME = datetime(2024, 1, 1, 12, 0, 0)
-SIM_STEP = timedelta(minutes=1)           # Cada iteración = 1 minuto simulado
-REAL_SLEEP_TIME = 3                       # Cada iteración = 3 segundos reales
-
-def check_special_event(sim_time):
-    return SPECIAL_EVENTS.get((sim_time.year, sim_time.month, sim_time.day, sim_time.hour))
-
-def get_traffic_condition(sim_dt):
-    is_weekend = sim_dt.weekday() >= 5
-    return "peak" if sim_dt.hour in [8, 9, 14, 15, 20] and not is_weekend else ("weekend" if is_weekend else "normal")
-
-def generate_event(zone_name, zone, sim_time):
-    ts = sim_time.isoformat()
-    state = ZONE_STATE[zone_name]
-    vehicles_passed = int(zone["vehicle_rate"])  # simplificado
-    state["vehicles_count"] += vehicles_passed
-
-    fire_duration = random.randint(5, 10) if zone_name == "suburb" else random.randint(3, 6)
-    if not state["fire_active"] and random.random() < zone["fire_probability"]:
-        state["fire_active"] = True
-        state["fire_end_time"] = sim_time + timedelta(minutes=fire_duration)
-        state["fire_intensity"] = random.choice(["low", "medium", "high"])
-    elif state["fire_active"] and sim_time >= state["fire_end_time"]:
-        state["fire_active"] = False
-        state["fire_end_time"] = None
-        state["fire_intensity"] = None
-
-    # EVENTO ESPECIAL
-    special_event = check_special_event(sim_time)
-    if special_event:
-        vehicles_extra = random.randint(30, 100)
-        state["vehicles_count"] += vehicles_extra
-
-    aqi_change = random.randint(-4, 4)
-
-    if state["fire_active"]:
-        aqi_change += {"low": 5, "medium": 10, "high": 20}[state["fire_intensity"]]
-    else:
-        aqi_change -= 2
-
-    aqi_change += int(state["vehicles_count"] * 0.01)
-
-    if zone_name == "industrial":
-        aqi_change += int(50 * zone["industry_factor"])
-
-    if special_event:
-        aqi_change += 10  # eventos especiales generan más contaminación
-
-    # PROBABILIDAD DE ACCIDENTE
-    accident_chance = 0.01 if zone_name == "center" else 0.005
-    accident_occurred = random.random() < accident_chance
-    if accident_occurred:
-        aqi_change += 15
-
-    state["aqi"] = max(10, min(500, state["aqi"] + aqi_change))
-    pollution = {
-        "aqius": state["aqi"],
-        "mainus": random.choice(["p1", "p2", "p3"])
-    }
-
-    event = {
-        "city": "Madrid",
-        "country": "Spain",
-        "ts": ts,
-        "pollution": pollution,
-        "traffic": {
-            "vehicles_count": state["vehicles_count"],
-            "vehicles_passed": vehicles_passed,
-            "industrial_activity": (
-                "high" if zone["industry_factor"] > 1
-                else "moderate" if zone["industry_factor"] == 1
-                else "low"
-            ),
-            "environmental_factors": {
-                "fire_active": state["fire_active"],
-                "fire_intensity": state["fire_intensity"] if state["fire_active"] else "none"
-            },
-            "accident": "yes" if accident_occurred else "no"
-        },
-        "location": {
-            "latitude": zone["latitude"],
-            "longitude": zone["longitude"]
-        },
-        "zone_conditions": {
-            "zone": zone_name,
-            "latitude": zone["latitude"],
-            "longitude": zone["longitude"],
-            "traffic_factor": zone["traffic_factor"],
-            "fire_probability": zone["fire_probability"],
-            "industry_factor": zone["industry_factor"],
-            "vehicles_count": state["vehicles_count"],
-            "fire_active": state["fire_active"]
-        },
-        "traffic_condition": get_traffic_condition(sim_time),
-        "special_event": special_event if special_event else "none",
-        "updated_aqi": state["aqi"]
-    }
-
-    return event
-
-def main():
-    global SIM_TIME
-    while True:
-        if SIM_TIME.hour >= 12:
-            all_events = []
-            for zone_name, zone in ZONES.items():
-                event = generate_event(zone_name, zone, SIM_TIME)
-                all_events.append(event)
-
-            for event in all_events:
-                producer.send("air_quality_topic", value=event)
-                producer.send("air_quality", value=event)
-                print(event)
-
-            producer.flush()
-
-        SIM_TIME += SIM_STEP  # avanzar 1 minuto simulado
-        time.sleep(REAL_SLEEP_TIME)  # esperar 3 segundos reales
 
 if __name__ == "__main__":
     main()

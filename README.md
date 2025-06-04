@@ -34,7 +34,7 @@
 8. [Grafana](#8-graphana)
 
 
-## 1.Introducción
+## 1. Introducción
 
 Hoy en día, la calidad del aire y la contaminación son factores ambientales que generan gran preocupación en nuestra sociedad.
 El tráfico diario de vehículos es una de las principales causas del deterioro de la calidad del aire.
@@ -43,7 +43,7 @@ Además,ciertos fenómenos naturales como los incendios forestales pueden tener 
 Esto puede hacer que existan consecuencias directas en la salud publica,un articulo  revela que 2000 niños mueren cada dia en el mundo por mal calidad del aire,por ello he decidido hacer una investigación que se enfoca en el monitoreo y análisis de los principales factores que afectan la calidad del aire,con el objetivo de identificar los eventos más frecuentes y críticos.A partir de estos datos,espero poder extraer conclusiones que contribuyan a diseñar soluciones eficientes para combatir este grave problema global.
   
 
-## 2.Fuente de Informacion
+## 2. Fuente de Información
 
 Para poder abarcar con todo esto vamos a apoyarnos en los datos proporcionados por la AirVisual API la cual ofrece información sobre el tiempo, la calidad del aire y los incendios activos,etc...
 Sin embargo,esta API presenta un problema:los datos se actualizan cada hora ,mientras que nuestro objetivo es realizar un monitoreo en tiempo real,actualizando los datos cada segundo.
@@ -95,7 +95,7 @@ Se ha actualizado Kafka a la versión 4.0.0,lo que introduce una mejora importan
 ![image](https://github.com/user-attachments/assets/1d2feb40-6772-4ea7-9e3f-e7edf1420f69)
 
 
-## 4.Configuración del Clúster de Kafka 
+## 4. Configuración del Clúster de Kafka
 1.Vamos a establecer todos los archivos de configuración en una carpeta llamada proyectoBDA_MLU,que en mi caso estará alojada en /opt/kafka/proyecto_MLU
 
 ![image](https://github.com/user-attachments/assets/e12ef486-f0bd-4ca7-b4fa-3a83788f20b7)
@@ -167,7 +167,7 @@ listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,
 log.dirs=/opt/kafka/proyecto_MLU/logs/broker2
 ````
 
-## 5.Levantamos sistemas 
+## 5. Levantamos Sistemas
 Vamos a activar todos los servicios para que nuestro flujo de datos pueda funcionar de manera correcta.
 
 ### 5.1 Levantamos HDFS (Hadoop Distributed File System)
@@ -374,39 +374,7 @@ Para comprobar que el tópico ha sido creado correctamente y está activo en nue
 ![image](https://github.com/user-attachments/assets/1ae0aafe-e850-437c-a781-9aa21d2dc3ba)
 
 
-### 5.6 Creación del producer y del consumer
-Vamos a crear el productor Kafka que es el componente encargado de simular la generación de datos que normalmente serían capturados por sensores distribuidos en las cuatro zonas de Madrid: centro, residencial, industrial y suburbana.Este productor,implementado en Python,genera eventos sintéticos que incluyen variables como la calidad del aire, el conteo de vehículos, incendios activos y eventos especiales, y los envía en tiempo real al tópico air-quality de Kafka.
-Tenemos además varias condiciones para que podemos simular bien nuestros datos y se acerquen lo más posible a la realidad.
-Vamos a tener en cuenta esta lógica en la simulación.
----
-
-* Horario de simulación
-El sistema inicia la simulación a las 9:00 de la mañana del día 2 de enero de 2025 que es jueves.Cada segundo en el mundo real representa cinco minutos en el tiempo simulado.
-
-* Condiciones de tráfico
-Las condiciones del tráfico son un factor importante para el cálculo del AQI (índice de calidad del aire).Se tienen en cuenta dos aspectos principales: el día de la semana y la hora del día.
-
-Durante los días de semana,se considera que hay horas punta (a las 8, 9, 14, 15 y 20 horas), donde hay más tráfico en el centro de la ciudad. Durante los fines de semana,el tráfico disminuye.Si el momento actual de la simulación coincide con una hora punta , se clasifica como condición de tráfico “peak”, si es fin de semana, se clasifica como “weekend”, y en los demás casos como “normal”.
-
-Cada zona dispone de diferentes condiciones.Por ejemplo,en el centro de Madrid se registra un mayor número de vehículos durante las horas punta,mientras que en zonas suburbanas la variación es mínima.
-
-* Factor industrial
-En las zonas industriales,este factor tiene una influencia mucho mayor.En estas áreas donde se concentra la mayor emisión de contaminantes debido a la actividad de las fábricas y procesos industriales. Por lo tanto, son las zonas donde más se notará el impacto en la calidad del aire.
-
-* Incendios forestales 
-Los incendios son otro factor muy importante en esta simulación.Cada zona tiene asignada una probabilidad específica de que ocurra un incendio.Por ejemplo,en las zonas suburbanas es más probable que se origine un incendio.
-
-* Eventos especiales
-Solo en la zona del centro se simulan eventos especiales como conciertos y partidos de fútbol. Cuando ocurre uno de estos eventos,se incrementa el número de vehículos en la zona y se eleva el AQI debido al aumento del tráfico.
-
-Déspues necesitamos un consumer que lea los eventos del topic air-quality.Este consumer está implementado en PySpark Structured Streaming para poder analizar los datos de forma continua y reactiva.
-El consumer :
-Lee el flujo de mensajes desde Kafka.
-Extrae y estructura los datos JSON recibidos.
-Imprime un resumen por microbatch en consola.
-Para facilitar la conexión con Power BI,además de almacenar los datos en HDFS,hemos creado una tabla en MySQL.Esto nos permite guardar y actualizar los datos generados de forma más sencilla y accesible para herramientas de análisis.
-
-### 5.6.1 Creación de la tabla en MYSQL
+### 5.5 Creación de la tabla en MySQL
 
 Primero, accedemos a la consola de MySQL con privilegios de administrador utilizando el siguiente comando:
 ````
@@ -447,7 +415,39 @@ CREATE TABLE air_quality_events (
 ![image](https://github.com/user-attachments/assets/112a9eec-10c7-47d0-ae86-0c5d33b21928)
 
 
-### 5.7 Ejecutamos el Consumer
+### 5.6 Creación del producer y del consumer
+Vamos a crear el productor Kafka que es el componente encargado de simular la generación de datos que normalmente serían capturados por sensores distribuidos en las cuatro zonas de Madrid: centro, residencial, industrial y suburbana.Este productor,implementado en Python,genera eventos sintéticos que incluyen variables como la calidad del aire, el conteo de vehículos, incendios activos y eventos especiales, y los envía en tiempo real al tópico air-quality de Kafka.
+Tenemos además varias condiciones para que podemos simular bien nuestros datos y se acerquen lo más posible a la realidad.
+Vamos a tener en cuenta esta lógica en la simulación.
+---
+
+* Horario de simulación
+El sistema inicia la simulación a las 9:00 de la mañana del día 2 de enero de 2025 que es jueves.Cada segundo en el mundo real representa cinco minutos en el tiempo simulado.
+
+* Condiciones de tráfico
+Las condiciones del tráfico son un factor importante para el cálculo del AQI (índice de calidad del aire).Se tienen en cuenta dos aspectos principales: el día de la semana y la hora del día.
+
+Durante los días de semana,se considera que hay horas punta (a las 8, 9, 14, 15 y 20 horas), donde hay más tráfico en el centro de la ciudad. Durante los fines de semana,el tráfico disminuye.Si el momento actual de la simulación coincide con una hora punta , se clasifica como condición de tráfico “peak”, si es fin de semana, se clasifica como “weekend”, y en los demás casos como “normal”.
+
+Cada zona dispone de diferentes condiciones.Por ejemplo,en el centro de Madrid se registra un mayor número de vehículos durante las horas punta,mientras que en zonas suburbanas la variación es mínima.
+
+* Factor industrial
+En las zonas industriales,este factor tiene una influencia mucho mayor.En estas áreas donde se concentra la mayor emisión de contaminantes debido a la actividad de las fábricas y procesos industriales. Por lo tanto, son las zonas donde más se notará el impacto en la calidad del aire.
+
+* Incendios forestales 
+Los incendios son otro factor muy importante en esta simulación.Cada zona tiene asignada una probabilidad específica de que ocurra un incendio.Por ejemplo,en las zonas suburbanas es más probable que se origine un incendio.
+
+* Eventos especiales
+Solo en la zona del centro se simulan eventos especiales como conciertos y partidos de fútbol. Cuando ocurre uno de estos eventos,se incrementa el número de vehículos en la zona y se eleva el AQI debido al aumento del tráfico.
+
+Déspues necesitamos un consumer que lea los eventos del topic air-quality.Este consumer está implementado en PySpark Structured Streaming para poder analizar los datos de forma continua y reactiva.
+El consumer :
+Lee el flujo de mensajes desde Kafka.
+Extrae y estructura los datos JSON recibidos.
+Imprime un resumen por microbatch en consola.
+Para facilitar la conexión con Power BI,además de almacenar los datos en HDFS,hemos creado una tabla en MySQL.Esto nos permite guardar y actualizar los datos generados de forma más sencilla y accesible para herramientas de análisis.
+
+#### 5.6.1 Ejecutamos el Consumer
 
 Es fundamental iniciar el consumidor antes de poner en marcha el productor. Esto asegura que el consumer esté activo desde el inicio del flujo de datos y no se pierda ninguna información emitida por el productor.
 Para ejecutar el consumidor utilizamos spark-submit con las librerías necesarias para conectar Spark con Kafka. El comando es el siguiente:
@@ -455,7 +455,7 @@ Para ejecutar el consumidor utilizamos spark-submit con las librerías necesaria
 ````
 PYTHONPATH=$HOME/.local/lib/python3.10/site-packages spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.4 --master spark://192.168.11.10:7077 /opt/kafka/proyecto_MLU/data_stream/consumer.py
 ````
-### 5.8 Ejecutamos el Producer Kafka
+#### 5.6.2 Ejecutamos el Producer Kafka
 
 Una vez que el consumidor está corriendo y escuchando el stream, procedemos a iniciar el productor.El producer simula la generación y envío de datos sintéticos desde las distintas zonas de la ciudad, alimentando el flujo que será consumido y analizado.
 Para lanzar el productor ejecutamos:
@@ -464,7 +464,7 @@ python3 /opt/kafka/proyecto_MLU/data_stream/producer.py
 ````
 Este script comenzará a enviar los eventos generados al topic Kafka,dando inicio a la simulación y procesamiento de datos.
 
-### 5.9 Visualizamos la información
+#### 5.6.3 Visualizamos la información
 
 Para asegurarnos de que los datos se están consumiendo correctamente y el flujo de información está activo, utilizaremos la Consumer API de Kafka para monitorear el consumo en tiempo real. Ejecutamos el siguiente comando para ver los mensajes que llegan al topic air-quality desde el principio:
 ````
@@ -493,7 +493,7 @@ Finalmente, verificamos que los datos se hayan insertado correctamente en la bas
 ![image](https://github.com/user-attachments/assets/39c16059-7e8e-44f0-ba78-a850521f9fe3)
 
 
-## 6.Visualización en PowerBI
+## 6. Visualización en PowerBI
 En este apartado,abordaremos el proceso para conectar con PowerBI con nuestra base de datos MYSQL con el fin de realizar un análisis visual dinámico de los datos almacenados.
 
 * Conexión de PowerBI con la base de datos MYSQL
@@ -642,7 +642,7 @@ Este gráfico compara el Índice de Calidad del Aire (AQI) promedio en la zona s
   - Recomendaciones de permanecer en interiores
   - Cierre preventivo de escuelas en áreas afectadas
 
-### 6.4  Promedio de Vehículos por Minuto y AQI por Zona
+### 6.4 Promedio de Vehículos por Minuto y AQI por Zona
 
 ````
 Avg Vehiculo Por Minuto = AVERAGEX(
@@ -741,7 +741,7 @@ Los domingos  y los sábados tienden a mostrar valores notablemente más bajos,l
 3.Conclusión
 Este análisis por día de la semana permite entender mejor cuándo y dónde se concentra la contaminación del aire, y sugiere que hay una fuerte correlación entre la actividad humana (laboral/urbana) y la calidad del aire.
 
- ## 7.Prometehus
+## 7. Prometheus
 
 En esta etapa, ponemos en marcha Prometheus para comenzar a recolectar métricas de nuestras fuentes configuradas.
 
@@ -777,7 +777,7 @@ Las siguientes imágenes muestran la interfaz de Prometheus funcionando correcta
 ![image](https://github.com/user-attachments/assets/d1eae758-eb03-4b81-be8c-effd0fe766f9)
 
 
-## 8.Graphana
+## 8. Grafana
 
 En este apartado instalamos y configuramos Grafana, la herramienta de visualización de métricas que se integra con Prometheus.
 

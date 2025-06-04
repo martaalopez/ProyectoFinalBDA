@@ -642,27 +642,34 @@ El gráfico muestra dos métricas clave para cuatro zonas distintas (center, res
 ---
 
 ### 2. Datos Clvae
-- **Zona center:  
+- Zona center:  
   - Como podemos ver a partir de la 9:00,14:00,15:00,20:00 horas el AQI sube considerablemente a 200 y la media de coches por minuto incrementa también 
  
    ![image](https://github.com/user-attachments/assets/8765ecf5-cf39-4ea5-84a0-753ef89f4658)
  
 
-- **Zonas residential
+- Zonas residential
   En el caso de la zona residencial el nivel de AQI se mantiene constante durante practicamente todo el dia 
 
   ![image](https://github.com/user-attachments/assets/6aced553-6157-472b-a6f5-2c640d33d8e5)
  
-- **Zonas suburbana
+-  Zonas suburbana
   En la zona suburbana,se observa que el tráfico muy bajo ,pero existen picos de AQI .
   La posible causa principal puede ser los incendios forestales o agrícolas cercanos ya que no coincide con aumentos de tráfico y es un fenómeno temporal.
 
  ![image](https://github.com/user-attachments/assets/cafbdca9-5887-4f9b-a82f-d55783fa4fbb)
 
-- **Zonas industriales
+- Zonas industriales
   En zonas industriales se observa un incremento del AQI durante el horario laboral (de 9:00 a 13:00 horas),lo que sugiere una correlación directa entre la actividad industrial y la contaminación del aire.
 
  ![image](https://github.com/user-attachments/assets/9575f8ef-099c-4694-ba67-dd5150ceddc5)
+
+
+### 3. Conclusión
+Se observa que en el centro de la ciudad, durante la primera hora de la mañana,el índice de calidad del aire (AQI) aumenta considerablemente.Esta subida podría estar relacionada con la entrada simultánea de los estudiantes al colegio, lo que genera un aumento en el tráfico y la actividad urbana.
+Como posible solución, se propone implementar entradas escalonadas por curso en los colegios para evitar la acumulación de personas y vehículos a la misma hora. Del mismo modo,las empresas podrían adoptar horarios de entrada y salida más flexibles para sus empleados, lo que ayudaría a distribuir mejor el tráfico y reducir la contaminación en las horas punta.
+
+Además, sería importante fomentar el uso del transporte público, la bicicleta y otros medios sostenibles, con el objetivo de disminuir la cantidad de vehículos particulares en circulación y, con ello, mejorar la calidad del aire en las zonas más afectadas.
 
 ---
 
@@ -677,8 +684,8 @@ El gráfico muestra dos métricas clave para cuatro zonas distintas (center, res
 Creamos una nueva columna
 ````
 Día de la semana = 
-VAR FechaConvertida = DATEVALUE(LEFT([ts], 10)) // Convierte solo la parte de fecha
-VAR FechaBase = DATE(YEAR(FechaConvertida), 1, 2) // 2 de enero del mismo año
+VAR FechaConvertida = DATEVALUE(LEFT([ts], 10)) 
+VAR FechaBase = DATE(YEAR(FechaConvertida), 1, 2)
 VAR DiasDiferencia = DATEDIFF(FechaBase, FechaConvertida, DAY)
 VAR DiaSemanaNum = MOD(DiasDiferencia + 4, 7) + 1
 RETURN
@@ -709,6 +716,12 @@ Esto permite identificar posibles patrones de contaminación asociados a la acti
 2. Datos Clave
 Se observa que los niveles de AQI aumentan significativamente durante los días laborales.Esto se debe al incremento de tráfico y a la actividad comercial en el centro urbano.
 Los domingos  y los sábados tienden a mostrar valores notablemente más bajos,lo que refuerza la hipótesis del impacto del tráfico.
+Claro, aquí tienes una versión más sencilla y fácil de entender de esa conclusión:
+
+3. Conclusión
+Al analizar el AQI por día de la semana,se nota que la contaminación del aire es más alta de lunes a viernes y baja bastante los fines de semana.Esto muestra que la actividad diaria de las personas,como ir al trabajo o al colegio, influye mucho en la calidad del aire.
+Los sábados y domingos, al haber menos movimiento y tráfico,el aire mejora.Por eso, sería buena idea pensar en medidas como horarios de entrada más escalonados o más teletrabajo para ayudar a reducir la contaminación en los días más cargados.
+
 
 ## 7. Prometheus
 

@@ -1,9 +1,5 @@
 # Proyecto Final BDA 2024-25
 
- <!-- ![ChatGPT Image 26 abr 2025, 12_03_57](https://github.com/user-attachments/assets/6102e595-1fdc-4c95-bc74-89ab9ad7bd9c)
-
--->
-
 ## Índice
 
 1. [Introducción](#1-introducción)
@@ -54,40 +50,40 @@ Suburbana: Es una zona de factores naturales y con una mayor probabilidad de inc
 ## 3. Requisitos
 Debe haber como mínimo 3 nodos en los clusters (en cada uno):
 
--Hadoop (HDFS/Yarn)
-Hadoop es el sistema responsable del almacenamiento distribuido de grandes volúmenes de datos (HDFS) y de la gestión de recursos y ejecución de tareas distribuidas (YARN).
-
-Contar con al menos tres nodos en el cluster Hadoop permite:
-
-Distribuir los datos entre múltiples máquinas (DataNodes).
-
-Mantener un nodo maestro (NameNode) que coordina la lectura y escritura en el sistema de archivos.
-
-Asegurar la replicación de los datos en diferentes nodos para prevenir pérdidas en caso de fallos.
-![image](https://github.com/user-attachments/assets/bbe8c104-5059-4658-88ab-952a1f15c1cb)
-
-![image](https://github.com/user-attachments/assets/ee90e9d2-2931-43d7-b1bb-297e8eb30cb9)
-
-
--Spark
-Apache Spark es el motor encargado del procesamiento distribuido de los datos.A diferencia de Hadoop MapReduce,Spark permite trabajar en memoria,lo que lo hace mucho más rápido y eficiente para el análisis de grandes volúmenes de datos.
-
-Tener tres nodos como mínimo en el cluster Spark ofrece :
-
-Una distribución paralela del procesamiento.
-
-Coordinar las tareas desde el nodo maestro.
-
-Ejecución simultánea de trabajos en los nodos trabajadores (Workers).
-
-![image](https://github.com/user-attachments/assets/4a360f4a-3007-4646-92e2-289e0c5d676c)
+* Hadoop (HDFS/Yarn)
+ Hadoop es el sistema responsable del almacenamiento distribuido de grandes volúmenes de datos (HDFS) y de la gestión de recursos y ejecución de tareas distribuidas (YARN).
+ 
+ Contar con al menos tres nodos en el cluster Hadoop permite:
+ 
+ Distribuir los datos entre múltiples máquinas (DataNodes).
+ 
+ Mantener un nodo maestro (NameNode) que coordina la lectura y escritura en el sistema de archivos.
+ 
+ Asegurar la replicación de los datos en diferentes nodos para prevenir pérdidas en caso de fallos.
+ ![image](https://github.com/user-attachments/assets/bbe8c104-5059-4658-88ab-952a1f15c1cb)
+ 
+ ![image](https://github.com/user-attachments/assets/ee90e9d2-2931-43d7-b1bb-297e8eb30cb9)
 
 
--Kafka
-Apache Kafka es la tecnología utilizada para gestionar el flujo de mensajes en tiempo real. En este proyecto,Kafka se encarga de transmitir los eventos generados por los sensores virtuales (como los datos de calidad del aire, tráfico, incendios, etc.).
-Se ha actualizado Kafka a la versión 4.0.0,lo que introduce una mejora importante:la eliminación de la dependencia de Zookeeper,gracias al nuevo sistema de metadatos KRaft (Kafka Raft Metadata mode).
+* Spark
+ Apache Spark es el motor encargado del procesamiento distribuido de los datos.A diferencia de Hadoop MapReduce,Spark permite trabajar en memoria,lo que lo hace mucho más rápido y eficiente para el análisis de grandes volúmenes de datos.
+ 
+ Tener tres nodos como mínimo en el cluster Spark ofrece :
+ 
+ Una distribución paralela del procesamiento.
+ 
+ Coordinar las tareas desde el nodo maestro.
+ 
+ Ejecución simultánea de trabajos en los nodos trabajadores (Workers).
+ 
+ ![image](https://github.com/user-attachments/assets/4a360f4a-3007-4646-92e2-289e0c5d676c)
 
-![image](https://github.com/user-attachments/assets/1d2feb40-6772-4ea7-9e3f-e7edf1420f69)
+
+* Kafka
+ Apache Kafka es la tecnología utilizada para gestionar el flujo de mensajes en tiempo real. En este proyecto,Kafka se encarga de transmitir los eventos generados por los sensores virtuales (como los datos de calidad del aire, tráfico, incendios, etc.).
+ Se ha actualizado Kafka a la versión 4.0.0,lo que introduce una mejora importante:la eliminación de la dependencia de Zookeeper,gracias al nuevo sistema de metadatos KRaft (Kafka Raft Metadata mode).
+ 
+ ![image](https://github.com/user-attachments/assets/1d2feb40-6772-4ea7-9e3f-e7edf1420f69)
 
 
 ## 4. Configuración del Clúster de Kafka

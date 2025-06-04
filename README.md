@@ -33,66 +33,6 @@
 7. [Prometheus](#7-prometehus)
 8. [Grafana](#8-graphana)
 
-## 1. Introducción
-[Contenido de la introducción...]
-
-## 2. Fuente de Información
-[Contenido sobre las fuentes de información...]
-
-## 3. Requisitos
-[Contenido sobre los requisitos...]
-
-## 4. Configuración del Clúster de Kafka
-[Contenido sobre la configuración de Kafka...]
-
-## 5. Levantamos Sistemas
-### 5.1 Levantamos HDFS (Hadoop Distributed File System)
-[Contenido sobre HDFS...]
-
-### 5.2 Arrancamos Spark Master y Workers
-[Contenido sobre Spark...]
-
-### 5.3 Iniciamos Kafka (Controller + Brokers)
-[Contenido sobre inicio de Kafka...]
-
-### 5.4 Creamos el Topic Kafka
-[Contenido sobre creación de topics...]
-
-### 5.5 Creación de la tabla en MySQL
-[Contenido sobre MySQL...]
-
-### 5.6 Creación del producer y del consumer
-#### 5.6.1 Ejecutamos el Consumer
-[Contenido sobre el consumer...]
-
-#### 5.6.2 Ejecutamos el Producer Kafka
-[Contenido sobre el producer...]
-
-#### 5.6.3 Visualizamos la información
-[Contenido sobre visualización...]
-
-## 6. Visualización en PowerBI
-### 6.1 Promedio de AQI
-[Contenido sobre AQI promedio...]
-
-### 6.2 Análisis de Calidad del Aire (AQI) en Zonas Industriales
-[Contenido sobre zonas industriales...]
-
-### 6.3 Análisis del Impacto de Incendios en la Calidad del Aire (AQI) en Zona Suburbana
-[Contenido sobre incendios...]
-
-### 6.4 Promedio de Vehículos por Minuto y AQI por Zona
-[Contenido sobre tráfico...]
-
-### 6.5 Distribución del AQI por Día de la Semana
-[Contenido sobre días de la semana...]
-
-## 7. Prometheus
-[Contenido sobre Prometheus...]
-
-## 8. Grafana
-[Contenido sobre Grafana...]
-
 
 ## 1.Introducción
 
@@ -230,7 +170,7 @@ log.dirs=/opt/kafka/proyecto_MLU/logs/broker2
 ## 5.Levantamos sistemas 
 Vamos a activar todos los servicios para que nuestro flujo de datos pueda funcionar de manera correcta.
 
-## 5.1 Levantamos HDFS (Hadoop Distributed File System)
+### 5.1 Levantamos HDFS (Hadoop Distributed File System)
 Levantamos HDFS que será nuestro sistema de almacenamiento distribuido,donde los datos procesados se guardarán.
 Se inician los servicios del NameNode y los DataNodes,permitiendo el almacenamiento distribuido de grandes volúmenes de datos.
 Se activa YARN,que gestionará los recursos y la ejecución de procesos en los distintos nodos del clúster.
@@ -244,7 +184,7 @@ start-dfs.sh
 hdfs dfsadmin -safemode get
 hdfs dfsadmin -safemode leave
 ````
-## 5.2 Arrancamos Spark Master y Workers
+### 5.2 Arrancamos Spark Master y Workers
 Reiniciamos el Spark Master y los Workers del clúster utilizando los scripts provistos por Spark.
 Spark será el encargado de leer los datos desde Kafka y analizarlos en tiempo real.
 Al reiniciar el Spark Master y varios Spark Workers, aseguramos que el entorno esté limpio y listo para el procesamiento paralelo de grandes volúmenes de datos.
@@ -255,7 +195,7 @@ Esta etapa garantiza que contamos con la capacidad computacional necesaria para 
 /opt/hadoop-3.4.1/spark-3.5.4/sbin/start-all.sh
 ````
 
-## 5.3 Iniciamos Kafka (Controller + Brokers)
+### 5.3 Iniciamos Kafka (Controller + Brokers)
 Como más adelante utilizaremos Prometheus y Grafana,se ha preparado un script personalizado llamado kafka-server-start_proyecto_MLU.sh adaptado especialmente para este proyecto.
 
 1.Configurar Prometheus
@@ -414,7 +354,7 @@ Iniciamos los server(1 controller y 2 brokers) cada uno en una terminal distinta
 /opt/kafka_2.13-4.0.0/bin/kafka-server-start_proyecto_MLU.sh /opt/kafka/proyecto_MLU/config/broker1.properties
 /opt/kafka_2.13-4.0.0/bin/kafka-server-start_proyecto_MLU.sh /opt/kafka/proyecto_MLU/config/broker2.properties
 ````
-## 5.4 Creamos el Topic Kafka
+### 5.4 Creamos el Topic Kafka
 En esta fase, procedemos a la creación del tópico principal de Kafka donde se publicarán todos los eventos generados por nuestro productor de datos en tiempo real.Este tópico se denominará air-quality, ya que su función será centralizar la información relacionada con la calidad del aire, tráfico, incendios y eventos especiales en distintas zonas de la ciudad.
 
 Dado que nuestra simulación abarca cuatro zonas geográficas distintas de Madrid (centro, residencial, industrial y suburbana), decidimos configurar el tópico con 4 particiones, de manera que cada una pueda gestionar de forma paralela y eficiente los eventos específicos de una zona. Esto mejora el rendimiento del sistema,permite mayor paralelización en el consumo de datos y facilita una asignación lógica de responsabilidades entre los consumidores.
@@ -434,7 +374,7 @@ Para comprobar que el tópico ha sido creado correctamente y está activo en nue
 ![image](https://github.com/user-attachments/assets/1ae0aafe-e850-437c-a781-9aa21d2dc3ba)
 
 
-## 5.6 Creación del producer y del consumer
+### 5.6 Creación del producer y del consumer
 Vamos a crear el productor Kafka que es el componente encargado de simular la generación de datos que normalmente serían capturados por sensores distribuidos en las cuatro zonas de Madrid: centro, residencial, industrial y suburbana.Este productor,implementado en Python,genera eventos sintéticos que incluyen variables como la calidad del aire, el conteo de vehículos, incendios activos y eventos especiales, y los envía en tiempo real al tópico air-quality de Kafka.
 Tenemos además varias condiciones para que podemos simular bien nuestros datos y se acerquen lo más posible a la realidad.
 Vamos a tener en cuenta esta lógica en la simulación.
@@ -466,7 +406,7 @@ Extrae y estructura los datos JSON recibidos.
 Imprime un resumen por microbatch en consola.
 Para facilitar la conexión con Power BI,además de almacenar los datos en HDFS,hemos creado una tabla en MySQL.Esto nos permite guardar y actualizar los datos generados de forma más sencilla y accesible para herramientas de análisis.
 
-## 5.6.1 Creación de la tabla en MYSQL
+### 5.6.1 Creación de la tabla en MYSQL
 
 Primero, accedemos a la consola de MySQL con privilegios de administrador utilizando el siguiente comando:
 ````
@@ -507,7 +447,7 @@ CREATE TABLE air_quality_events (
 ![image](https://github.com/user-attachments/assets/112a9eec-10c7-47d0-ae86-0c5d33b21928)
 
 
-## 5.7 Ejecutamos el Consumer
+### 5.7 Ejecutamos el Consumer
 
 Es fundamental iniciar el consumidor antes de poner en marcha el productor. Esto asegura que el consumer esté activo desde el inicio del flujo de datos y no se pierda ninguna información emitida por el productor.
 Para ejecutar el consumidor utilizamos spark-submit con las librerías necesarias para conectar Spark con Kafka. El comando es el siguiente:
@@ -515,7 +455,7 @@ Para ejecutar el consumidor utilizamos spark-submit con las librerías necesaria
 ````
 PYTHONPATH=$HOME/.local/lib/python3.10/site-packages spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.4 --master spark://192.168.11.10:7077 /opt/kafka/proyecto_MLU/data_stream/consumer.py
 ````
-## 5.8 Ejecutamos el Producer Kafka
+### 5.8 Ejecutamos el Producer Kafka
 
 Una vez que el consumidor está corriendo y escuchando el stream, procedemos a iniciar el productor.El producer simula la generación y envío de datos sintéticos desde las distintas zonas de la ciudad, alimentando el flujo que será consumido y analizado.
 Para lanzar el productor ejecutamos:
@@ -524,7 +464,7 @@ python3 /opt/kafka/proyecto_MLU/data_stream/producer.py
 ````
 Este script comenzará a enviar los eventos generados al topic Kafka,dando inicio a la simulación y procesamiento de datos.
 
-## 5.9 Visualizamos la información
+### 5.9 Visualizamos la información
 
 Para asegurarnos de que los datos se están consumiendo correctamente y el flujo de información está activo, utilizaremos la Consumer API de Kafka para monitorear el consumo en tiempo real. Ejecutamos el siguiente comando para ver los mensajes que llegan al topic air-quality desde el principio:
 ````
@@ -565,7 +505,7 @@ Para comenzar abrimos PowerBI y seleccionamos la opción de conectamos a una bas
 
 ![image](https://github.com/user-attachments/assets/03825a69-aae7-4101-bef5-f0def19f6b8a)
 
-## 6.1 Promedio de AQI
+### 6.1 Promedio de AQI
 
 ![image](https://github.com/user-attachments/assets/544aaaba-3959-4da6-853d-dd6b1b6088a7)
 
@@ -609,7 +549,7 @@ Los datos confirman lo esperado:
 * Proteger las zonas suburbanas como espacios verdes.
 
 
-## 6.2 Análisis de Calidad del Aire (AQI) en Zonas Industriales
+### 6.2 Análisis de Calidad del Aire (AQI) en Zonas Industriales
 
 ![image](https://github.com/user-attachments/assets/1e0466c1-0bd8-4bcd-b98e-ed48cce9cc14)
 
@@ -667,7 +607,7 @@ El análisis muestra cómo varía el impacto industrial en la calidad del aire s
   - Considerar patrones de viento predominantes en la planificación urbana
 
 
-## 6.3 Análisis del Impacto de Incendios en la Calidad del Aire (AQI) en Zona Suburbana
+### 6.3 Análisis del Impacto de Incendios en la Calidad del Aire (AQI) en Zona Suburbana
 
 ![image](https://github.com/user-attachments/assets/ffcc1651-a7e6-4f4f-8319-a426d9596614)
 
@@ -702,7 +642,7 @@ Este gráfico compara el Índice de Calidad del Aire (AQI) promedio en la zona s
   - Recomendaciones de permanecer en interiores
   - Cierre preventivo de escuelas en áreas afectadas
 
-## 6.4  Promedio de Vehículos por Minuto y AQI por Zona
+### 6.4  Promedio de Vehículos por Minuto y AQI por Zona
 
 ````
 Avg Vehiculo Por Minuto = AVERAGEX(
@@ -756,7 +696,7 @@ El gráfico actual proporciona una estructura potencialmente útil para analizar
 ![image](https://github.com/user-attachments/assets/ba3605f6-c018-4555-ab64-de2be18b5f09)
 
 
-## 6.5 Distribución del AQI por Día de la Semana
+### 6.5 Distribución del AQI por Día de la Semana
 
 
 ![image](https://github.com/user-attachments/assets/d884f5c0-cead-4001-9309-25247056d76c)

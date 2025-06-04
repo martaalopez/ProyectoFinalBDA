@@ -30,8 +30,8 @@
    - [6.3 Análisis del Impacto de Incendios en la Calidad del Aire](#63-análisis-del-impacto-de-incendios-en-la-calidad-del-aire-aqi-en-zona-suburbana)
    - [6.4 Promedio de Vehículos por Minuto y AQI por Zona](#64-promedio-de-vehículos-por-minuto-y-aqi-por-zona)
    - [6.5 Distribución del AQI por Día de la Semana](#65-distribución-del-aqi-por-día-de-la-semana)
-7. [Prometheus](#7-prometehus)
-8. [Grafana](#8-graphana)
+7. [Prometheus](#7-prometheus)
+8. [Grafana](#8-grafana)
 
 
 ## 1. Introducción

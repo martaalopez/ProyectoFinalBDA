@@ -36,7 +36,7 @@ Hoy en día, la calidad del aire y la contaminación son factores ambientales qu
 El tráfico diario de vehículos es una de las principales causas del deterioro de la calidad del aire.
 Además,ciertos fenómenos naturales como los incendios forestales pueden tener un impacto significativo en la contaminación atmosférica.A esto se le suma la actividad industrial,cuyas emisiones de humo y partículas contaminantes se mezclan con la atmósfera, agravando aún más la situación.
 
-Esto puede hacer que existan consecuencias directas en la salud publica,un articulo  revela que 2000 niños mueren cada dia en el mundo por mal calidad del aire,por ello he decidido hacer una investigación que se enfoca en el monitoreo y análisis de los principales factores que afectan la calidad del aire,con el objetivo de identificar los eventos más frecuentes y críticos.A partir de estos datos,espero poder extraer conclusiones que contribuyan a diseñar soluciones eficientes para combatir este grave problema global.
+Esto puede hacer que existan consecuencias directas en la salud publica,un artículo  revela que 2000 niños mueren cada dia en el mundo por mal calidad del aire,por ello he decidido hacer una investigación que se enfoca en el monitoreo y análisis de los principales factores que afectan la calidad del aire,con el objetivo de identificar los eventos más frecuentes y críticos.A partir de estos datos,espero poder extraer conclusiones que contribuyan a diseñar soluciones eficientes para combatir este grave problema global.
   
 
 ## 2. Fuente de Información
@@ -53,8 +53,8 @@ Suburbana: Es una zona de factores naturales y con una mayor probabilidad de inc
 
 ## 3. Requisitos
 Debe haber como mínimo 3 nodos en los clusters (en cada uno):
-Hadoop (HDFS/Yarn)
 
+-Hadoop (HDFS/Yarn)
 Hadoop es el sistema responsable del almacenamiento distribuido de grandes volúmenes de datos (HDFS) y de la gestión de recursos y ejecución de tareas distribuidas (YARN).
 
 Contar con al menos tres nodos en el cluster Hadoop permite:
@@ -69,22 +69,21 @@ Asegurar la replicación de los datos en diferentes nodos para prevenir pérdida
 ![image](https://github.com/user-attachments/assets/ee90e9d2-2931-43d7-b1bb-297e8eb30cb9)
 
 
-Spark
+-Spark
 Apache Spark es el motor encargado del procesamiento distribuido de los datos.A diferencia de Hadoop MapReduce,Spark permite trabajar en memoria,lo que lo hace mucho más rápido y eficiente para el análisis de grandes volúmenes de datos.
 
-Tener tres nodos como mínimo en el cluster Spark ofrece varias ventajas:
+Tener tres nodos como mínimo en el cluster Spark ofrece :
 
-Distribución paralela del procesamiento.
+Una distribución paralela del procesamiento.
 
-Coordinación de tareas desde el nodo maestro (Driver).
+Coordinar las tareas desde el nodo maestro.
 
 Ejecución simultánea de trabajos en los nodos trabajadores (Workers).
 
-Mejora del rendimiento y la robustez del sistema frente a posibles fallos.
 ![image](https://github.com/user-attachments/assets/4a360f4a-3007-4646-92e2-289e0c5d676c)
 
 
-Kafka
+-Kafka
 Apache Kafka es la tecnología utilizada para gestionar el flujo de mensajes en tiempo real. En este proyecto,Kafka se encarga de transmitir los eventos generados por los sensores virtuales (como los datos de calidad del aire, tráfico, incendios, etc.).
 Se ha actualizado Kafka a la versión 4.0.0,lo que introduce una mejora importante:la eliminación de la dependencia de Zookeeper,gracias al nuevo sistema de metadatos KRaft (Kafka Raft Metadata mode).
 
@@ -104,7 +103,7 @@ mkdir -p /opt/kafka/proyecto_MLU/logs
 ````
 
 En nuestra arquitectura vamos a tener lo siguiente:
-Un controller que va a ser el nodo responsable de poder coordinar el clúster.Se va a encargar de gestionar los eventos como la creación y eliminación de topics,la asignaciñon de paerticiones y la detección de fallos en los brokers.
+Un controller que va a ser el nodo responsable de poder coordinar el clúster.Se va a encargar de gestionar los eventos como la creación y eliminación de topics,la asignaciñon de particiones y la detección de fallos en los brokers.
 Para el controller,debemos usar como base la configuración de propiedades de controller de kafka que se encuentran config/controller.properties
 
 Dos brokers,donde cada uno va a estar identificado por un Id y va a contener ciertas particiones de un topic.Va a permitir replicar y poder particionar dichos topics balanceando la carga de almacenamiento entre los brokers.
@@ -184,8 +183,6 @@ hdfs dfsadmin -safemode leave
 Reiniciamos el Spark Master y los Workers del clúster utilizando los scripts provistos por Spark.
 Spark será el encargado de leer los datos desde Kafka y analizarlos en tiempo real.
 Al reiniciar el Spark Master y varios Spark Workers, aseguramos que el entorno esté limpio y listo para el procesamiento paralelo de grandes volúmenes de datos.
-Esta etapa garantiza que contamos con la capacidad computacional necesaria para realizar análisis complejos y responder con rapidez.
-
 ````
 /opt/hadoop-3.4.1/spark-3.5.4/sbin/stop-all.sh
 /opt/hadoop-3.4.1/spark-3.5.4/sbin/start-all.sh
@@ -195,14 +192,13 @@ Esta etapa garantiza que contamos con la capacidad computacional necesaria para 
 Como más adelante utilizaremos Prometheus y Grafana,se ha preparado un script personalizado llamado kafka-server-start_proyecto_MLU.sh adaptado especialmente para este proyecto.
 
 1.Configurar Prometheus
-Duplicamos el archivo de configuración por defecto y creamos uno específico para el proyecto:
-
+Tras a ver instalado prometheus,duplicamos el archivo de configuración por defecto y creamos uno específico para el proyecto.
+Este script está diseñado para poder iniciar instancias de Kafka personalizadas para el proyecto, específicamente configuradas para que cada broker y controller de Kafka use un puerto diferente , asi evitamos errores de conflictor de red  y monitoreo al ejecutar múltiples nodos Kafka en la misma máquina .
 ````
 cp /opt/prometheus-2.53.4/prometheus.yml /opt/prometheus-2.53.4/prometheus_proyecto_MLU.yml
 nano /opt/prometheus-2.53.4/prometheus_proyecto_MLU.yml
 ````
 Dentro del archivo prometheus_proyecto_MLU.yml, usamos la siguiente configuración:
-
 ````
 # my global config
 global:
@@ -252,7 +248,7 @@ Creamos y editamos el siguiente archivo:
 ````
 nano /opt/kafka_2.13-4.0.0/bin/kafka-server-start_proyecto_MLU.sh
 ````
-Este script incluye una configuración adicional para habilitar JMX Exporter,lo que permitirá monitorear los nodos de Kafka con Prometheus.
+En este script vamos  una configuración adicional para habilitar JMX Exporter,lo que permitirá monitorear los nodos de Kafka con Prometheus.
 El siguiente fragmento se añade al inicio del script para activar el agente de monitoreo JMX Exporter según el node.id configurado en cada server.properties:
 ````
 # --- INICIO DE MODIFICACIÓN PARA JMX EXPORTER ---
@@ -351,7 +347,7 @@ Iniciamos los server(1 controller y 2 brokers) cada uno en una terminal distinta
 /opt/kafka_2.13-4.0.0/bin/kafka-server-start_proyecto_MLU.sh /opt/kafka/proyecto_MLU/config/broker2.properties
 ````
 ### 5.4 Creamos el Topic Kafka
-En esta fase, procedemos a la creación del tópico principal de Kafka donde se publicarán todos los eventos generados por nuestro productor de datos en tiempo real.Este tópico se denominará air-quality, ya que su función será centralizar la información relacionada con la calidad del aire, tráfico, incendios y eventos especiales en distintas zonas de la ciudad.
+En esta fase,procedemos a la creación del tópico principal de Kafka donde se publicarán todos los eventos generados por nuestro productor de datos en tiempo real.Este tópico se denominará air-quality, ya que su función será centralizar la información relacionada con la calidad del aire, tráfico, incendios y eventos especiales en distintas zonas de la ciudad.
 
 Dado que nuestra simulación abarca cuatro zonas geográficas distintas de Madrid (centro, residencial, industrial y suburbana), decidimos configurar el tópico con 4 particiones, de manera que cada una pueda gestionar de forma paralela y eficiente los eventos específicos de una zona. Esto mejora el rendimiento del sistema,permite mayor paralelización en el consumo de datos y facilita una asignación lógica de responsabilidades entre los consumidores.
 Además,se ha definido un factor de replicación de 2,con el objetivo de garantizar una mayor tolerancia a fallos.Esto significa que cada partición estará replicada en al menos dos nodos del clúster, lo cual asegura disponibilidad incluso si uno de los brokers falla.
@@ -412,10 +408,10 @@ CREATE TABLE air_quality_events (
 
 
 ### 5.6 Creación del producer y del consumer
+
 Vamos a crear el productor Kafka que es el componente encargado de simular la generación de datos que normalmente serían capturados por sensores distribuidos en las cuatro zonas de Madrid: centro, residencial, industrial y suburbana.Este productor,implementado en Python,genera eventos sintéticos que incluyen variables como la calidad del aire, el conteo de vehículos, incendios activos y eventos especiales, y los envía en tiempo real al tópico air-quality de Kafka.
 Tenemos además varias condiciones para que podemos simular bien nuestros datos y se acerquen lo más posible a la realidad.
 Vamos a tener en cuenta esta lógica en la simulación.
----
 
 * Horario de simulación
 El sistema inicia la simulación a las 9:00 de la mañana del día 2 de enero de 2025 que es jueves.Cada segundo en el mundo real representa cinco minutos en el tiempo simulado.
@@ -445,7 +441,7 @@ Para facilitar la conexión con Power BI,además de almacenar los datos en HDFS,
 
 #### 5.6.1 Ejecutamos el Consumer
 
-Es fundamental iniciar el consumidor antes de poner en marcha el productor. Esto asegura que el consumer esté activo desde el inicio del flujo de datos y no se pierda ninguna información emitida por el productor.
+Es fundamental iniciar el consumidor antes de poner en marcha el productor.Esto asegura que el consumer esté activo desde el inicio del flujo de datos y no se pierda ninguna información emitida por el productor.
 Para ejecutar el consumidor utilizamos spark-submit con las librerías necesarias para conectar Spark con Kafka. El comando es el siguiente:
 
 ````
@@ -517,25 +513,25 @@ AVERAGEX(
 Se presentan los datos sobre el Índice de Calidad del Aire (AQI) promedio y su distribución porcentual en cuatro zonas distintas de Madrid.
 
 ## 2. Datos Generales
-El análisis revela marcadas diferencias en la calidad del aire entre las zonas monitoreadas:
-- Las zonas **industrial** y **centro** concentran aproximadamente el 66.45% del AQI total combinado (33.25% y 33.2% respectivamente).
+El análisis muestra las diferencias en la calidad del aire entre las zonas monitoreadas:
+- Las zonas **industrial** y **centro** concentran aproximadamente el 66.45% 
 - La zona **residencial** contribuye con el 14.68% del AQI total.
-- La zona **suburbana** muestra el menor impacto, con valores mínimos de contaminación.
+- La zona **suburbana** muestra el menor impacto.
 
 ## 3. Distribución de Contaminación por Zona
-Los datos demuestran claramente cómo los factores urbanos e industriales afectan la calidad del aire:
-- **Zona Industrial (33.25%, AQI ≈163)**: Presenta los valores más altos, directamente vinculados a la actividad fabril y emisiones industriales.
-- **Centro (33.2%, AQI ≈163)**: Muestra niveles similares a la zona industrial, atribuibles al intenso tráfico vehicular y alta densidad urbana.
-- **Residencial (14.68%, AQI ≈72)**: Exhibe niveles moderados, reflejando menor actividad contaminante pero aún afectada por el entorno urbano.
-- **Suburbana (AQI ≈9)**: Registra la mejor calidad de aire, beneficiada por menor densidad poblacional y mayor presencia de áreas verdes.
+Los datos muestran cómo los factores urbanos e industriales afectan más a la calidad del aire:
+- **Zona Industrial (33.25%): Presenta los valores más altos,vinculados a la actividad fabril y emisiones industriales.
+- **Centro (33.2%): Muestra niveles similares a la zona industrial,vinculados al intenso tráfico  y alta densidad urbana.
+- **Residencial (14.68%): Exhibe niveles moderados, reflejando menor actividad contaminante pero aún afectada por el entorno urbano.
+- **Suburbana : Registra la mejor calidad de aire,beneficiada por menor densidad poblacional y mayor presencia de áreas verdes.
 
 ## 4. Interpretación de Resultados
 
-Los datos confirman lo esperado:
+Los datos confirman:
 
 1. **Actividad humana**: Las zonas industrial y centro tienen peor calidad del aire por fábricas y tráfico.
-2. **Tráfico**: El centro es casi tan contaminado como la zona industrial.
-3. **Planeación urbana**: La zona residencial tiene mejor aire, posiblemente por mejor diseño urbano.
+2. **Tráfico**: El centro esta casi tan contaminado como la zona industrial.
+3. **Planeación urbana**: La zona residencial tiene mejor aire..
 4. **Zonas alejadas**: La suburbana tiene el mejor aire gracias a menos población y más naturaleza.
 
 ### 5.Conclusiones
@@ -572,33 +568,28 @@ Este gráfico presenta tres métricas clave de calidad del aire (AQI) específic
 ## 2. Datos Generales
 El análisis muestra cómo varía el impacto industrial en la calidad del aire según la zona:
 - Se comparan tres indicadores de contaminación industrial (alta, baja y media)
-- Las zonas analizadas incluyen: industrial, centro, residencial y suburbana
 
 ## 3. Distribución del AQI Industrial por Zona
 
 ### **Zona Industrial**
-- Muestra los valores más extremos en **AQI Alta Industria**, confirmando el fuerte impacto de la actividad fabril
-- Presenta también variación significativa entre AQI Alta y Baja Industria, indicando fluctuaciones según horarios de producción
+- Muestra los valores más altos en **AQI Alta Industria** y confirma  el fuerte impacto de la actividad fabril
 
 ### **Centro**
-- Registra valores intermedios de **AQI Media Industria**, sugiriendo contaminación industrial transportada
-- Posible efecto combinado de emisiones locales y contaminantes industriales arrastrados por el viento
+- Registra valores intermedios de **AQI Media Industria**, sugiere que hay menos actividad industrial
 
 ### **Zona Residencial**
 - Exhibe valores moderados en **AQI Baja Industria**, pero con presencia detectable
-- Indica que la contaminación industrial afecta áreas circundantes, aunque en menor medida
 
 ### **Zona Suburbana**
 - Muestra los valores más bajos en los tres indicadores
-- Confirma que es la menos afectada por emisiones industriales directas
 
 ## 4. Interpretación de Resultados
 
-**Impacto geográfico de la industria**: La contaminación industrial no se limita a su zona de origen, sino que se extiende a áreas vecinas.
+**Impacto geográfico de la industria**: La contaminación industrial no se limita a su zona de origen,sino que se extiende a áreas vecinas por los vientos.
 
 ## 5. Conclusiones 
-  - Necesidad de monitoreo continuo en zonas aledañas a polos industriales
-  - Regular horarios de máxima producción contaminante
+  - Se podría monitorear las zonas aledañas a polos industriales
+  - Regular  los horarios de máxima producción contaminante
   - Mantener suficiente distancia entre zonas industriales y residenciales
   - Considerar patrones de viento predominantes en la planificación urbana
 
@@ -617,26 +608,20 @@ Este gráfico compara el Índice de Calidad del Aire (AQI) promedio en la zona s
 ## 3. Hallazgos Principales
 
 ### **Condiciones Normales (Sin Fuego)**
-- La zona suburbana mantiene un AQI bajo en ausencia de incendios
+- La zona suburbana mantiene un AQI bajo cuando no hay  incendios
 - Corresponde a los valores más saludables del sistema de monitoreo
 
 ### **Durante Incendios (Con Fuego)**
 - Se observa un incremento significativo del AQI
-- El aumento puede ser de 5 a 10 veces el valor base (según intensidad del fuego)
+- El aumento puede ser de 5 a 10 veces el valor base según la  intensidad del fuego
 
 ## 4. Interpretación
- Aunque normalmente es la zona con mejor aire, la suburbana es la más afectada durante incendios forestales.
- Los incendios causan deterioro rápido y severo de la calidad del aire, transformando temporalmente el área suburbana en la más contaminada.
- Los efectos pueden persistir días después de controlado el incendio, especialmente por material particulado residual.
+ Aunque normalmente es la zona con mejor aire,la suburbana es la más afectada durante incendios forestales.
+ Los incendios pueden causar un  deterioro rápido y severo de la calidad del aire y puede transformar  el área suburbana en la más contaminada.
 
 ## 5. Conclusión
-
-- **Sistema de alerta temprana**: Implementar protocolos específicos para incendios en áreas suburbanas
-- **Monitoreo reforzado**: Aumentar la densidad de sensores durante la temporada de incendios
-- **Plan de contingencia**:
-  - Mascarillas N95 para población vulnerable
-  - Recomendaciones de permanecer en interiores
-  - Cierre preventivo de escuelas en áreas afectadas
+Se podría implementar protocolos específicos para incendios en áreas suburbanas
+Poner más sensores durante la temporada de incendios
 
 ### 6.4 Promedio de Vehículos por Minuto y AQI por Zona
 
@@ -655,15 +640,15 @@ AVERAGEX(
 ````
 
 ### 1. Descripción General  
-El gráfico muestra dos métricas clave para tres zonas distintas (center, residential, suburb,industrial):  
+El gráfico muestra dos métricas clave para cuatro zonas distintas (center, residential, suburb,industrial):  
 - **Avg Vehículo Por Minuto**: Número promedio de vehículos que transitan por minuto.  
 - **AOI Promedio por Zona**: Índice de Calidad del Aire (AQI) promedio en cada zona
 
 ---
 
-### 2. Datos Clave  
+### 2. Datos Clvae
 - **Zona center:  
-  - Como podemos ver a partir de la 9:00,14:00,15:00,20:00 horas el AQI sube considerablemente a 200 y la media de coches por minuto incrementa tambien 
+  - Como podemos ver a partir de la 9:00,14:00,15:00,20:00 horas el AQI sube considerablemente a 200 y la media de coches por minuto incrementa también 
  
    ![image](https://github.com/user-attachments/assets/8765ecf5-cf39-4ea5-84a0-753ef89f4658)
  
@@ -674,20 +659,17 @@ El gráfico muestra dos métricas clave para tres zonas distintas (center, resid
   ![image](https://github.com/user-attachments/assets/6aced553-6157-472b-a6f5-2c640d33d8e5)
  
 - **Zonas suburbana
-  En la zona suburbana, se observa que el tráfico vehicular es bajo (pocos coches por minuto en comparación con zonas urbanas),pero existen picos repentinos de AQI (contaminación elevada en momentos específicos).
-  La posible causa principal puede ser los incendios forestales o agrícolas cercanos ya que no coincide con aumentos de tráfico y es un fenómeno temporal y abrupto (no constante como en zonas industriales).
+  En la zona suburbana,se observa que el tráfico muy bajo ,pero existen picos de AQI .
+  La posible causa principal puede ser los incendios forestales o agrícolas cercanos ya que no coincide con aumentos de tráfico y es un fenómeno temporal.
 
  ![image](https://github.com/user-attachments/assets/cafbdca9-5887-4f9b-a82f-d55783fa4fbb)
 
 - **Zonas industriales
-  En zonas industriales, el AQI (Índice de Calidad del Aire) sufre fluctuaciones significativas debido a la actividad fabril. En este caso, se observa un incremento sostenido del AQI durante el horario laboral (de 9:00 a 13:00 horas), lo que sugiere una correlación directa entre la actividad industrial y la contaminación del aire.
+  En zonas industriales se observa un incremento del AQI durante el horario laboral (de 9:00 a 13:00 horas),lo que sugiere una correlación directa entre la actividad industrial y la contaminación del aire.
 
  ![image](https://github.com/user-attachments/assets/9575f8ef-099c-4694-ba67-dd5150ceddc5)
 
 ---
-
-### Conclusión  
-El gráfico actual proporciona una estructura potencialmente útil para analizar tráfico y AQI 
 
 ![image](https://github.com/user-attachments/assets/ba3605f6-c018-4555-ab64-de2be18b5f09)
 
@@ -727,15 +709,11 @@ AVERAGEX(
 ````
 1. Descripción General
 El gráfico generado muestra cómo varía el promedio del Índice de Calidad del Aire (AQI) a lo largo de los días de la semana .
-
 Esto permite identificar posibles patrones de contaminación asociados a la actividad humana y la dinámica urbana durante la semana.
 
 2. Datos Clave
-Se observa que los niveles de AQI aumentan significativamente durante los días laborales. Esto puede deberse al incremento de tráfico y actividad comercial en el centro urbano.
+Se observa que los niveles de AQI aumentan significativamente durante los días laborales.Esto se debe al incremento de tráfico y a la actividad comercial en el centro urbano.
 Los domingos  y los sábados tienden a mostrar valores notablemente más bajos,lo que refuerza la hipótesis del impacto del tráfico.
-
-3.Conclusión
-Este análisis por día de la semana permite entender mejor cuándo y dónde se concentra la contaminación del aire, y sugiere que hay una fuerte correlación entre la actividad humana (laboral/urbana) y la calidad del aire.
 
 ## 7. Prometheus
 

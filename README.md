@@ -641,7 +641,7 @@ El gráfico muestra dos métricas clave para cuatro zonas distintas (center, res
 
 ---
 
-### 2. Datos Clvae
+### 2. Datos Clave
 - Zona center:  
   - Como podemos ver a partir de la 9:00,14:00,15:00,20:00 horas el AQI sube considerablemente a 200 y la media de coches por minuto incrementa también 
  

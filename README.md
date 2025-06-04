@@ -515,10 +515,10 @@ El análisis muestra las diferencias en la calidad del aire entre las zonas moni
 
 ## 3. Distribución de Contaminación por Zona
 Los datos muestran cómo los factores urbanos e industriales afectan más a la calidad del aire:
-- **Zona Industrial (33.25%): Presenta los valores más altos,vinculados a la actividad fabril y emisiones industriales.
-- **Centro (33.2%): Muestra niveles similares a la zona industrial,vinculados al intenso tráfico  y alta densidad urbana.
-- **Residencial (14.68%): Exhibe niveles moderados, reflejando menor actividad contaminante pero aún afectada por el entorno urbano.
-- **Suburbana : Registra la mejor calidad de aire,beneficiada por menor densidad poblacional y mayor presencia de áreas verdes.
+- Zona Industrial (33.25%): Presenta los valores más altos,vinculados a la actividad fabril y emisiones industriales.
+- Centro (33.2%): Muestra niveles similares a la zona industrial,vinculados al intenso tráfico  y alta densidad urbana.
+- Residencial (14.68%): Exhibe niveles moderados, reflejando menor actividad contaminante pero aún afectada por el entorno urbano.
+- Suburbana : Registra la mejor calidad de aire,beneficiada por menor densidad poblacional y mayor presencia de áreas verdes.
 
 ## 4. Interpretación de Resultados
 

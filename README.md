@@ -4,10 +4,6 @@
 
 -->
 
-# Proyecto Final BDA 2024-25
-
-<!-- ![ChatGPT Image 26 abr 2025, 12:03:57](https://github.com/user-attachments/assets/6102e595-1fdc-4c95-bc74-89ab9ad7bd9c) -->
-
 ## Índice
 
 1. [Introducción](#1-introducción)

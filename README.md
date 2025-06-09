@@ -480,6 +480,44 @@ Finalmente,verificamos que los datos se hayan insertado correctamente en la base
 
 ## 6. Visualización en PowerBI
 En este apartado,abordaremos el proceso para conectar con PowerBI con nuestra base de datos MYSQL con el fin de realizar un análisis visual dinámico de los datos almacenados.
+Primero debemos  de irnos a la siguiente ruta en nustro ordenador
+![image](https://github.com/user-attachments/assets/92c1904f-12b0-4d42-8ea9-9236bb695cc9)
+
+de configurar el archivo host y añadir esta configuración 
+````
+# Copyright (c) 1993-2009 Microsoft Corp.
+#
+# This is a sample HOSTS file used by Microsoft TCP/IP for Windows.
+#
+# This file contains the mappings of IP addresses to host names. Each
+# entry should be kept on an individual line. The IP address should
+# be placed in the first column followed by the corresponding host name.
+# The IP address and the host name should be separated by at least one
+# space.
+#
+# Additionally, comments (such as these) may be inserted on individual
+# lines or following the machine name denoted by a '#' symbol.
+#
+# For example:
+#
+#      102.54.94.97     rhino.acme.com          # source server
+#       38.25.63.10     x.acme.com              # x client host
+
+# localhost name resolution is handled within DNS itself.
+#	127.0.0.1       localhost
+#	::1             localhost
+# Added by Docker Desktop
+192.168.1.37 host.docker.internal
+192.168.1.37 gateway.docker.internal
+# To allow the same kube context to work on the host and the container:
+127.0.0.1 kubernetes.docker.internal
+# End of section
+
+192.168.56.10 master
+192.168.56.11 nodo1
+192.168.56.12 nodo2
+192.168.56.13 nodo3
+````
 
 * Conexión de PowerBI con la base de datos MYSQL
 Para comenzar abrimos PowerBI y seleccionamos la opción de conectarnos a una base de datos MySQL.Esta conexión nos permitirá extraer los datos necesarios directamente desde nuestra base,asegurando que los informes reflejen siempre la información más reciente.
@@ -564,14 +602,14 @@ CALCULATE(
 )
 ````
 
-## 1. Descripción
+### 1. Descripción
 Este gráfico presenta tres métricas clave de calidad del aire (AQI) específicamente relacionadas con el factor insutrial ,AQI Alta Industria, AQI Baja Industria y AQI Media Industria,desglosadas por diferentes zonas urbanas.
 
-## 2. Datos Generales
+### 2. Datos Generales
 Se muestra cómo varía el impacto industrial en la calidad del aire según la zona:
 - Se comparan tres indicadores de contaminación industrial (alta, baja y media)
 
-## 3. Distribución del AQI Industrial por Zona
+### 3. Distribución del AQI Industrial por Zona
 
 ### **Zona Industrial**
 - Muestra los valores más altos en **AQI Alta Industria** y se confirma el fuerte impacto de la actividad fabril
@@ -585,11 +623,11 @@ Se muestra cómo varía el impacto industrial en la calidad del aire según la z
 ### **Zona Suburbana**
 - Muestra los valores más bajos en los tres indicadores
 
-## 4. Interpretación de Resultados
+### 4. Interpretación de Resultados
 
 La contaminación industrial no se limita a su zona de origen,sino que se puede extender a las zonas vecinas por los vientos.
 
-## 5. Conclusiones 
+### 5. Conclusiones 
   - Se podría monitorear las zonas cercanas a la zona industriales para ver como influye que una zona este más cerca del polígono industrial
   - Regular  los horarios de máxima producción contaminante
   - Mantener suficiente distancia entre zonas industriales y residenciales

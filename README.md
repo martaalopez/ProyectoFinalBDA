@@ -40,11 +40,15 @@ Esto puede hacer que existan consecuencias directas en la salud publica,un artí
 Para poder abarcar con todo esto vamos a apoyarnos en los datos proporcionados por la AirVisual API la cual ofrece información sobre el tiempo, la calidad del aire y los incendios activos,etc...
 Sin embargo,esta API presenta un problema:los datos se actualizan cada hora ,mientras que nuestro objetivo es realizar un monitoreo en tiempo real,actualizando los datos cada segundo.
 
-Por ello vamos a generar  unos datos sinteticos,incluyendo no solo las variables que ofrece la API,sino también otros datos adicionales que considero importantes para un análisis más completo,como el tráfico,la actividad industrial y la probabilidad de incendios.
+Por ello vamos a generar  unos datos sintéticos,incluyendo no solo las variables que ofrece la API,sino también otros datos adicionales que considero importantes para un análisis más completo,como el tráfico,la actividad industrial y la probabilidad de incendios.
 Los datos ficticios se recogerán desde sensores virtuales distribuidos en cuatro zonas distintas de Madrid:
+
 Centro:La cual va a tener un alto volumen de tráfico.
+
 Residencial:Es un área más residencial con menos tráfico de vehículos.
+
 Industrial:Es una zona con alta actividad industrial,donde predominan los contaminantes derivados del humo y procesos fabriles.
+
 Suburbana:Es una zona de factores naturales y con una mayor probabilidad de incendios forestales.
 
 ## 3. Requisitos
@@ -226,12 +230,12 @@ scrape_configs:
 ````
 
 2.Creamos el script de inicio de Kafka personalizado
+
 Creamos y editamos el siguiente archivo:
 ````
 nano /opt/kafka_2.13-4.0.0/bin/kafka-server-start_proyecto_MLU.sh
 ````
-En este script vamos  una configuración adicional para habilitar JMX Exporter,lo que permitirá monitorear los nodos de Kafka con Prometheus.
-El siguiente fragmento se añade al inicio del script para activar el agente de monitoreo JMX Exporter según el node.id configurado en cada server.properties:
+En este script vamos a crear una configuración adicional para habilitar JMX Exporter,lo que permitirá monitorear los nodos de Kafka con Prometheus.
 ````
 # --- INICIO DE MODIFICACIÓN PARA JMX EXPORTER ---
 
@@ -311,7 +315,7 @@ echo $KAFKA_CLUSTER_ID
 ````
 ![image](https://github.com/user-attachments/assets/eb9b2605-8862-43f8-bb7d-7f7c47474a31)
 
-Después de generar el ID ,vamos a formatear los directorios de log de cada nodo.Esto nos va a asegurar que cada nodo este vinculado al mismo cluster.id y pueda participar en la gestión del clúester
+Después de generar el ID ,vamos a formatear los directorios de log de cada nodo.Esto nos va a asegurar que cada nodo este vinculado al mismo cluster.id y pueda participar en la gestión del clúster
 Ponemos --standalone al iniciar el controller ya que se usa en la version 4 para  poder formatear el nodo que actuará solo como controller KRaft.
 Los brokers no deben usar --standalone,a menos que sean solo controllers,lo cual no es típico.
 ````
@@ -332,7 +336,7 @@ Iniciamos los server(1 controller y 2 brokers) cada uno en una terminal distinta
 ### 5.4 Creamos el Topic Kafka
 En esta fase,procedemos a la creación del tópico principal de Kafka donde se publicarán todos los eventos generados por nuestro productor de datos en tiempo real.Este tópico se denominará air-quality,su función será reunir la información relacionada con la calidad del aire,tráfico, incendios y eventos especiales en distintas zonas de la ciudad.
 
-Dado que nuestra simulación abarca cuatro zonas geográficas distintas de Madrid (centro, residencial, industrial y suburbana), decidimos configurar el tópico con 4 particiones,de manera que cada una pueda gestionar de forma paralela y eficiente los eventos específicos de una zona.Esto mejora el rendimiento del sistema y permite mayor paralelización en el consumo de datos.
+Dado que nuestra simulación abarca cuatro zonas geográficas distintas de Madrid (centro, residencial, industrial y suburbana),decidimos configurar el tópico con 4 particiones,de manera que cada una pueda gestionar de forma paralela y eficiente los eventos específicos de una zona.Esto va a mejorar el rendimiento del sistema y permite mayor paralelización en el consumo de datos.
 Además,se ha definido un factor de replicación de 2,con el objetivo de garantizar una mayor tolerancia a fallos.Esto significa que cada partición estará replicada en al menos dos nodos del clúster,lo cual asegura disponibilidad incluso si uno de los brokers falla.
 ````
 /opt/kafka_2.13-4.0.0/bin/kafka-topics.sh --create --topic air-quality --bootstrap-server 192.168.11.10:9094 --replication-factor 2 --partitions 4
@@ -367,7 +371,7 @@ Dentro de la base de datos,creamos la tabla air_quality_events.Esta tabla va a a
 CREATE TABLE air_quality_events (
     city VARCHAR(100),
     country VARCHAR(100),
-    ts VARCHAR(100),
+    ts DATETIME,
     pollution_aqius INT,
     pollution_mainus VARCHAR(100),
     vehicles_count INT,
@@ -382,8 +386,7 @@ CREATE TABLE air_quality_events (
     fire_probability FLOAT,
     industry_factor FLOAT,
     traffic_condition VARCHAR(100),
-    special_event VARCHAR(100),
-    updated_aqi INT
+    special_event VARCHAR(100)
 );
 ````
 
@@ -417,8 +420,11 @@ Solo en la zona del centro se simulan los eventos especiales como conciertos y p
 
 Déspues necesitamos un consumer que lea los eventos del topic air-quality.Este consumer está implementado en PySpark Structured Streaming para poder analizar los datos de forma continua.
 El consumer :
+
 Va a leer el flujo de mensajes desde Kafka.
+
 Extrae y estructura los datos JSON recibidos.
+
 Imprime un resumen por microbatch en consola.
 
 #### 5.6.1 Ejecutamos el Consumer
@@ -471,7 +477,7 @@ Finalmente,verificamos que los datos se hayan insertado correctamente en la base
 En este apartado,abordaremos el proceso para conectar con PowerBI con nuestra base de datos MYSQL con el fin de realizar un análisis visual dinámico de los datos almacenados.
 
 * Conexión de PowerBI con la base de datos MYSQL
-Para comenzar abrimos PowerBI y seleccionamos la opción de conectamos a una base de datos MySQL.Esta conexión nos permitirá extraer los datos necesarios directamente desde nuestra base,asegurando que los informes reflejen siempre la información más reciente.
+Para comenzar abrimos PowerBI y seleccionamos la opción de conectarnos a una base de datos MySQL.Esta conexión nos permitirá extraer los datos necesarios directamente desde nuestra base,asegurando que los informes reflejen siempre la información más reciente.
 
 ![image](https://github.com/user-attachments/assets/db769c6b-aeda-4546-96c7-e8ee26775ad9)
 
@@ -483,6 +489,7 @@ Para comenzar abrimos PowerBI y seleccionamos la opción de conectamos a una bas
 
 ![image](https://github.com/user-attachments/assets/544aaaba-3959-4da6-853d-dd6b1b6088a7)
 
+Creanmos una nueva medida
 ````
 AQI Promedio por Zona = 
 AVERAGEX(
@@ -526,6 +533,8 @@ Como podemos observar
 ### 6.2 Análisis de Calidad del Aire (AQI) con factor industrial
 
 ![image](https://github.com/user-attachments/assets/1e0466c1-0bd8-4bcd-b98e-ed48cce9cc14)
+
+Creamos varias medidas
 
 ````
 AQI Alta Industria = 
@@ -573,10 +582,10 @@ Se muestra cómo varía el impacto industrial en la calidad del aire según la z
 
 ## 4. Interpretación de Resultados
 
-La contaminación industrial no se limita a su zona de origen,sino que se puede extender a áreas vecinas por los vientos.
+La contaminación industrial no se limita a su zona de origen,sino que se puede extender a las zonas vecinas por los vientos.
 
 ## 5. Conclusiones 
-  - Se podría monitorear las zonas cercanas a la zona industriales para ver como influye que una zona este más cerca del poligono industrial
+  - Se podría monitorear las zonas cercanas a la zona industriales para ver como influye que una zona este más cerca del polígono industrial
   - Regular  los horarios de máxima producción contaminante
   - Mantener suficiente distancia entre zonas industriales y residenciales
 
@@ -584,6 +593,8 @@ La contaminación industrial no se limita a su zona de origen,sino que se puede 
 ### 6.3 Análisis del Impacto de Incendios en la Calidad del Aire (AQI) en Zona Suburbana
 
 ![image](https://github.com/user-attachments/assets/ffcc1651-a7e6-4f4f-8319-a426d9596614)
+
+Creamos las siguientes medidas
 
 ````
 Avg AQI Con Fuego = 
@@ -625,9 +636,11 @@ Este gráfico compara el Índice de Calidad del Aire (AQI) promedio en la zona s
 
 ## 5. Conclusión
 Se podría implementar protocolos específicos para incendios en áreas suburbanas
-Poner más sensores durante la temporada de incendios que sería en verano
+Poner más sensores durante la temporada de incendios que sería en verano.
 
 ### 6.4 Promedio de Vehículos por Minuto y AQI por Zona
+
+Creamos las siguientes medidas
 
 ````
 Avg Vehiculo Por Minuto = AVERAGEX(
@@ -644,9 +657,9 @@ AVERAGEX(
 ````
 
 ### 1. Descripción General  
-El gráfico muestra dos métricas clave para cuatro zonas distintas (center, residential, suburb,industrial):  
-- **Avg Vehículo Por Minuto**: Número promedio de vehículos que transitan por minuto.  
-- **AOI Promedio por Zona**: Índice de Calidad del Aire (AQI) promedio en cada zona
+El gráfico muestra dos métricas para cuatro zonas distintas (center, residential, suburb,industrial):  
+- **Avg Vehículo Por Minuto**: Número promedio de vehículos que transitan cada cinco minutos.  
+- **AOI Promedio por Zona**: Índice de Calidad del Aire (AQI) promedio en cada zona 
 
 ---
 
@@ -658,10 +671,10 @@ El gráfico muestra dos métricas clave para cuatro zonas distintas (center, res
  
 
 - Zonas residential
-  En el caso de la zona residencial el nivel de AQI se mantiene constante durante practicamente todo el dia 
+  En el caso de la zona residencial el nivel de AQI se mantiene constante durante practicamente todo el dia,excepto algunas horas puntas.
 
-  ![image](https://github.com/user-attachments/assets/6aced553-6157-472b-a6f5-2c640d33d8e5)
- 
+![image](https://github.com/user-attachments/assets/f41301cc-3318-4480-97d8-f38ae7ad5374)
+
 -  Zonas suburbana
   En la zona suburbana,se observa que el tráfico muy bajo,pero existen picos de AQI .
   La posible causa principal puede ser los incendios forestales ya que no coincide con aumentos de tráfico y es un fenómeno temporal.
@@ -676,7 +689,7 @@ El gráfico muestra dos métricas clave para cuatro zonas distintas (center, res
 
 ### 3. Conclusión
 Se observa que en el centro de la ciudad,durante la primera hora de la mañana,el índice de calidad del aire (AQI) aumenta considerablemente.Esta subida podría estar relacionada con la entrada simultánea de los estudiantes al colegio,lo que genera un aumento en el tráfico y la actividad urbana.
-Como posible solución,se propone implementar entradas escalonadas por curso en los colegios para evitar la acumulación de personas y vehículos a la misma hora.Del mismo modo,las empresas podrían adoptar horarios de entrada y salida más flexibles para sus empleados,lo que ayudaría a distribuir mejor el tráfico y reducir la contaminación en las horas punta.
+Como posible solución,se propone implementar entradas escalonadas por curso en los colegios para evitar la acumulación de personas y vehículos a la misma hora.Del mismo modo,las empresas podrían adoptar horarios de entrada y salida más flexibles para sus empleados,lo que ayudaría a distribuir mejor el tráfico y reducir la contaminación en las horas punta.En la zona residencial también existen horas punta con mayor tránsito de vehículos, lo cual podría deberse a que muchas personas regresan del trabajo en ese horario.
 
 Además,sería importante fomentar el uso del transporte público,la bicicleta y otros medios sostenibles,con el objetivo de disminuir la cantidad de vehículos particulares en circulación y,con ello,mejorar la calidad del aire en las zonas más afectadas.
 
@@ -733,19 +746,19 @@ Los sábados y domingos,al haber menos movimiento y tráfico,el aire mejora.Por 
 
 ## 7. Prometheus
 
-En esta etapa, ponemos en marcha Prometheus para comenzar a recolectar métricas de nuestras fuentes configuradas.
+En esta etapa,ponemos en marcha Prometheus para comenzar a recolectar métricas de nuestras fuentes configuradas.
 
 1.Iniciar Prometheus
 
 Vamos a su directorio ````/opt/prometheus-2.53.4 ````
 
-Luego, arrancamos Prometheus usando nuestro archivo de configuración personalizado:
+Luego,arrancamos Prometheus usando nuestro archivo de configuración personalizado:
 ````
 ./prometheus --config.file=prometheus_proyecto_MLU.yml
 ````
 2. Verificar Endpoints de Métricas
    
-Una vez iniciado, comprobamos que nuestros endpoints están sirviendo correctamente las métricas:
+Una vez iniciado,comprobamos que nuestros endpoints están sirviendo correctamente las métricas:
 ````
 curl http://localhost:11001/metrics
 curl http://localhost:11002/metrics
@@ -753,13 +766,11 @@ curl http://localhost:11003/metrics
 ````
 3. Confirmar Captura de Prometheus
    
-Desde el navegador del host , accedemos a la interfaz de Prometheus:
+Desde el navegador del host,accedemos a la interfaz de Prometheus:
 
 ````http://192.168.56.10:9090/targets````
 
 4. Visualización
-   
-Las siguientes imágenes muestran la interfaz de Prometheus funcionando correctamente, con los targets en estado activo ("UP"):
 
 ![image](https://github.com/user-attachments/assets/f661253c-c5f8-4228-8281-1dbf0f7d63a1)
 
@@ -769,11 +780,11 @@ Las siguientes imágenes muestran la interfaz de Prometheus funcionando correcta
 
 ## 8. Grafana
 
-En este apartado instalamos y configuramos Grafana, la herramienta de visualización de métricas que se integra con Prometheus.
+En este apartado instalamos y configuramos Grafana,la herramienta de visualización de métricas que se integra con Prometheus.
 
 1. Instalación de Dependencias
    
-Primero, instalamos los paquetes necesarios para que Grafana funcione correctamente:
+Primero,instalamos los paquetes necesarios para que Grafana funcione correctamente:
 ````
 sudo apt-get install -y adduser libfontconfig1 musl
 ````
@@ -801,28 +812,20 @@ sudo systemctl enable grafana-server.service
 sudo systemctl start grafana-server.service
 sudo systemctl status grafana-server.service
 
- systemctl start grafana-server
+systemctl start grafana-server
 ````
 
 ![image](https://github.com/user-attachments/assets/c32af78e-fbf2-494e-8795-423c7919bf4c)
 
 4. Acceso a la Interfaz Web
    
-Una vez iniciado el servicio, accedemos a Grafana desde el navegador web:
+Una vez iniciado el servicio,accedemos a Grafana desde el navegador web:
 ````
 http://192.168.56.10:3000/dashboards
 ````
 5. Visualización y Paneles
    
-Al ingresar por primera vez, Grafana solicitará iniciar sesión (usuario: admin, contraseña por defecto: admin, luego pedirá cambiarla). Desde ahí, se pueden:
-
-Crear dashboards personalizados.
-
-Agregar Prometheus como fuente de datos.
-
-Visualizar las métricas capturadas de forma gráfica.
-
-Aquí vemos capturas del panel de control y algunos ejemplos de dashboards en funcionamiento:
+Creamos un dashboards,introduciendo un JSON ya dado y de esta manera podemos visualizar las métricas capturadas de forma gráfica.
 
 ![image](https://github.com/user-attachments/assets/fcf68def-b75a-40c5-adc7-cb9c5bd19d7d)
 

@@ -30,26 +30,26 @@
 
 Hoy en día, la calidad del aire y la contaminación son factores ambientales que generan gran preocupación en nuestra sociedad.
 El tráfico diario de vehículos es una de las principales causas del deterioro de la calidad del aire.
-Además,ciertos fenómenos naturales como los incendios forestales pueden tener un impacto significativo en la contaminación atmosférica.A esto se le suma la actividad industrial,cuyas emisiones de humo y partículas contaminantes se mezclan con la atmósfera,empeorando aún más la situación.
+Además, ciertos fenómenos naturales como los incendios forestales pueden tener un impacto significativo en la contaminación atmosférica.A esto se le suma la actividad industrial, cuyas emisiones de humo y partículas contaminantes se mezclan con la atmósfera, empeorando aún más la situación.
 
-Esto puede hacer que existan consecuencias directas en la salud publica,un artículo revela que 2000 niños mueren cada dia en el mundo por mal calidad del aire,por ello he decidido hacer una investigación que se enfoca en el monitoreo y análisis de los principales factores que afectan la calidad del aire,con el objetivo de identificar los eventos más frecuentes y críticos.A partir de estos datos,espero poder extraer conclusiones que contribuyan a diseñar soluciones eficientes para combatir este grave problema global.
+Esto puede hacer que existan consecuencias directas en la salud pública, un artículo revela que 2000 niños mueren cada dia en el mundo por mal calidad del aire, por ello he decidido hacer una investigación que se enfoca en el monitoreo y análisis de los principales factores que afectan la calidad del aire, con el objetivo de identificar los eventos más frecuentes y críticos.A partir de estos datos, espero poder extraer conclusiones que contribuyan a diseñar soluciones eficientes para combatir este grave problema global.
   
 
 ## 2. Fuente de Información
 
 Para poder abarcar con todo esto vamos a apoyarnos en los datos proporcionados por la AirVisual API la cual ofrece información sobre el tiempo, la calidad del aire y los incendios activos,etc...
-Sin embargo,esta API presenta un problema:los datos se actualizan cada hora ,mientras que nuestro objetivo es realizar un monitoreo en tiempo real,actualizando los datos cada segundo.
+Sin embargo, esta API presenta un problema:los datos se actualizan cada hora , mientras que nuestro objetivo es realizar un monitoreo en tiempo real, actualizando los datos cada segundo.
 
-Por ello vamos a generar  unos datos sintéticos,incluyendo no solo las variables que ofrece la API,sino también otros datos adicionales que considero importantes para un análisis más completo,como el tráfico,la actividad industrial y la probabilidad de incendios.
+Por ello vamos a generar unos datos sintéticos, incluyendo no solo las variables que ofrece la API, sino también otros datos adicionales que considero importantes para un análisis más completo,como el tráfico,la actividad industrial y la probabilidad de incendios.
 Los datos ficticios se recogerán desde sensores virtuales distribuidos en cuatro zonas distintas de Madrid:
 
-Centro:La cual va a tener un alto volumen de tráfico.
+Centro: La cual va a tener un alto volumen de tráfico.
 
-Residencial:Es un área más residencial con menos tráfico de vehículos.
+Residencial: Es un área más residencial con menos tráfico de vehículos.
 
-Industrial:Es una zona con alta actividad industrial,donde predominan los contaminantes derivados del humo y procesos fabriles.
+Industrial: Es una zona con alta actividad industrial,donde predominan los contaminantes derivados del humo y procesos fabriles.
 
-Suburbana:Es una zona de factores naturales y con una mayor probabilidad de incendios forestales.
+Suburbana: Es una zona de factores naturales y con una mayor probabilidad de incendios forestales.
 
 ## 3. Requisitos
 Debe haber como mínimo 3 nodos en los clusters (en cada uno):
@@ -62,20 +62,20 @@ Debe haber como mínimo 3 nodos en los clusters (en cada uno):
 
 
 * Spark
- Apache Spark es el motor encargado del procesamiento distribuido de los datos.A diferencia de Hadoop MapReduce,Spark nos permite trabajar en memoria,lo que lo hace mucho más rápido y eficiente para el análisis de grandes volúmenes de datos.
+ Apache Spark es el motor encargado del procesamiento distribuido de los datos. A diferencia de Hadoop MapReduce, Spark nos permite trabajar en memoria, lo que lo hace mucho más rápido y eficiente para el análisis de grandes volúmenes de datos.
  
  ![image](https://github.com/user-attachments/assets/4a360f4a-3007-4646-92e2-289e0c5d676c)
 
 
 * Kafka
- Apache Kafka es la tecnología utilizada para gestionar el flujo de mensajes en tiempo real.En este proyecto,Kafka se encarga de transmitir los eventos generados por los sensores virtuales (como los datos de calidad del aire, tráfico, incendios, etc.).
- Se ha actualizado Kafka a la versión 4.0.0,lo que introduce una mejora importante:la eliminación de la dependencia de Zookeeper,gracias al nuevo sistema de metadatos KRaft.
+ Apache Kafka es la tecnología utilizada para gestionar el flujo de mensajes en tiempo real. En este proyecto , Kafka se encarga de transmitir los eventos generados por los sensores virtuales (como los datos de calidad del aire, tráfico, incendios, etc.).
+ Se ha actualizado Kafka a la versión 4.0.0, lo que introduce una mejora importante: la eliminación de la dependencia de Zookeeper, gracias al nuevo sistema de metadatos KRaft.
  
  ![image](https://github.com/user-attachments/assets/1d2feb40-6772-4ea7-9e3f-e7edf1420f69)
 
 
 ## 4. Configuración del Clúster de Kafka
-1.Vamos a establecer todos los archivos de configuración en una carpeta llamada proyecto_MLU,que en mi caso estará alojada en /opt/kafka/proyecto_MLU
+1.Vamos a establecer todos los archivos de configuración en una carpeta llamada proyecto_MLU, que en mi caso estará alojada en /opt/kafka/proyecto_MLU
 
 ![image](https://github.com/user-attachments/assets/e12ef486-f0bd-4ca7-b4fa-3a83788f20b7)
 
@@ -87,12 +87,17 @@ mkdir -p /opt/kafka/proyecto_MLU/logs
 ````
 
 En nuestra arquitectura vamos a tener lo siguiente:
-Un controller que va a ser el nodo responsable de poder coordinar el clúster.Se va a encargar de gestionar los eventos como la creación y eliminación de topics,la asignaciñon de particiones y la detección de fallos en los brokers.
-Para el controller,debemos usar como base la configuración de propiedades de controller de kafka que se encuentran config/controller.properties
+Un controller que va a ser el nodo responsable de poder coordinar el clúster. Se va a encargar de gestionar los eventos como la creación y eliminación de topics,la asignaciñon de particiones y la detección de fallos en los brokers.
+Para el controller, debemos usar como base la configuración de propiedades de controller de kafka que se encuentran :
+````
+config/controller.properties
+````
+Dos brokers, donde cada uno va a estar identificado por un Id y va a contener ciertas particiones de un topic.Va a permitir replicar y poder particionar dichos topics balanceando la carga de almacenamiento entre los brokers.
+Para cada broker, necesitaremos crear un archivo de configuración por separado.Para ello debemos usar como base la configuración de propiedades de brokers de kafka que se encuentran 
 
-Dos brokers,donde cada uno va a estar identificado por un Id y va a contener ciertas particiones de un topic.Va a permitir replicar y poder particionar dichos topics balanceando la carga de almacenamiento entre los brokers.
-Para cada broker,necesitaremos crear un archivo de configuración por separado.Para ello debemos usar como base la configuración de propiedades de brokers de kafka que se encuentran config//broker.properties
-
+````
+config//broker.properties
+````
 Hacemos la copia de los ficheros correspondientes de configuración para cada uno
 
 ````
@@ -150,9 +155,9 @@ log.dirs=/opt/kafka/proyecto_MLU/logs/broker2
 Vamos a activar todos los servicios para que nuestro flujo de datos pueda funcionar de manera correcta.
 
 ### 5.1 Levantamos HDFS (Hadoop Distributed File System)
-Levantamos HDFS que será nuestro sistema de almacenamiento distribuido,donde los datos procesados se guardarán.
-Se inician los servicios del NameNode y los DataNodes,permitiendo el almacenamiento distribuido de grandes volúmenes de datos.
-Se activa YARN,que gestionará los recursos y la ejecución de procesos en los distintos nodos del clúster.
+Levantamos HDFS que será nuestro sistema de almacenamiento distribuido, donde los datos procesados se guardarán.
+Se inician los servicios del NameNode y los DataNodes, permitiendo el almacenamiento distribuido de grandes volúmenes de datos.
+Se activa YARN, que gestionará los recursos y la ejecución de procesos en los distintos nodos del clúster.
 Esto asegura que todo lo que se procese o almacene posteriormente tenga soporte escalable y tolerante a fallos.
 ````
 cd $HADOOP_HOME
@@ -168,18 +173,18 @@ hdfs dfsadmin -safemode leave
 ### 5.2 Arrancamos Spark Master y Workers
 Reiniciamos el Spark Master y los Workers del clúster utilizando los scripts provistos por Spark.
 Spark será el encargado de leer los datos desde Kafka y analizarlos en tiempo real.
-Al reiniciar el Spark Master y varios Spark Workers,aseguramos que el entorno esté limpio y listo para el procesamiento paralelo de grandes volúmenes de datos.
+Al reiniciar el Spark Master y varios Spark Workers, aseguramos que el entorno esté limpio y listo para el procesamiento paralelo de grandes volúmenes de datos.
 ````
 /opt/hadoop-3.4.1/spark-3.5.4/sbin/stop-all.sh
 /opt/hadoop-3.4.1/spark-3.5.4/sbin/start-all.sh
 ````
 
 ### 5.3 Iniciamos Kafka (Controller + Brokers)
-Como más adelante utilizaremos Prometheus y Grafana,se ha preparado un script personalizado llamado kafka-server-start_proyecto_MLU.sh adaptado especialmente para este proyecto.
+Como más adelante utilizaremos Prometheus y Grafana, se ha preparado un script personalizado llamado kafka-server-start_proyecto_MLU.sh adaptado especialmente para este proyecto.
 
 1.Configurar Prometheus
-Tras a ver instalado prometheus,duplicamos el archivo de configuración por defecto y creamos uno específico para el proyecto.
-Este script está diseñado para poder iniciar instancias de Kafka personalizadas para el proyecto,específicamente configuradas para que cada broker y controller de Kafka use un puerto diferente ,asi evitamos errores de conflictor de red  y monitoreo al ejecutar múltiples nodos Kafka en la misma máquina.
+Tras a ver instalado prometheus, duplicamos el archivo de configuración por defecto y creamos uno específico para el proyecto.
+Este script está diseñado para poder iniciar instancias de Kafka personalizadas para el proyecto, específicamente configuradas para que cada broker y controller de Kafka use un puerto diferente , asi evitamos errores de conflictor de red  y monitoreo al ejecutar múltiples nodos Kafka en la misma máquina.
 ````
 cp /opt/prometheus-2.53.4/prometheus.yml /opt/prometheus-2.53.4/prometheus_proyecto_MLU.yml
 nano /opt/prometheus-2.53.4/prometheus_proyecto_MLU.yml
@@ -235,7 +240,7 @@ Creamos y editamos el siguiente archivo:
 ````
 nano /opt/kafka_2.13-4.0.0/bin/kafka-server-start_proyecto_MLU.sh
 ````
-En este script vamos a crear una configuración adicional para habilitar JMX Exporter,lo que permitirá monitorear los nodos de Kafka con Prometheus.
+En este script vamos a crear una configuración adicional para habilitar JMX Exporter, lo que permitirá monitorear los nodos de Kafka con Prometheus.
 ````
 # --- INICIO DE MODIFICACIÓN PARA JMX EXPORTER ---
 
@@ -305,7 +310,7 @@ fi
 
 # --- FIN DE MODIFICACIÓN PARA JMX EXPORTER ---
 ````
-Antes de arrancar los servicios del controller y los brokers,necesitamos iniciar Kafka.Por ello vamos a generar un identificador único para el clúster.Este ID se va a utilizar para cada uno de los nodos (controller y brokers)para identificarse como parte del mismo clúster
+Antes de arrancar los servicios del controller y los brokers, necesitamos iniciar Kafka. Por ello vamos a generar un identificador único para el clúster. Este ID se va a utilizar para cada uno de los nodos (controller y brokers) para identificarse como parte del mismo clúster
 
 Generamos el ID del clúster
 ````
@@ -315,7 +320,7 @@ echo $KAFKA_CLUSTER_ID
 ````
 ![image](https://github.com/user-attachments/assets/eb9b2605-8862-43f8-bb7d-7f7c47474a31)
 
-Después de generar el ID ,vamos a formatear los directorios de log de cada nodo.Esto nos va a asegurar que cada nodo este vinculado al mismo cluster.id y pueda participar en la gestión del clúster
+Después de generar el ID , vamos a formatear los directorios de log de cada nodo. Esto nos va a asegurar que cada nodo este vinculado al mismo cluster.id y pueda participar en la gestión del clúster
 Ponemos --standalone al iniciar el controller ya que se usa en la version 4 para  poder formatear el nodo que actuará solo como controller KRaft.
 Los brokers no deben usar --standalone,a menos que sean solo controllers,lo cual no es típico.
 ````
@@ -334,10 +339,10 @@ Iniciamos los server(1 controller y 2 brokers) cada uno en una terminal distinta
 /opt/kafka_2.13-4.0.0/bin/kafka-server-start_proyecto_MLU.sh /opt/kafka/proyecto_MLU/config/broker2.properties
 ````
 ### 5.4 Creamos el Topic Kafka
-En esta fase,procedemos a la creación del tópico principal de Kafka donde se publicarán todos los eventos generados por nuestro productor de datos en tiempo real.Este tópico se denominará air-quality,su función será reunir la información relacionada con la calidad del aire,tráfico, incendios y eventos especiales en distintas zonas de la ciudad.
+En esta fase, procedemos a la creación del tópico principal de Kafka donde se publicarán todos los eventos generados por nuestro productor de datos en tiempo real. Este tópico se denominará air-quality, su función será reunir la información relacionada con la calidad del aire,tráfico, incendios y eventos especiales en distintas zonas de la ciudad.
 
-Dado que nuestra simulación abarca cuatro zonas geográficas distintas de Madrid (centro, residencial, industrial y suburbana),decidimos configurar el tópico con 4 particiones,de manera que cada una pueda gestionar de forma paralela y eficiente los eventos específicos de una zona.Esto va a mejorar el rendimiento del sistema y permite mayor paralelización en el consumo de datos.
-Además,se ha definido un factor de replicación de 2,con el objetivo de garantizar una mayor tolerancia a fallos.Esto significa que cada partición estará replicada en al menos dos nodos del clúster,lo cual asegura disponibilidad incluso si uno de los brokers falla.
+Dado que nuestra simulación abarca cuatro zonas geográficas distintas de Madrid (centro, residencial, industrial y suburbana), decidimos configurar el tópico con 4 particiones, de manera que cada una pueda gestionar de forma paralela y eficiente los eventos específicos de una zona. Esto va a mejorar el rendimiento del sistema y permite mayor paralelización en el consumo de datos.
+Además, se ha definido un factor de replicación de 2, con el objetivo de garantizar una mayor tolerancia a fallos. Esto significa que cada partición estará replicada en al menos dos nodos del clúster, lo cual asegura disponibilidad incluso si uno de los brokers falla.
 ````
 /opt/kafka_2.13-4.0.0/bin/kafka-topics.sh --create --topic air-quality --bootstrap-server 192.168.11.10:9094 --replication-factor 2 --partitions 4
 ````
@@ -355,7 +360,7 @@ Para comprobar que el tópico ha sido creado correctamente y está activo en nue
 
 ### 5.5 Creación de la tabla en MySQL
 A continuación,vamos a crear una base de datos en MySQL junto con una tabla para almacenar los datos que se están generando.
-Primero,accedemos a la consola de MySQL con privilegios de administrador utilizando el siguiente comando:
+Primero, accedemos a la consola de MySQL con privilegios de administrador utilizando el siguiente comando:
 ````
 sudo mysql -u root -p
 ````
@@ -395,12 +400,12 @@ CREATE TABLE air_quality_events (
 
 ### 5.6 Creación del producer y del consumer
 
-Vamos a crear el productor Kafka que es el componente encargado de simular la generación de datos que normalmente serían capturados por sensores distribuidos en las cuatro zonas de Madrid: centro, residencial, industrial y suburbana.Este productor,implementado en Python,genera eventos sintéticos que incluyen variables como la calidad del aire,el conteo de vehículos,incendios activos y eventos especiales, y los envía en tiempo real al tópico air-quality de Kafka.
+Vamos a crear el productor Kafka que es el componente encargado de simular la generación de datos que normalmente serían capturados por sensores distribuidos en las cuatro zonas de Madrid: centro, residencial, industrial y suburbana.Este productor, implementado en Python, genera eventos sintéticos que incluyen variables como la calidad del aire,el conteo de vehículos,incendios activos y eventos especiales, y los envía en tiempo real al tópico air-quality de Kafka.
 Tenemos además varias condiciones para que podemos simular bien nuestros datos y se acerquen lo más posible a la realidad.
 Vamos a tener en cuenta esta lógica en la simulación.
 
 * Horario de simulación
-El sistema inicia la simulación a las 9:00 de la mañana del día 2 de enero de 2025 que es jueves.Cada segundo en el mundo real representa cinco minutos en el tiempo simulado.
+El sistema inicia la simulación a las 9:00 de la mañana del día 2 de enero de 2025 que es jueves. Cada segundo en el mundo real representa cinco minutos en el tiempo simulado.
 
 * Condiciones de tráfico
 Las condiciones del tráfico son un factor importante para el cálculo del AQI.Se tienen en cuenta dos aspectos principales:el día de la semana y la hora del día.
@@ -418,7 +423,7 @@ Los incendios son otro factor muy importante en esta simulación.Cada zona tiene
 * Eventos especiales
 Solo en la zona del centro se simulan los eventos especiales como conciertos y partidos de fútbol.Cuando ocurre uno de estos eventos,se incrementa el número de vehículos en la zona y se eleva el AQI debido al aumento del tráfico.
 
-Déspues necesitamos un consumer que lea los eventos del topic air-quality.Este consumer está implementado en PySpark Structured Streaming para poder analizar los datos de forma continua.
+Déspues necesitamos un consumer que lea los eventos del topic air-quality. Este consumer está implementado en PySpark Structured Streaming para poder analizar los datos de forma continua.
 El consumer :
 
 Va a leer el flujo de mensajes desde Kafka.
@@ -429,7 +434,7 @@ Imprime un resumen por microbatch en consola.
 
 #### 5.6.1 Ejecutamos el Consumer
 
-Vamos a iniciar el consumidor antes de poner en marcha el productor.Esto va a asegurar que el consumer esté activo desde el inicio del flujo de datos y no se pierda ninguna información emitida por el productor.
+Vamos a iniciar el consumidor antes de poner en marcha el productor. Esto va a asegurar que el consumer esté activo desde el inicio del flujo de datos y no se pierda ninguna información emitida por el productor.
 Para ejecutar el consumidor utilizamos spark-submit con las librerías necesarias para conectar Spark con Kafka. El comando es el siguiente:
 
 ````
@@ -437,7 +442,7 @@ PYTHONPATH=$HOME/.local/lib/python3.10/site-packages spark-submit --packages org
 ````
 #### 5.6.2 Ejecutamos el Producer Kafka
 
-Una vez que el consumidor está corriendo y escuchando el stream,vamos a proceder a iniciar el productor.El producer simula la generación y envío de datos sintéticos desde las distintas zonas de la ciudad,alimentando el flujo que será consumido y analizado.
+Una vez que el consumidor está corriendo y escuchando el stream, vamos a proceder a iniciar el productor.El producer simula la generación y envío de datos sintéticos desde las distintas zonas de la ciudad,alimentando el flujo que será consumido y analizado.
 Para lanzar el productor ejecutamos:
 ````
 python3 /opt/kafka/proyecto_MLU/data_stream/producer.py
@@ -446,11 +451,11 @@ Este script comenzará a enviar los eventos generados al topic Kafka,dando inici
 
 #### 5.6.3 Visualizamos la información
 
-Para asegurarnos de que los datos se están consumiendo correctamente y el flujo de información está activo,utilizaremos la consumer API de Kafka para monitorear el consumo en tiempo real.Ejecutamos el siguiente comando para ver los mensajes que llegan al topic air-quality desde el principio:
+Para asegurarnos de que los datos se están consumiendo correctamente y el flujo de información está activo,utilizaremos la consumer API de Kafka para monitorear el consumo en tiempo real. Ejecutamos el siguiente comando para ver los mensajes que llegan al topic air-quality desde el principio:
 ````
 /opt/kafka_2.13-4.0.0/bin/kafka-console-consumer.sh --topic air-quality --from-beginning --bootstrap-server 192.168.11.10:9094
 ````
-Este comando mostrará en la consola los eventos que el consumidor está recibiendo,permitiendo verificar que los datos fluyen correctamente.
+Este comando mostrará en la consola los eventos que el consumidor está recibiendo, permitiendo verificar que los datos fluyen correctamente.
 
 Además, para comprobar que los datos se están almacenando correctamente en el sistema de archivos distribuido HDFS,podemos listar los archivos generados con:
 

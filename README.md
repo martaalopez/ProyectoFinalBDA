@@ -18,7 +18,7 @@
      - [5.6.3 Visualizamos la información](#563-visualizamos-la-información)
 6. [Visualización en PowerBI](#6-visualización-en-powerbi)
    - [6.1 Promedio de AQI](#61-promedio-de-aqi)
-   - [6.2 Análisis de Calidad del Aire (AQI) en Zonas Industriales](#62-análisis-de-calidad-del-aire-aqi-en-zonas-industriales)
+   - [6.2 Análisis de Calidad del Aire (AQI) con factor industrial](#62-análisis-de-calidad-del-aire-aqi-con-factor-industrial)
    - [6.3 Análisis del Impacto de Incendios en la Calidad del Aire](#63-análisis-del-impacto-de-incendios-en-la-calidad-del-aire-aqi-en-zona-suburbana)
    - [6.4 Promedio de Vehículos por Minuto y AQI por Zona](#64-promedio-de-vehículos-por-minuto-y-aqi-por-zona)
    - [6.5 Distribución del AQI por Día de la Semana](#65-distribución-del-aqi-por-día-de-la-semana)

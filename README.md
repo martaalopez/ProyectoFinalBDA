@@ -438,7 +438,7 @@ Vamos a iniciar el consumidor antes de poner en marcha el productor. Esto va a a
 Para ejecutar el consumidor utilizamos spark-submit con las librerías necesarias para conectar Spark con Kafka. El comando es el siguiente:
 
 ````
-PYTHONPATH=$HOME/.local/lib/python3.10/site-packages spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.4 --master spark://192.168.11.10:7077 /opt/kafka/proyecto_MLU/data_stream/consumer.py
+spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.4 --master spark://192.168.11.10:7077 /opt/kafka/proyecto_MLU/data_stream/consumer.py
 ````
 #### 5.6.2 Ejecutamos el Producer Kafka
 
@@ -481,6 +481,7 @@ Finalmente,verificamos que los datos se hayan insertado correctamente en la base
 ## 6. Visualización en PowerBI
 En este apartado,abordaremos el proceso para conectar con PowerBI con nuestra base de datos MYSQL con el fin de realizar un análisis visual dinámico de los datos almacenados.
 Primero debemos  de irnos a la siguiente ruta en nustro ordenador
+
 ![image](https://github.com/user-attachments/assets/92c1904f-12b0-4d42-8ea9-9236bb695cc9)
 
 de configurar el archivo host y añadir esta configuración 
@@ -519,14 +520,32 @@ de configurar el archivo host y añadir esta configuración
 192.168.56.13 nodo3
 ````
 
-* Conexión de PowerBI con la base de datos MYSQL
+* Conexión de PowerBI con HDFS
 Para comenzar abrimos PowerBI y seleccionamos la opción de conectarnos a una base de datos MySQL.Esta conexión nos permitirá extraer los datos necesarios directamente desde nuestra base,asegurando que los informes reflejen siempre la información más reciente.
 
-![image](https://github.com/user-attachments/assets/db769c6b-aeda-4546-96c7-e8ee26775ad9)
+![image](https://github.com/user-attachments/assets/d8f298e5-ad49-4677-a4a6-6c48af2b9be8)
+
 
 * Introducimos nuestra IP donde se encuentra alojada nuestra base de datos MYSQL  y también el nombre  específico de nuestra base de datos que queremos consultar.Además tendremos que introducir nuestro usuario y contraseña.
 
-![image](https://github.com/user-attachments/assets/03825a69-aae7-4101-bef5-f0def19f6b8a)
+![image](https://github.com/user-attachments/assets/24de34b3-bfd8-4e52-afd4-f02b0153eab2)
+
+* Transformamos los datos
+![image](https://github.com/user-attachments/assets/bb8b2d03-d4cd-46e5-9002-6b119bc97f70)
+
+Picamos en extension y marcamos parquet
+![image](https://github.com/user-attachments/assets/453a7bee-ee64-4a70-a242-31af6c148070)
+
+Picamos en Binary 
+
+![image](https://github.com/user-attachments/assets/f5f31d7c-1035-413e-a407-be4df04f9a26)
+
+Se ha creado la consulta ,cerramos y aplicamos 
+![image](https://github.com/user-attachments/assets/0b5947b2-b602-4306-aa2a-0885f6cfc504)
+
+Ya tenemos nuestros datos
+![image](https://github.com/user-attachments/assets/43b47665-2475-4ef1-9573-477f8540289a)
+
 
 ### 6.1 Promedio de AQI
 

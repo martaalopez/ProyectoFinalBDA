@@ -483,9 +483,11 @@ Antes de realizar la conexión, es necesario configurar correctamente el archivo
 
 Una vez configurado el archivo hosts, podemos proceder a conectar Power BI con HDFS y visualizar nuestros datos.
 1. Abrir Power BI
+
 Iniciamos Power BI Desktop.
 
 2. Conectarse a Hadoop HDFS
+   
 En la pantalla de inicio, seleccionamos Obtener datos.
 
 Buscamos y seleccionamos la opción Archivo Hadoop (HDFS).
@@ -493,32 +495,37 @@ Buscamos y seleccionamos la opción Archivo Hadoop (HDFS).
 ![image](https://github.com/user-attachments/assets/d8f298e5-ad49-4677-a4a6-6c48af2b9be8)
 
 3. Introducir la dirección del servidor
+
 En la ventana emergente, introducimos la dirección del nodo principal  donde se aloja el sistema de archivos HDFS.
 
 ![image](https://github.com/user-attachments/assets/24de34b3-bfd8-4e52-afd4-f02b0153eab2)
 
 4. Transformar los datos
+   
 Una vez conectado, Power BI mostrará los archivos disponibles .A continuación, realizamos los siguientes pasos:
 
 Hacemos clic en Transformar datos para abrir el Editor de Power Query.
 ![image](https://github.com/user-attachments/assets/bb8b2d03-d4cd-46e5-9002-6b119bc97f70)
 
 5. Seleccionar formato de archivo
-En la columna Extension, seleccionamos el formato de archivo adecuado, por ejemplo .parquet.
+
+En la columna Extension, seleccionamos el formato de archivo adecuado, que sería en nuestro caso .parquet.
 
 ![image](https://github.com/user-attachments/assets/453a7bee-ee64-4a70-a242-31af6c148070)
 
 6. Abrir archivo binario
+
 Hacemos clic sobre el campo Binary del archivo que deseamos cargar.
 
 ![image](https://github.com/user-attachments/assets/f5f31d7c-1035-413e-a407-be4df04f9a26)
 
 7. Aplicar cambios
+
 Una vez que Power BI haya creado la consulta y cargado los datos, hacemos clic en Cerrar y aplicar.
 
 ![image](https://github.com/user-attachments/assets/0b5947b2-b602-4306-aa2a-0885f6cfc504)
 
-Ya tenemos nuestros datos
+Ya tenemos nuestros datos preparados
 
 ![image](https://github.com/user-attachments/assets/43b47665-2475-4ef1-9573-477f8540289a)
 
@@ -527,7 +534,7 @@ Ya tenemos nuestros datos
 
 ![image](https://github.com/user-attachments/assets/544aaaba-3959-4da6-853d-dd6b1b6088a7)
 
-Creanmos una nueva medida
+Creamos una nueva medida
 ````
 AQI Promedio por Zona = 
 AVERAGEX(
@@ -535,6 +542,7 @@ AVERAGEX(
     CALCULATE(AVERAGE('kafka_air_quality air_quality_events'[pollution_aqius]))
 )
 ````
+Aplicamos la función AVERAGEX para recorrer cada zona única (VALUES) y calcular el promedio de pollution_aqius (Air Quality Index US) mediante CALCULATE.
 
 ### 1. Descripción
 Vamos a presentar el promedio del índice de Calidad del Aire (AQI)  y su distribución porcentual en cuatro zonas distintas de Madrid.
@@ -572,7 +580,8 @@ Como podemos observar
 
 ![image](https://github.com/user-attachments/assets/1e0466c1-0bd8-4bcd-b98e-ed48cce9cc14)
 
-Creamos varias medidas
+
+Para segmentar el análisis, se generaron tres medidas en DAX que calculan el promedio del AQI para cada nivel de actividad industrial:
 
 ````
 AQI Alta Industria = 
@@ -596,13 +605,20 @@ CALCULATE(
     'kafka_air_quality air_quality_events'[industrial_activity] = "moderate"
 )
 ````
+Estas medidas permiten desglosar cómo varía la calidad del aire en función del impacto industrial percibido en cada zona.
 
 ### 1. Descripción
-Este gráfico presenta tres métricas clave de calidad del aire (AQI) específicamente relacionadas con el factor insutrial ,AQI Alta Industria, AQI Baja Industria y AQI Media Industria,desglosadas por diferentes zonas urbanas.
+Este análisis presenta una comparación entre tres niveles de actividad industrial y su relación con la calidad del aire. Se observan las variaciones en los promedios del AQI en función de la intensidad de la actividad industrial en distintas zonas urbanas.
+
+El objetivo es detectar correlaciones entre la actividad económica industrial y la contaminación atmosférica, permitiendo identificar patrones de riesgo ambiental.
 
 ### 2. Datos Generales
-Se muestra cómo varía el impacto industrial en la calidad del aire según la zona:
-- Se comparan tres indicadores de contaminación industrial (alta, baja y media)
+Se utilizaron registros del sensor AQI combinados con un campo categórico llamado industrial_activity, clasificado como:
+"high" (alta)
+"moderate" (media)
+"low" (baja)
+
+El análisis se aplicó sobre datos agrupados por zonas: Industrial, Centro, Residencial y Suburbana
 
 ### 3. Distribución del AQI Industrial por Zona
 
@@ -620,19 +636,29 @@ Se muestra cómo varía el impacto industrial en la calidad del aire según la z
 
 ### 4. Interpretación de Resultados
 
-La contaminación industrial no se limita a su zona de origen,sino que se puede extender a las zonas vecinas por los vientos.
+Existe una correlación directa entre el nivel de actividad industrial y el aumento del AQI.
+La contaminación generada por la industria no se limita exclusivamente a la zona de origen. Factores como los vientos, la topografía y el tráfico pueden transportar partículas contaminantes hacia otras zonas.
+El análisis sugiere que las zonas residenciales cercanas a  estas zonas industriales están en riesgo indirecto.
 
 ### 5. Conclusiones 
-  - Se podría monitorear las zonas cercanas a la zona industriales para ver como influye que una zona este más cerca del polígono industrial
-  - Regular  los horarios de máxima producción contaminante
-  - Mantener suficiente distancia entre zonas industriales y residenciales
+
+A partir de los datos analizados, se proponen las siguientes acciones:
+
+* Monitoreo ambiental continuo en zonas cercanas a polígonos industriales para evaluar el alcance real de la contaminación.
+
+* Regulación de horarios de mayor producción industrial, para evitar la superposición con picos de actividad urbana (como horas punta de tráfico).
+
+* Diseño de zonas de amortiguamiento entre áreas industriales y zonas residenciales mediante barreras vegetales, infraestructuras verdes o distancias mínimas reglamentadas.
+
 
 
 ### 6.3 Análisis del Impacto de Incendios en la Calidad del Aire (AQI) en Zona Suburbana
 
+Este análisis tiene como objetivo cuantificar el efecto de los incendios forestales sobre el Índice de Calidad del Aire (AQI) específicamente en la zona suburbana, tradicionalmente caracterizada por su aire limpio y baja densidad de contaminación.
+
 ![image](https://github.com/user-attachments/assets/ffcc1651-a7e6-4f4f-8319-a426d9596614)
 
-Creamos las siguientes medidas
+Para realizar esta comparación, se han realizado dos medidas que evalúan el AQI promedio con y sin presencia de incendios en la zona suburbana:
 
 ````
 Avg AQI Con Fuego = 
@@ -673,10 +699,12 @@ Este gráfico compara el Índice de Calidad del Aire (AQI) promedio en la zona s
  Los incendios pueden causar un  deterioro rápido y severo de la calidad del aire y puede transformar el área suburbana en la más contaminada,dañando a la naturaleza y a su fauna
 
 ### 5. Conclusión
-Se podría implementar protocolos específicos para incendios en áreas suburbanas
-Poner más sensores durante la temporada de incendios que sería en verano.
+* Se podría implementar protocolos de emergencia ambiental para incendios en zonas suburbanas (alertas, evacuaciones, puntos limpios).
+* Incrementar la densidad de sensores AQI temporales o móviles durante la temporada de incendios (especialmente verano).
 
 ### 6.4 Promedio de Vehículos por Minuto y AQI por Zona
+
+En este gráfico se analiza la relación entre el volumen de tráfico vehicular y la calidad del aire (AQI) en cuatro zonas diferenciadas de Madrid: centro, residencial, suburbana e industrial. Se utilizan datos temporales para identificar patrones de contaminación vinculados a la actividad vehicular.
 
 Creamos las siguientes medidas
 
@@ -703,13 +731,13 @@ El gráfico muestra dos métricas para cuatro zonas distintas (center, residenti
 
 ### 2. Datos Clave
 - Zona center:  
-  - Como podemos ver a partir de la 9:00,14:00,15:00,20:00 horas el AQI sube considerablemente a 200 y la media de coches por minuto incrementa también 
+  Se observan picos críticos de AQI (alrededor de 200) en los tramos horarios de 9:00, 14:00, 15:00 y 20:00.
+Estos picos coinciden con horas de entrada/salida escolar y laboral.La alta densidad de tráfico en esas horas genera un aumento significativo en la concentración de contaminantes en el aire.
  
-   ![image](https://github.com/user-attachments/assets/8765ecf5-cf39-4ea5-84a0-753ef89f4658)
- 
+   ![image](https://github.com/user-attachments/assets/8765ecf5-cf39-4ea5-84a0-753ef89f4658) 
 
 - Zonas residential
-  En el caso de la zona residencial el nivel de AQI se mantiene constante durante practicamente todo el dia,excepto algunas horas puntas.
+  El AQI se mantiene estable durante gran parte del día.Se identifican pequeñas subidas durante horas punta (especialmente entre las 18:00 y 20:00), posiblemente debido al regreso de personas del trabajo.El tráfico no es tan denso como en el centro, pero sigue teniendo un efecto notable.
 
 ![image](https://github.com/user-attachments/assets/f41301cc-3318-4480-97d8-f38ae7ad5374)
 
@@ -724,6 +752,11 @@ El gráfico muestra dos métricas para cuatro zonas distintas (center, residenti
 
  ![image](https://github.com/user-attachments/assets/9575f8ef-099c-4694-ba67-dd5150ceddc5)
 
+
+### 3. Interpretación de Resultados
+Existe una correlación clara entre tráfico y AQI en las zonas centro y residencial.
+En zonas industriales, el factor dominante es la actividad fabril, no el tráfico.
+En zonas suburbanas, el AQI se ve afectado por eventos externos, como incendios, más que por el tránsito.
 
 ### 3. Conclusión
 Se observa que en el centro de la ciudad,durante la primera hora de la mañana,el índice de calidad del aire (AQI) aumenta considerablemente.Esta subida podría estar relacionada con la entrada simultánea de los estudiantes al colegio,lo que genera un aumento en el tráfico y la actividad urbana.
@@ -774,12 +807,16 @@ El gráfico muestra cómo varía el promedio del Índice de Calidad del Aire (AQ
 Esto permite identificar posibles patrones de contaminación asociados a la actividad humana y la dinámica urbana durante la semana.
 
 2. Datos Clave
-Se observa que los niveles de AQI aumentan significativamente durante los días laborales.Esto se debe al incremento de tráfico y a la actividad comercial en el centro urbano.
-Los domingos  y los sábados tienden a mostrar valores notablemente más bajos,lo que refuerza la hipótesis del impacto del tráfico.
+* De lunes a viernes, los niveles de AQI son más elevados.Esto se relaciona con la mayor actividad vehicular y productiva típica de los días laborales.
+Especialmente en zonas como el centro urbano y la zona industrial, los valores se intensifican.
+* Los sábados y domingos se detecta una disminución significativa del AQI.El tráfico es menor, muchas industrias están inactivas y se reduce el movimiento de personas.Esta tendencia refuerza el vínculo entre la actividad humana y la contaminación ambiental.
+
 
 3. Conclusión
 Al analizar el AQI por día de la semana,se nota que la contaminación del aire es más alta de lunes a viernes y baja bastante los fines de semana.Esto muestra que la actividad diaria de las personas,como ir al trabajo o al colegio, influye mucho en la calidad del aire.
-Los sábados y domingos,al haber menos movimiento y tráfico,el aire mejora.Por eso,sería buena idea pensar en medidas como horarios de entrada más escalonados o más teletrabajo para ayudar a reducir la contaminación en los días más cargados.
+Los sábados y domingos,al haber menos movimiento y tráfico,el aire mejora.Por eso,sería buena idea pensar en medidas como horarios de entrada más escalonados o más teletrabajo para ayudar a reducir la contaminación en los días más cargados. También se podrían promover campañas de movilidad sostenible durante la semana, como “Miércoles sin coche” o “Jueves en bici”, e incrementar la presencia de sensores y sistemas de monitoreo en los días críticos.
+
+De esta forma, se podrían tomar decisiones rápidas ante niveles elevados de AQI, como restringir el acceso de vehículos a determinadas zonas cuando se superen ciertos umbrales de contaminación.
 
 
 ## 7. Prometheus
@@ -871,8 +908,10 @@ Creamos un dashboards,introduciendo un JSON ya dado y de esta manera podemos vis
 
 
 
-### 5.5 Creación de la tabla en MySQL
-A continuación, vamos a crear una base de datos en MySQL junto con una tabla para almacenar los datos que se están generando.
+### Opcional 
+Creación de la tabla en MySQL
+
+Podemos  crear una base de datos en MySQL junto con una tabla para almacenar los datos que se están generando.
 Primero, accedemos a la consola de MySQL con privilegios de administrador utilizando el siguiente comando:
 ````
 sudo mysql -u root -p
